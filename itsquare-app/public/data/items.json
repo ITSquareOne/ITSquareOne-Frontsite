@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "name": "Corsair RM750x Power Supply",
+        "brand": "Corsair",
+        "vendor": "ITTechStore",
+        "category": "Power Supply",
+        "price": 2500,
+        "description": "Corsair RM750x 750W 80 Plus Gold Fully Modular Power Supply",
+        "img": "/item-img/rm750x.avif"
+    },
+    {
+        "id": 2,
+        "name": "Intel Core i7-12700K Processor",
+        "brand": "Intel",
+        "vendor": "TechWorld",
+        "category": "CPU",
+        "price": 8000,
+        "description": "Intel Core i7-12700K 12-core, 20-thread Processor",
+        "img": "/item-img/2023_Intel_Core_i7_12700KF_(1).jpg"
+
+    },
+    {
+        "id": 3,
+        "name": "Kingston Fury Beast RAM",
+        "brand": "Kingston",
+        "vendor": "MemoryLand",
+        "category": "Ram",
+        "price": 1800,
+        "description": "Kingston Fury Beast 16GB (2 x 8GB) DDR4 3200MHz",
+        "img": "/item-img/fury.webp"
+    },
+    {
+        "id": 4,
+        "name": "Samsung 970 EVO Plus SSD",
+        "brand": "Samsung",
+        "vendor": "StorageHub",
+        "category": "HDD & SSD",
+        "price": 3500,
+        "description": "Samsung 970 EVO Plus 1TB M.2 NVMe SSD",
+        "img": "/item-img/970Evo.jpg"
+    },
+    {
+        "id": 5,
+        "name": "ASUS TUF Gaming Motherboard",
+        "brand": "ASUS",
+        "vendor": "CompuStore",
+        "category": "Mainboard",
+        "price": 4500,
+        "description": "ASUS TUF Gaming B550-PLUS (Wi-Fi 6) ATX Motherboard",
+        "img": "/item-img/tuf.png"
+    },
+    {
+        "id": 6,
+        "name": "NVIDIA GeForce RTX 3080 GPU",
+        "brand": "NVIDIA",
+        "vendor": "TechDirect",
+        "category": "GPU",
+        "price": 20000,
+        "description": "NVIDIA GeForce RTX 3080 10GB GDDR6X Graphics Card",
+        "img": "/item-img/3080.png"
+    },
+    {
+        "id": 7,
+        "name": "Cooler Master MasterBox Case",
+        "brand": "Cooler Master",
+        "vendor": "PCGear",
+        "category": "Other",
+        "price": 1200,
+        "description": "Cooler Master MasterBox Q300L Mini Tower Case",
+        "img": "/item-img/coolerMaster.webp"
+
+    }
+]
