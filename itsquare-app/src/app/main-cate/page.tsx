@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface Product {
     id: number;
@@ -16,6 +16,7 @@ interface Product {
 export default function Category() {
     const [product, setProduct] = useState<Product[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>("All");
+    const router = useRouter();
 
     useEffect(() => {
         fetch('data/items.json')
@@ -52,7 +53,7 @@ export default function Category() {
                 <div className="text-black text-start w-full mb-5 mt-3">
                   <p>{item.name}</p>
                 </div>
-                <button className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.2)] mt-auto text-black w-full justify-center py-1 rounded-full text-base flex items-center gap-4 transition delay-180 duration-300 ease-in-out">
+                <button onClick={() => router.push(`product/${item.name}`)} className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.2)] mt-auto text-black w-full justify-center py-1 rounded-full text-base flex items-center gap-4 transition delay-180 duration-300 ease-in-out">
                   <Image src="/Shopping cart.png" alt="icon" width={20} height={20} className="ml-2" />
                   THB {item.price}
                 </button>

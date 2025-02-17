@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    fetch("data/items.json") 
+    fetch("/data/items.json") 
       .then((res) => res.json())
       .then((data) => {
         const itemNames = data.map((item: { name: string }) => item.name);
@@ -71,7 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       <ul className="absolute bg-white border-2 border-black mt-1 w-full rounded shadow-lg z-50 text-black cursor-pointer">
                         {filteredSuggestions.slice(0, 7).map((suggestion, index) => (
                           <li key={index} className="p-2 hover:bg-gray-200">
-                            <a href={"item/" + suggestion}>{suggestion}</a>
+                            <a href={`/product/${suggestion}`}>{suggestion}</a>
                           </li>
                         ))}
                       </ul>
