@@ -1,10 +1,19 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { useState } from "react";
+import { useEffect } from "react";
+
 
 export default function Sign_in() {
   const [isOpen, setIsOpen] = useState(false);
-
+  useEffect(() => {
+    // Prevent scrolling when the page loads
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto"; // Restore scroll when navigating away
+    };
+  }, []);
+  
   return (
     <div className="relative min-h-screen bg-cover bg-center justify-center items-center flex" style={{backgroundImage: "url('/bg-main.png')"}}>
         <div className="bg-white md:max-w-[600px] md:min-h-[400px] mb-[200px] max-w-[340px] min-h-[400px] shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.6)]
