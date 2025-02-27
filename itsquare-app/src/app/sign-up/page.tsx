@@ -16,21 +16,21 @@ export default function Sign_up() {
     <div className="relative min-h-screen bg-cover bg-center flex justify-center items-center"
       style={{ backgroundImage: "url('/bg-main.png')" }}>
       <div className="bg-white md:max-w-[600px] min-h-[400px] shadow-lg rounded-xl text-black flex flex-col px-8 pb-8 w-full max-w-md -mt-20">
-        <h1 className="text-4xl font-semibold text-[#190832] mt-4 mb-4 text-center">Sign up</h1>
+        <h1 className="text-4xl font-semibold text-[#190832] mt-4 mb-4 text-center">สมัครสมาชิก</h1>
         <form className="flex flex-col w-full">
-          <label>Username</label>
-          <input required type="text" className="border-[#353535] border-2 rounded-md py-3 px-4 w-full" placeholder="Enter username" />
+          <label>ชื่อผู้ใช้งาน</label>
+          <input required type="text" className="border-[#353535] border-2 rounded-md py-3 px-4 w-full" placeholder="กรอกชื่อผู้ใช้งาน" />
 
-          <label className="mt-4">Email</label>
-          <input required type="email" className="border-[#353535] border-2 rounded-md py-3 px-4 w-full" placeholder="Enter email" />
+          <label className="mt-4">อีเมล</label>
+          <input required type="email" className="border-[#353535] border-2 rounded-md py-3 px-4 w-full" placeholder="กรอกอีเมล" />
 
           {/* PASSWORD INPUT WITH TOGGLE ICON */}
-          <label className="mt-4">Password</label>
+          <label className="mt-4">รหัสผ่าน</label>
           <div className="relative w-full">
             <input required
               type={showPassword ? "text" : "password"}
               className="border-[#353535] border-2 rounded-md py-3 px-4 w-full pr-10"
-              placeholder="Enter password"
+              placeholder="กรอกรหัสผ่าน"
             />
             <button
               type="button"
@@ -53,12 +53,12 @@ export default function Sign_up() {
           </div>
 
           {/* CONFIRM PASSWORD INPUT WITH TOGGLE ICON */}
-          <label className="mt-4">Confirm Password</label>
+          <label className="mt-4">ยืนยันรหัสผ่าน</label>
           <div className="relative w-full">
             <input
               type={showConfirmPassword ? "text" : "password"}
               className="border-[#353535] border-2 rounded-md py-3 px-4 w-full pr-10"
-              placeholder="Confirm password"
+              placeholder="กรอกรหัสผ่านอีกครั้ง"
             />
             <button
               type="button"
@@ -80,7 +80,7 @@ export default function Sign_up() {
 
           <div className="text-center ">
             <button type="submit" className="w-1/3 mt-6 bg-gray-800 hover:bg-black text-white w-50 rounded-md py-3 transition duration-300">
-              Sign up
+              ลงทะเบียน
             </button>
           </div>
         </form>

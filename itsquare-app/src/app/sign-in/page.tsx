@@ -19,17 +19,17 @@ export default function Sign_in() {
     <div className="relative min-h-screen bg-cover bg-center justify-center items-center flex" style={{backgroundImage: "url('/bg-main.png')"}}>
         <div className="bg-white md:max-w-[600px] md:min-h-[400px] mb-[200px] max-w-[340px] min-h-[400px] shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.6)]
  rounded-xl container text-black  flex flex-col px-8">
-          <h1 className="text-4xl font-semibold text-[#190832] mt-8 mb-4 text-center">Sign in</h1>
-          <label className="">Username</label>
-          <input type="text" className="border-[#353535] border-2 rounded-md py-3 px-4" placeholder="Enter username"></input>
+          <h1 className="text-4xl font-semibold text-[#190832] mt-8 mb-4 text-center">เข้าสู่ระบบ</h1>
+          <label className="">ชื่อผู้ใช้งาน</label>
+          <input type="text" className="border-[#353535] border-2 rounded-md py-3 px-4" placeholder="กรอกชื่อผู้ใช้งาน"></input>
    
           {/* PASSWORD INPUT WITH TOGGLE ICON */}
-        <label className="mt-4">Password</label>
+        <label className="mt-4">รหัสผ่าน</label>
         <div className="relative w-full">
           <input
             type={showPassword ? "text" : "password"}
             className="border-[#353535] border-2 rounded-md py-3 px-4 w-full pr-10"
-            placeholder="Enter password"
+            placeholder="กรอกรหัสผ่าน"
           />
           <button
             type="button"
@@ -49,20 +49,20 @@ export default function Sign_in() {
           </button>
         </div>
           
-          <a onClick={() => setIsOpen(true)} className="cursor-pointer underline mt-2">Forgot Password?</a>
-          <button className="mt-4 bg-gray-800 hover:bg-black text-white w-40 text-center mx-auto rounded-md py-2 hover:text-white transition delay-180 duration-300 ease-in-out">Sign in</button>
-          <a href="sign-up" className="cursor-pointer underline text-center mt-4">Don't have an account?</a>
+          <a onClick={() => setIsOpen(true)} className="cursor-pointer underline mt-2">ลืมรหัสผ่าน?</a>
+          <button className="mt-4 bg-gray-800 hover:bg-black text-white w-40 text-center mx-auto rounded-md py-2 hover:text-white transition delay-180 duration-300 ease-in-out">เข้าสู่ระบบ</button>
+          <a href="sign-up" className="cursor-pointer underline text-center mt-4">ไม่มีบัญชี?</a>
           {isOpen && ( 
-            <div className="bg-black bg-opacity-30 flex inset-0 fixed justify-center items-center">
+            <form className="bg-black bg-opacity-30 flex inset-0 fixed justify-center items-center">
               <div className="container bg-white max-w-[500px] min-h-[150px] rounded-md shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.2)] flex flex-col p-4 px-6">
-                <label className="">Email</label>
-                <input type="text" className="border-[#adadad] border-2 rounded-md py-2 px-4 mb-4" placeholder="Enter email"></input>
+                <label className="">อีเมลเพื่อเปลี่ยนรหัสผ่าน</label>
+                <input required type="email" className="border-[#adadad] border-2 rounded-md py-2 px-4 mb-4" placeholder="กรอกอีเมล"></input>
                 <div className="items-center flex justify-center gap-8">
-                  <button onClick={() => setIsOpen(false)} className="hover:text-red-500 transition delay-180 duration-300 ease-in-out">cancel</button>
-                  <button onClick={() => location.reload()} className="rounded-md bg-gray-800 hover:bg-black px-4 py-2 text-white  transition delay-180 duration-300 ease-in-out">Reset password</button>
+                  <button onClick={() => setIsOpen(false)} className="hover:text-red-500 transition delay-180 duration-300 ease-in-out">ยกเลิก</button>
+                  <button type="submit" /*onClick={() => location.reload()}*/ className="rounded-md bg-gray-800 hover:bg-black px-4 py-2 text-white  transition delay-180 duration-300 ease-in-out">ยืนยัน</button>
                 </div>
               </div>
-            </div>
+            </form>
           )}
         
         </div>
