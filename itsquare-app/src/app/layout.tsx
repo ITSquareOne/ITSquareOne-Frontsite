@@ -74,9 +74,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* ✅ Mobile Dropdown Menu */}
           <div className={`${isOpen ? "block" : "hidden"} md:hidden mt-3`}>
             <ul className="flex flex-col items-center space-y-3">
-              <li>
+              {/* <li>
                 <a href="#" className="text-lg text-gray-900 hover:text-blue-700">Cart</a>
-              </li>
+              </li> */}
               <li>
                 <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">Sign in</a>
               </li>

@@ -21,13 +21,14 @@ export default function Sign_in() {
  rounded-xl container text-black  flex flex-col px-8">
           <h1 className="text-4xl font-semibold text-[#190832] mt-8 mb-4 text-center">เข้าสู่ระบบ</h1>
           <label className="">ชื่อผู้ใช้งาน</label>
-          <input type="text" className="border-[#353535] border-2 rounded-md py-3 px-4" placeholder="กรอกชื่อผู้ใช้งาน"></input>
+          <input required type="text" className="border-[#353535] border-2 rounded-md py-3 px-4" placeholder="กรอกชื่อผู้ใช้งาน"></input>
    
           {/* PASSWORD INPUT WITH TOGGLE ICON */}
         <label className="mt-4">รหัสผ่าน</label>
         <div className="relative w-full">
           <input
             type={showPassword ? "text" : "password"}
+            required
             className="border-[#353535] border-2 rounded-md py-3 px-4 w-full pr-10"
             placeholder="กรอกรหัสผ่าน"
           />
