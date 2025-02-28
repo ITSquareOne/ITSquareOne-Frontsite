@@ -16,8 +16,8 @@ export default function Sign_in() {
   }, []);
   
   return (
-    <div className="relative min-h-screen bg-cover bg-center justify-center items-center flex" style={{backgroundImage: "url('/bg-main.png')"}}>
-        <div className="mb-7 -mt-8 bg-white md:max-w-[600px] md:min-h-[400px] mb-[200px] max-w-[340px] min-h-[400px] shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.6)]
+    <div className="relative pt-10 min-h-screen bg-cover bg-center justify-center items-center flex" style={{backgroundImage: "url('/bg-main.png')"}}>
+        <div className="mt-10 bg-white md:max-w-[600px] md:min-h-[400px] mb-[200px] max-w-[340px] min-h-[400px] shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.6)]
  rounded-xl container text-black  flex flex-col px-8">
           <h1 className="text-4xl font-semibold text-[#190832] mt-8 mb-4 text-center">เข้าสู่ระบบ</h1>
           <label className="">ชื่อผู้ใช้งาน</label>
@@ -54,7 +54,7 @@ export default function Sign_in() {
           <button className="mt-4 bg-gray-800 hover:bg-black text-white w-40 text-center mx-auto rounded-md py-2 hover:text-white transition delay-180 duration-300 ease-in-out">เข้าสู่ระบบ</button>
           {isOpen && ( 
             <form className="bg-black bg-opacity-30 flex inset-0 fixed justify-center items-center">
-              <div className="container bg-white max-w-[500px] min-h-[150px] rounded-md shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.2)] flex flex-col p-4 px-6 mt-10">
+              <div className="container bg-white max-w-[500px] min-h-[150px] rounded-md shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.2)] flex flex-col p-4 px-6">
                 <label className="">อีเมลเพื่อเปลี่ยนรหัสผ่าน</label>
                 <input required type="email" className="border-[#adadad] border-2 rounded-md py-2 px-4 mb-4" placeholder="กรอกอีเมล"></input>
                 <div className="items-center flex justify-center gap-8">
