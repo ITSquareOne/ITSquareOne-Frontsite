@@ -40,11 +40,12 @@ export default function ProfilePage() {
       <div className="bg-white w-4/5 h-[80vh] shadow-lg rounded-xl text-black flex p-8 mx-12 -mt-20">
         {/* Sidebar ด้านซ้าย */}
         <div className="w-1/4 h-full bg-gray-100 rounded-xl p-4 border border-black">
-          <h2 className="text-lg font-semibold">Sidebar</h2>
+          <h2 className="text-lg font-semibold">สวัสดี </h2>
           <ul className="mt-4 space-y-2">
-            <li className="p-2 bg-gray-200 rounded-lg cursor-pointer">Profile</li>
-            <li className="p-2 bg-gray-200 rounded-lg cursor-pointer">Settings</li>
-            <li className="p-2 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-400 transition hover:text-white" onClick={handleLogout}>Logout</li>
+            <li className="p-2 bg-gray-200 rounded-lg cursor-pointer">ข้อมูลส่วนตัว</li>
+            <li className="p-2 bg-gray-200 rounded-lg cursor-pointer">ที่อยู่จัดส่งสินค้า</li>
+            <li className="p-2 bg-gray-200 rounded-lg cursor-pointer">รายการคำสั่งซื้อ</li>
+            <li className="p-2 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-400 transition hover:text-white" onClick={handleLogout}>ออกจากระบบ</li>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
             {modalContent}
             </Modal>

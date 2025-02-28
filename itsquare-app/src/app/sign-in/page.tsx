@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Modal from "../components/Modal"
 import axios from "axios";
-import { useRouter } from "next/navigation";
-
 
 export default function Sign_in() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +12,6 @@ export default function Sign_in() {
   const [password, setPassword] = useState("");
   const [modalContent, setModalContent] = useState<React.ReactNode | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -24,6 +21,17 @@ export default function Sign_in() {
   }, []);
 
   const handleLogin = async () => {
+    if (!username.includes("tn") && !username.includes("it") && !username.includes("mn") && !username.includes("tester")) {
+        setModalContent(
+          <div>
+            <h2 className="text-xl font-semibold text-red-600">ชื่อผู้ใช้ไม่ถูกต้อง ❌</h2>
+            <p className="mt-2 text-gray-600">กรุณากรอกชื่อผู้ใช้ที่ถูกต้อง</p>
+          </div>
+        );
+        setIsModalOpen(true);
+      return;
+    } 
+
     try {
       const res = await axios.post(
         "http://localhost:3000/api/users/login",
@@ -51,7 +59,7 @@ export default function Sign_in() {
         </div>
       );
       setTimeout(() => {
-        window.location.href = "/";
+        window.location.href = "/profile";
       }, 1500); 
     } catch (err) {
       console.log("เข้าสู่ระบบล้มเหลว");
