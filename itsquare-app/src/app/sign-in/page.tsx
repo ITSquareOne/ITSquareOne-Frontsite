@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useEffect } from "react";
-import Modal from "./LoginModal";
+import Modal from "../components/Modal"
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
