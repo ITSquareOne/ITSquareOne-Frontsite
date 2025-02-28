@@ -10,32 +10,18 @@ const kanit = Kanit({
 });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    fetch("/data/items.json") 
-      .then((res) => res.json())
-      .then((data) => {
-        const itemNames = data.map((item: { name: string }) => item.name);
-        setSuggestions(itemNames);
-      })
-      .catch((err) => console.error("Error loading items:", err));
-  }, []);
-
-  useEffect(() => {
-    if (searchQuery) {
-      setFilteredSuggestions(
-        suggestions.filter((s) =>
-          s.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
     } else {
-      setFilteredSuggestions([]);
+      setIsLoggedIn(false);
     }
-  }, [searchQuery, suggestions]);
+  })
+
 
   return (
     <html lang="en">
@@ -53,13 +39,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </a>
 
             {/* ✅ Right Side (Sign In & Sign Up Buttons) */}
+            
             <div className="hidden md:flex items-center space-x-5 mr-4">
-              <a href="./sign-in" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                Sign In
-              </a>
-              <a href="./sign-up" className="text-lg text-white shadow-lg bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                Sign Up
-              </a>
+              {!isLoggedIn ? (
+                <>
+                  <a href="./sign-in" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                  Sign In
+                  </a>
+                  <a href="./sign-up" className="text-lg text-white shadow-lg bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                    Sign Up
+                  </a>
+                </>) : (
+                  <>
+                    <a href="./sign-in" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                  Cart
+                  </a>
+                  <a href="./sign-up" className="text-lg text-white shadow-lg bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                    Profile
+                  </a>
+                  </>
+                )}
+              
             </div>
 
             {/* ✅ Hamburger Menu for Mobile View */}
@@ -77,12 +77,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* <li>
                 <a href="#" className="text-lg text-gray-900 hover:text-blue-700">Cart</a>
               </li> */}
-              <li>
-                <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">Sign in</a>
-              </li>
-              <li>
-                <a href="./sign-up" className="text-lg text-gray-900 hover:text-blue-700">Sign Up</a>
-              </li>
+              {!isLoggedIn ? (
+                <>
+                  <li>
+                    <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">Sign in</a>
+                  </li>
+                  <li>
+                    <a href="./sign-up" className="text-lg text-gray-900 hover:text-blue-700">Sign Up</a>
+                  </li>
+                </>) : (
+                  <>
+                    <li>
+                      <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">Cart</a>
+                    </li>
+                    <li>
+                      <a href="./sign-up" className="text-lg text-gray-900 hover:text-blue-700">Profile</a>
+                    </li>
+                  </>
+                )}
+              
             </ul>
           </div>
         </nav>

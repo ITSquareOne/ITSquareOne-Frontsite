@@ -2,28 +2,84 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useEffect } from "react";
+import Modal from "./LoginModal";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 
 export default function Sign_in() {
   const [isOpen, setIsOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [modalContent, setModalContent] = useState<React.ReactNode | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+
   useEffect(() => {
-    // Prevent scrolling when the page loads
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "auto"; // Restore scroll when navigating away
     };
   }, []);
+
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/users/login",
+        {
+          username,
+          password,
+        },
+        {
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+        }  
+      );
+      console.log("Login successful", res.data);
+
+      if (res.data) {
+        localStorage.setItem("token", res.data.tokens.accessToken);
+        
+      }
+      setModalContent(
+        <div>
+          <h2 className="text-xl font-semibold text-green-600">เข้าสู่ระบบสำเร็จ ✅</h2>
+          <p className="mt-2 text-gray-600">คุณสามารถใช้งานระบบได้แล้ว</p>
+        </div>
+      );
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500); 
+    } catch (err) {
+      console.log("เข้าสู่ระบบล้มเหลว");
+      
+      setModalContent(
+        <div>
+          <h2 className="text-xl font-semibold text-red-600">เข้าสู่ระบบล้มเหลว ❌</h2>
+          <p className="mt-2 text-gray-600">กรุณาตรวจสอบชื่อผู้ใช้หรือรหัสผ่าน</p>
+        </div>
+      );
+    } finally {
+      setIsModalOpen(true);
+    }
+  };
   
   return (
-    <div className="relative min-h-screen bg-cover bg-center justify-center items-center flex" style={{backgroundImage: "url('/bg-main.png')"}}>
+    <div className={isModalOpen ? ' bg-black opacity-50' : ''}>
+      <div className="relative min-h-screen bg-cover bg-center justify-center items-center flex" style={{backgroundImage: "url('/bg-main.png')"}}>
         <div className="bg-white md:max-w-[600px] md:min-h-[400px] mb-[200px] max-w-[340px] min-h-[400px] shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.6)]
  rounded-xl container text-black  flex flex-col px-8">
           <h1 className="text-4xl font-semibold text-[#190832] mt-8 mb-4 text-center">เข้าสู่ระบบ</h1>
           <label className="">ชื่อผู้ใช้งาน</label>
-          <input required type="text" className="border-[#353535] border-2 rounded-md py-3 px-4" placeholder="กรอกชื่อผู้ใช้งาน"></input>
+          <input required type="text" 
+          className="border-[#353535] border-2 rounded-md py-3 px-4" 
+          placeholder="กรอกชื่อผู้ใช้งาน"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}></input>
    
-          {/* PASSWORD INPUT WITH TOGGLE ICON */}
         <label className="mt-4">รหัสผ่าน</label>
         <div className="relative w-full">
           <input
@@ -31,7 +87,8 @@ export default function Sign_in() {
             required
             className="border-[#353535] border-2 rounded-md py-3 px-4 w-full pr-10"
             placeholder="กรอกรหัสผ่าน"
-          />
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}/>
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
@@ -51,7 +108,11 @@ export default function Sign_in() {
         </div>
           
           <a onClick={() => setIsOpen(true)} className="cursor-pointer underline mt-2">ลืมรหัสผ่าน?</a>
-          <button className="mt-4 bg-gray-800 hover:bg-black text-white w-40 text-center mx-auto rounded-md py-2 hover:text-white transition delay-180 duration-300 ease-in-out">เข้าสู่ระบบ</button>
+          <button className="mt-4 bg-gray-800 hover:bg-black text-white w-40 text-center mx-auto rounded-md py-2 hover:text-white transition delay-180 duration-300 ease-in-out"
+           onClick={handleLogin}>เข้าสู่ระบบ</button>
+           <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            {modalContent}
+          </Modal>
           <a href="sign-up" className="cursor-pointer underline text-center mt-4">ไม่มีบัญชี?</a>
           {isOpen && ( 
             <form className="bg-black bg-opacity-30 flex inset-0 fixed justify-center items-center">
@@ -68,5 +129,6 @@ export default function Sign_in() {
         
         </div>
     </div>
+    </div> 
   );
 }
