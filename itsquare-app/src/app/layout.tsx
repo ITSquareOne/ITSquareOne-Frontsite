@@ -16,10 +16,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    fetch("/data/items.json") 
+    fetch("/data/items.json")
       .then((res) => res.json())
       .then((data) => {
-        const itemNames = data.map((item: { name: string }) => item.name);
+        console.log("Loaded items:", data);
+        const itemNames = data.map((item: { part_name: string }) => item.part_name);
         setSuggestions(itemNames);
       })
       .catch((err) => console.error("Error loading items:", err));
@@ -40,27 +41,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${kanit.className} alo guys`}>
-        {/*  Navbar - ITSquareOne on Left, Sign In/Sign Up on Right */}
-        <nav className="fixed top-0 left-0 w-full bg-white border-gray-200 p-5 shadow-md z-50"> 
-          {/* Ensures navbar stays at the top with shadow */}
+        {/* Navbar */}
+        <nav className="fixed top-0 left-0 w-full bg-white border-gray-200 p-3 shadow-md z-50">
           <div className="flex items-center justify-between mx-auto container">
-            
-            {/*  Left Side (Logo) */}
-            <a href="/" className="text-4xl font-bold text-blue-500 ml-4">
-              <div className="flex ">
+            {/* Logo */}
+            <a href="/" className="font-bold text-blue-500 ml-4">
+              <div className="flex text-2xl">
                 IT<span className="text-black">SquareOne</span>
               </div>
             </a>
 
-            {/* Right Side (Sign In & Sign Up Buttons) */}
-            <div className="hidden md:flex items-center space-x-5 mr-4">
-              <a href="./sign-in" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+            {/* Sign In */}
+            <div className="hidden md:flex items-center">
+              <a
+                href="./sign-in"
+                className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out"
+              >
                 เข้าสู่ระบบ
               </a>
-            
             </div>
 
-            {/* Hamburger Menu for Mobile View */}
+            {/* Mobile Menu */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-gray-600 focus:outline-none"
@@ -69,26 +70,45 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </button>
           </div>
 
-          {/* Mobile Dropdown Menu */}
-          <div className={`${isOpen ? "block" : "hidden"} md:hidden mt-3`}>
-            <ul className="flex flex-col items-center space-y-3">
-              {/* <li>
-                <a href="#" className="text-lg text-gray-900 hover:text-blue-700">Cart</a>
-              </li> */}
-              <li>
-                <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">เข้าสู่ระบบ</a>
-              </li>
-              <li>
-                <a href="./sign-up" className="text-lg text-gray-900 hover:text-blue-700">ลงทะเบียน</a>
-              </li>
-            </ul>
-          </div>
+          {/* Mobile Dropdown */}
+          {isOpen && (
+            <div className="md:hidden mt-3">
+              <ul className="flex flex-col items-center space-y-3">
+                <li>
+                  <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">
+                    เข้าสู่ระบบ
+                  </a>
+                </li>
+                <li>
+                  <a href="./sign-up" className="text-lg text-gray-900 hover:text-blue-700">
+                    ลงทะเบียน
+                  </a>
+                </li>
+              </ul>
+            </div>
+          )}
         </nav>
 
-        {/* Push content down to prevent navbar overlap */}
-        <div className="pt-[80px]">
-          {children}
-        </div>
+        {/* Content Area */}
+        <div className="mt-16 mb-12">{children}</div> 
+
+        {/* Fixed Bottom Bar - Copyright */}
+        <footer className="fixed bottom-0 left-0 w-full bg-gray-100 text-black p-2 py-1/3 text-xs md:py-4 border-t border-gray-300">
+  <div className="container mx-auto flex justify-between items-center px-4 md:text-l ">
+    {/* Left Side: Copyright */}
+    <div>© 2024 ITSquareOne. All Rights Reserved.</div>
+
+    {/* Right Side: Links */}
+    <div className="space-x-3 flex">
+      <a href="https://maps.app.goo.gl/YjUgSDAomFCyLzsf6" className="hover:text-blue-500">Location</a>
+      <div>|</div>
+      <a href="/" className="hover:text-blue-500">Home</a>
+      <div>|</div>
+      <img src="\Github_logo.svg" alt="GitHub logo" className="h-3 md:h-4 inline" />
+      <a href="https://github.com/ITSquareOne" className="hover:text-blue-500 space-x-0">GitHub</a>
+    </div>
+  </div>
+</footer>
 
       </body>
     </html>
