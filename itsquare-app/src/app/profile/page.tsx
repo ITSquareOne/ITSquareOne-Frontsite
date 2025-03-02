@@ -145,6 +145,7 @@ const createAddress = async () => {
       }
     });
     setAddresses([...addresses, results.data]);
+    setIsAddressOpen(false);
   } catch (err) {
     console.log(err);
   }
@@ -284,7 +285,7 @@ const handleLogout = async () => {
                   src={`data:image/jpeg;base64,${profile.profile}`} 
                   className="w-32 h-32 rounded-full border"
                 />
-                <input type="file" accept="image/*" onChange={base64GameChanger} className="p-1 mt-4 border rounded-md"/>
+                <input type="file" accept="image/*" onChange={base64GameChanger} className="p-1 mt-4 w-2/4 border rounded-md"/>
               </div>
              <h2 className="text-lg font-semibold border-b pb-2 mb-4">โปรไฟล์ของฉัน</h2>
              <div className="space-y-3">
