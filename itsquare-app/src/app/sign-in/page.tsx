@@ -58,7 +58,7 @@ export default function Sign_in() {
         </div>
       );
       setTimeout(() => {
-        window.location.href = "/profile";
+        window.location.href = "/";
       }, 1500); 
     } catch (err) {
       console.log("เข้าสู่ระบบล้มเหลว");
@@ -77,7 +77,7 @@ export default function Sign_in() {
   return (
     <div className={isModalOpen ? ' bg-black opacity-50' : ''}>
       <div className="relative min-h-screen bg-cover bg-center justify-center items-center flex" style={{backgroundImage: "url('/bg-main.png')"}}>
-        <div className="bg-white md:max-w-[600px] md:min-h-[400px] mb-[100px] max-w-[340px] min-h-[400px] shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.6)]
+        <div className="bg-white md:max-w-[600px] md:min-h-[400px] mb-[200px] max-w-[340px] min-h-[400px] shadow-[0px_8px_7px_1px_rgba(0,_0,_0,_0.6)]
  rounded-xl container text-black  flex flex-col px-8">
           <h1 className="text-4xl font-semibold text-[#190832] mt-8 mb-4 text-center">เข้าสู่ระบบ</h1>
           <label className="">ชื่อผู้ใช้งาน</label>
