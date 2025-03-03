@@ -10,33 +10,18 @@ const kanit = Kanit({
 });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    fetch("/data/items.json")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Loaded items:", data);
-        const itemNames = data.map((item: { part_name: string }) => item.part_name);
-        setSuggestions(itemNames);
-      })
-      .catch((err) => console.error("Error loading items:", err));
-  }, []);
-
-  useEffect(() => {
-    if (searchQuery) {
-      setFilteredSuggestions(
-        suggestions.filter((s) =>
-          s.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
     } else {
-      setFilteredSuggestions([]);
+      setIsLoggedIn(false);
     }
-  }, [searchQuery, suggestions]);
+  })
+
 
   return (
     <html lang="en">
@@ -51,14 +36,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
             </a>
 
-            {/* Sign In */}
-            <div className="hidden md:flex items-center">
-              <a
-                href="./sign-in"
-                className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out"
-              >
-                เข้าสู่ระบบ
-              </a>
+            {/* ✅ Right Side (Sign In & Sign Up Buttons) */}
+            
+            <div className="hidden md:flex items-center space-x-5 mr-4">
+              {!isLoggedIn ? (
+                <>
+                  <a href="/sign-in" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                  Sign In
+                  </a>
+                </>) : (
+                  <>
+                    <a href="/sign-in" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                  Cart
+                  </a>
+                  <a href="/profile" className="text-lg text-white shadow-lg bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                    Profile
+                  </a>
+                  </>
+                )}
+              
             </div>
 
             {/* Mobile Menu */}
@@ -79,15 +75,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     เข้าสู่ระบบ
                   </a>
                 </li>
-                {/* No more sign up option */}
-                {/* <li>
-                  <a href="./sign-up" className="text-lg text-gray-900 hover:text-blue-700">
-                    ลงทะเบียน
-                  </a>
-                </li> */}
               </ul>
             </div>
           )}
+          {/* ✅ Mobile Dropdown Menu */}
+          <div className={`${isOpen ? "block" : "hidden"} md:hidden mt-3`}>
+            <ul className="flex flex-col items-center space-y-3">
+              {/* <li>
+                <a href="#" className="text-lg text-gray-900 hover:text-blue-700">Cart</a>
+              </li> */}
+              {!isLoggedIn ? (
+                <>
+                  <li>
+                    <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">เข้าสู่ระบบ</a>
+                  </li>
+                  <li>
+                    <a href="./sign-up" className="text-lg text-gray-900 hover:text-blue-700">ลงทะเบียน</a>
+                  </li>
+                </>) : (
+                  <>
+                    <li>
+                      <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">ตะกร้า</a>
+                    </li>
+                    <li>
+                      <a href="./profile" className="text-lg text-gray-900 hover:text-blue-700">โปรไฟล์</a>
+                    </li>
+                  </>
+                )}
+              
+            </ul>
+          </div>
         </nav>
 
         {/* Content Area */}
