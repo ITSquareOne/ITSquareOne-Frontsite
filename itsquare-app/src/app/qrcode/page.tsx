@@ -1,15 +1,47 @@
 "use client";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Payment() {
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [token, setToken] = useState<string | null>(null);
+
+  // Retrieve token from localStorage when page loads
   useEffect(() => {
-    // Disable scrolling when the page loads
-    document.body.style.overflow = "hidden";
+    const storedToken = localStorage.getItem("token");
+    document.body.style.overflow = "hidden"; // Disable scrolling
+    if (storedToken) {
+      setToken(storedToken);
+    }
     return () => {
-      document.body.style.overflow = "auto"; // Re-enable scrolling when leaving
+      document.body.style.overflow = "auto"; // Enable scrolling when leaving
     };
   }, []);
+
+  // Fetch payment details when token is available
+  useEffect(() => {
+    if (!token) return;
+
+    const fetchPaymentDetails = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/orders/4", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+
+        if (response.data && response.data.total_price) {
+          setTotalPrice(response.data.total_price);
+        }
+      } catch (error) {
+        console.error("Error fetching payment details:", error);
+      }
+    };
+
+    fetchPaymentDetails();
+  }, [token]);
 
   return (
     <div
@@ -29,7 +61,7 @@ export default function Payment() {
         alt="PoPo Mascot"
         width={250}
         height={250}
-        className="absolute bottom-20 left-0 hidden md:block xl:w-1/4 w-auto object-contain "
+        className="absolute bottom-20 left-0 hidden md:block xl:w-1/4 w-auto object-contain"
       />
 
       {/* Responsive QR Payment Card */}
@@ -45,8 +77,8 @@ export default function Payment() {
             <Image src="/qrcode.png" alt="QR Code" width={200} height={200} className="w-2/3 sm:w-1/2" />
           </div>
 
-          {/* Payment Amount */}
-          <p className="text-lg font-bold text-gray-800">ชำระเงิน {0} บาท</p>
+          {/* ✅ Display Dynamic Payment Amount */}
+          <p className="text-lg font-bold text-gray-800">ชำระเงิน {totalPrice} บาท</p>
 
           {/* Buttons */}
           <div className="gap-3 flex justify-center">

@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${kanit.className} alo guys`}>
         {/* Navbar */}
-        <nav className="fixed top-0 left-0 w-full bg-white border-gray-200 p-3 shadow-md z-50">
+        <nav className="fixed top-0 left-0 w-full bg-white border-gray-200 p-4 shadow-md z-50">
           <div className="flex items-center justify-between mx-auto container">
             {/* Logo */}
             <a href="/" className="font-bold text-blue-500 ml-4">
@@ -41,9 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="hidden md:flex items-center space-x-5 mr-4">
               {!isLoggedIn ? (
                 <>
-                  <a href="/sign-in" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                  Sign In
-                  </a>
+                  
                 </>) : (
                   <>
                     <a href="/sign-in" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
