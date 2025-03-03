@@ -79,11 +79,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     เข้าสู่ระบบ
                   </a>
                 </li>
-                <li>
+                {/* No more sign up option */}
+                {/* <li>
                   <a href="./sign-up" className="text-lg text-gray-900 hover:text-blue-700">
                     ลงทะเบียน
                   </a>
-                </li>
+                </li> */}
               </ul>
             </div>
           )}
