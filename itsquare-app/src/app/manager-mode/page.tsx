@@ -15,7 +15,6 @@ interface User {
   role: string;
 }
 
-
 const data = [
     { month: "Jan", users: 2000, orders: 8000, income: 50000 },
     { month: "Feb", users: 4000, orders: 15000, income: 120000 },
@@ -95,12 +94,14 @@ export default function manager() {
     } catch (err) {
       console.log(err);
     }
+    
   }
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
+
     }
 }, []);
 
