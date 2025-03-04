@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getAddress, Address } from "../utils/api";
+
 
 interface CartItem {
   id: number;
@@ -26,7 +28,37 @@ export default function CheckoutPage() {
   const [recipient, setRecipient] = useState("");
   const [address, setAddress] = useState("");
   const [contact, setContact] = useState("");
+  const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        setToken(storedToken);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedTab === "old") {
+      fetchAddresses();
+    }
+  }, [selectedTab]);
+
+  const fetchAddresses = async () => {
+    if (!token) return;
+    try {
+      setLoading(true);
+      const addresses = await getAddress(token);
+      setSavedAddresses(addresses);
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const totalPrice = cartItems.reduce((total, item) => total + item.price, 0);
   const shippingCost = 25;
@@ -54,6 +86,26 @@ export default function CheckoutPage() {
                 </div>
               ))}
             </div>
+            <div className="text-sm w-full flex justify-end">
+            <div className="bg-white text-black px-4 mx-8 mb-10 mt-4 pt-0 max-w-4xl w-full">
+              <h3 className="text-xl font-normal mb-2">ข้อมูลการชำระเงิน</h3>
+              <div className="flex justify-between text-gray-600">
+                <span>รวมการสั่งซื้อ</span>
+                <span>{totalPrice} บาท</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span>การจัดส่ง</span>
+                <span>{shippingCost} บาท</span>
+              </div>
+              <div className="flex justify-between font-normal text-lg mt-2">
+                <span>ยอดชำระทั้งหมด</span>
+                <span>{finalPrice} บาท</span>
+              </div>
+              <button className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-normal">
+                สั่งสินค้า
+              </button>
+            </div>
+          </div>
           </div>
         </div>
         {/* Right Section: Shipping Details with Tabs */}
@@ -76,8 +128,7 @@ export default function CheckoutPage() {
           </div>
           {/* Address Content */}
           <div className="p-4 pb-0">
-            {selectedTab === "new" ? (
-              // New Address Form
+          {selectedTab === "new" ? (
               <>
                 <div className="mb-4">
                   <label className="block text-gray-600 text-sm font-medium">ชื่อผู้รับ</label>
@@ -97,37 +148,38 @@ export default function CheckoutPage() {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                   />
+                   <button className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-normal">
+                        เพิ่มที่อยู่ใหม่
+                    </button>
                 </div>
+               
               </>
+            ) : loading ? (
+              <p className="text-center text-gray-600">กำลังโหลด...</p>
+            ) : savedAddresses.length > 0 ? (
+              savedAddresses.map((addr, index) => (
+                <div key={index} className="bg-gray-100 p-2 mb-3 rounded-md my-2 flex justify-between items-center">
+                    <p className="text-sm">{addr.address}</p>
+                    <div className="flex space-x-2">
+                        <button className="bg-green-500 hover:bg-green-600 text-white p-1 px-2 shadow-sm rounded-md transition">เลือก</button>
+                        <button className="bg-blue-500 hover:bg-blue-600 text-white p-1 px-2 shadow-sm rounded-md transition">✏️</button>
+                        <button className="bg-red-500 hover:bg-red-600 text-white p-1 px-2 shadow-sm rounded-md transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                                <path d="M10 11v6"></path>
+                                <path d="M14 11v6"></path>
+                                <path d="M9 6V3h6v3"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+              ))
             ) : (
-              // Existing Address List (Replace with real user addresses)
-              <div className="text-gray-600">
-                <p>ที่อยู่ที่บันทึกไว้:</p>
-                <p className="mt-2 bg-gray-100 p-2 rounded-md">123/45 ถนนสาย IT, เขตบางนา, กรุงเทพฯ</p>
-              </div>
+              <p className="text-gray-600">ไม่มีที่อยู่ที่บันทึกไว้</p>
             )}
           </div>
           {/* Payment Summary */}
-          <div className="text-sm w-full flex justify-end">
-            <div className="bg-white text-black px-4 mx-8 mb-10 mt-0 pt-0 max-w-4xl w-full">
-              <h3 className="text-xl font-normal mb-2">ข้อมูลการชำระเงิน</h3>
-              <div className="flex justify-between text-gray-600">
-                <span>รวมการสั่งซื้อ</span>
-                <span>{totalPrice} บาท</span>
-              </div>
-              <div className="flex justify-between text-gray-600">
-                <span>การจัดส่ง</span>
-                <span>{shippingCost} บาท</span>
-              </div>
-              <div className="flex justify-between font-normal text-lg mt-2">
-                <span>ยอดชำระทั้งหมด</span>
-                <span>{finalPrice} บาท</span>
-              </div>
-              <button className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-normal">
-                สั่งสินค้า
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
