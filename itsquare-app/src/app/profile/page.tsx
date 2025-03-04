@@ -4,25 +4,7 @@ import { useRouter } from "next/navigation";
 import Modal from "../components/Modal";
 import { Dialog } from "@headlessui/react";
 import axios from "axios"
-
-interface User {
-  user_id?: number;
-  username?: string;
-  firstNameEn?: string;
-  lastNameEn?: string;
-  firstNameTh?: string;
-  lastNameTh?: string;
-  profile: string | null;
-  role?: string;
-}
-
-interface Address {
-  address_id?: number;
-  user_id?: number;
-  address?: string;
-  created_at?: string;
-  updated_at?: string;
-}
+import { getAddress, createAddress, editAddress, deleteAddress, Address, User } from "../utils/api";
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -53,7 +35,7 @@ export default function ProfilePage() {
         router.push("/sign-in");
       } else {
         getProfile();
-        getAddress();
+        loadAddress();
       }
     }, [token]); 
 
@@ -72,20 +54,16 @@ export default function ProfilePage() {
     }
   }
 
-  const getAddress = async () => {
+  const loadAddress = async () => {
+    console.log("getAddress function:", getAddress);
+    if (!token) return;
     try {
-    const results = await axios.get("http://localhost:3000/api/addresses/self", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Accept": "application/json"
-      }
-    });
-    setAddresses(results.data);
-    } catch (error) {
-      console.log(error);
+        const addressList = await getAddress(token);
+        setAddresses(addressList);
+    } catch (err) {
+        console.error("เกิดข้อผิดพลาดในการดึงที่อยู่", err);
     }
-  
-  }
+};
 
   const editProfile = async () => {
     if (profile) {
@@ -128,85 +106,48 @@ export default function ProfilePage() {
     }
   }
 }
-const createAddress = async () => {
-  if (!address) return;
-
-  try {
-    const newAddress = {
-      address: address,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-
-    const results = await axios.post(`http://localhost:3000/api/addresses/self`, newAddress, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Accept": "application/json"
-      }
-    });
-    setAddresses([...addresses, results.data]);
-    setIsAddressOpen(false);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-  const editAddress = async () => {
-    if (!addresses || selectedAddressId === null) return;
-
-    const selectedAddress = addresses.find(addr => addr.address_id === selectedAddressId);
-    
-    if (!selectedAddress) return;
+const handleCreateAddress = async () => {
+    if (!token || !address) return;
     try {
-        const updatedAddress = {
-          ...selectedAddress,
-          address: updateAddress,
-          updated_at: new Date().toISOString()
-      };
-      console.log(updatedAddress);
-  
-      await axios.put(`http://localhost:3000/api/addresses/self/${selectedAddressId}`, updatedAddress, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/json"
-        }
-      });
-      setAddresses(addresses.map(addr => 
-        addr.address_id === selectedAddressId ? { ...addr, address: updateAddress } : addr
-      ));
-      setIsEditAddressModalOpen(false);
+        const newAddr = await createAddress(token, address);
+        setAddresses([...addresses, newAddr]);
+        setIsAddressOpen(false);
     } catch (err) {
-      console.log(err);
+        console.error("เกิดข้อผิดพลาดในการเพิ่มที่อยู่", err);
     }
-  }
+  };
 
-  const deleteAddress = async () => {
-    if (!addresses || selectedAddressId === null) return;
-
-    const selectedAddress = addresses.find(addr => addr.address_id === selectedAddressId);
-    
-    if (!selectedAddress) return;
+const handleEditAddress = async () => {
+    if (!token || selectedAddressId === null || !updateAddress) return;
     try {
-        await axios.delete(`http://localhost:3000/api/addresses/self/${selectedAddressId}`, {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Accept": "application/json"
-            }
-        });
-
-        setAddresses(addresses.filter(addr => addr.address_id !== selectedAddressId));
-        setIsDelModalOpen(false);
+        await editAddress(token, selectedAddressId, updateAddress);
+        setAddresses(addresses.map(addr =>
+            addr.address_id === selectedAddressId ? { ...addr, address: updateAddress } : addr
+        ));
+        setIsEditAddressModalOpen(false);
     } catch (err) {
-        console.error("เกิดข้อผิดพลาดในการลบที่อยู่", err);
+        console.error("เกิดข้อผิดพลาดในการแก้ไขที่อยู่", err);
     }
 };
+
+const handleDeleteAddress = async () => {
+  if (!token || selectedAddressId === null) return;
+  try {
+      await deleteAddress(token, selectedAddressId);
+      setAddresses(addresses.filter(addr => addr.address_id !== selectedAddressId));
+      setIsDelModalOpen(false);
+  } catch (err) {
+      console.error("เกิดข้อผิดพลาดในการลบที่อยู่", err);
+  }
+};
+
   const handleAddressEditClick = (addr: Address) => {
     setUpdateAddress(addr.address ?? ""); 
     setSelectedAddressId(addr.address_id ?? null); 
     setIsEditAddressModalOpen(true);
   };
 
-  const handleDeleteAddress = (addr: Address) => {
+  const handleDeleteAddressClick = (addr: Address) => {
     setSelectedAddressId(addr.address_id ?? null); 
     setIsDelModalOpen(true);
   };
@@ -417,7 +358,7 @@ const handleLogout = async () => {
                     }} className="bg-blue-500 p-2 shadow-md rounded-xl text-white hover:bg-blue-600 transition mr-3">แก้ไข</button>
                     <button onClick={(e) => {
                       e.stopPropagation(); 
-                      handleDeleteAddress(addr)
+                      handleDeleteAddressClick(addr)
                     }} className="bg-red-500 p-2 px-3 shadow-md rounded-xl text-white hover:bg-red-600 transition">ลบ</button>
                     </div>
                     
@@ -438,7 +379,7 @@ const handleLogout = async () => {
                             className="w-full h-32 border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
                           ></textarea>
                           <button
-                            onClick={editAddress}
+                            onClick={handleEditAddress}
                             className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg mr-8 hover:bg-green-600 transition"
                           >
                             บันทึก
@@ -460,7 +401,7 @@ const handleLogout = async () => {
                         <h1 className="text-2xl font-bold mb-4">คุณแน่ใจที่จะลบที่อยู่นี้ใช่หรือไม่?</h1>
                         <div className="space-y-3">
                           <button
-                            onClick={deleteAddress}
+                            onClick={handleDeleteAddress}
                             className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg mr-4 hover:bg-red-600 transition"
                           >
                             ยืนยัน
@@ -492,7 +433,7 @@ const handleLogout = async () => {
                         className="w-full h-32 border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
                       ></textarea>
                       <button
-                        onClick={createAddress}
+                        onClick={handleCreateAddress}
                         className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg mr-8 hover:bg-green-600 transition"
                       >
                         บันทึก

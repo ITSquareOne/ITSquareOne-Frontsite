@@ -41,18 +41,39 @@ export interface Parts {
     type_id: number;
   }
 
+export interface User {
+    user_id?: number;
+    username?: string;
+    firstNameEn?: string;
+    lastNameEn?: string;
+    firstNameTh?: string;
+    lastNameTh?: string;
+    profile: string | null;
+    role?: string;
+  }
+  
+export interface Address {
+    address_id?: number;
+    user_id?: number;
+    address?: string;
+    created_at?: string;
+    updated_at?: string;
+  }
+
+const api_url = "http://localhost:3000/api";
+
 export const fetchItemsForCategory = async (token: string | null): Promise<Product[]> => {
   if (!token) return [];
 
   try {
     const [partItemsResponse, partsResponse] = await Promise.all([
-      axios.get("http://localhost:3000/api/part-items", {
+      axios.get(`${api_url}/part-items`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       }),
-      axios.get("http://localhost:3000/api/parts", {
+      axios.get(`${api_url}/parts`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -91,7 +112,7 @@ export const fetchOneItem = async (token: string | null, partid: string | number
     if (!token) return null;
   
     try {
-      const partItemResponse = await axios.get(`http://localhost:3000/api/part-items/partid/${partid}`, {
+      const partItemResponse = await axios.get(`${api_url}/part-items/partid/${partid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -106,7 +127,7 @@ export const fetchOneItem = async (token: string | null, partid: string | number
   
       const part_code = partItem.part_code;
   
-      const partResponse = await axios.get(`http://localhost:3000/api/parts/${part_code}`, {
+      const partResponse = await axios.get(`${api_url}/parts/${part_code}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -135,3 +156,77 @@ export const fetchOneItem = async (token: string | null, partid: string | number
       return null;
     }
   };
+
+export const getAddress = async (token: string): Promise<Address[]> => {
+    try {
+        const { data } = await axios.get<Address[]>(`${api_url}/addresses/self`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+        },
+        });
+        return data;
+    } catch (error) {
+        console.error("Error fetching addresses:", error);
+        throw error;
+    }
+};
+
+export const createAddress = async (token: string, address: string): Promise<Address> => {
+    try {
+        const newAddress: Address = {
+        address,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        };
+
+        const { data } = await axios.post<Address>(`${api_url}/addresses/self`, newAddress, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+        },
+        });
+
+        return data;
+    } catch (error) {
+        console.error("Error creating address:", error);
+        throw error;
+    }
+};
+
+export const editAddress = async (
+    token: string,
+    selectedAddressId: number,
+    updateAddress: string
+    ): Promise<void> => {
+    try {
+        const updatedAddress: Partial<Address> = {
+        address: updateAddress,
+        updated_at: new Date().toISOString(),
+        };
+
+        await axios.put(`${api_url}/addresses/self/${selectedAddressId}`, updatedAddress, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+        },
+        });
+    } catch (error) {
+        console.error("Error updating address:", error);
+        throw error;
+    }
+};
+
+export const deleteAddress = async (token: string, selectedAddressId: number): Promise<void> => {
+    try {
+        await axios.delete(`${api_url}/addresses/self/${selectedAddressId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+        },
+        });
+    } catch (error) {
+        console.error("Error deleting address:", error);
+        throw error;
+    }
+};
