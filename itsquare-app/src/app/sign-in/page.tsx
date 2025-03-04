@@ -25,7 +25,7 @@ export default function Sign_in() {
         setModalContent(
           <div>
             <h2 className="text-xl font-semibold text-red-600">ชื่อผู้ใช้ไม่ถูกต้อง ❌</h2>
-            <p className="mt-2 text-gray-600">กรุณากรอกชื่อผู้ใช้ที่ถูกต้อง</p>
+            <p className="mt-2 text-gray-600">กรุณากรอกชื่อผู้ใช้ที่ถูกตง</p>
           </div>
         );
         setIsModalOpen(true);
