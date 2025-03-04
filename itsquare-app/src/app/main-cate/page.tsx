@@ -32,6 +32,7 @@ const categoryMap: { [key: string]: number } = {
   "Other": 7
 };
 
+
 // Function to convert condition percentage to a readable label
 const getConditionLabel = (condition: number) => {
   if (condition >= 91) return "ใหม่เอี่ยม"; // Like New
@@ -39,6 +40,7 @@ const getConditionLabel = (condition: number) => {
   if (condition >= 41) return "ดี"; // Good
   return "พอใช้"; // Fair
 };
+
 
 export default function Category() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -170,7 +172,7 @@ export default function Category() {
         {filteredProducts.map((item) => (
           <div key={item.part_id} className="bg-white rounded-xl shadow-lg w-full md:w-[250px] h-auto flex flex-col items-center p-4 mb-4">
 
-            <div className="border-2 border-gray-400 w-full md:h-[200px] rounded-xl overflow-hidden">
+            <div className="flex justify-center items-center border-2 border-gray-200 w-full md:h-[200px] rounded-xl overflow-hidden">
               {item.part_image ? (
                 <Image
                   src={`data:image/jpeg;base64,${item.part_image}`}
@@ -188,7 +190,10 @@ export default function Category() {
             <div className="text-black text-start w-full mt-3 pb-2 font-semibold text-sm md:text-m">
               <p>{item.name}</p>
             </div>
-
+            {/* Product Condition */}
+            <div className="text-black text-sm font-medium mt-1 mb-2 w-full">
+              สภาพสินค้า: <span className="text-gray-600">{getConditionLabel(item.condition)}</span>
+            </div>
             <button onClick={() => router.push(`product/${item.part_id}`)} className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-md mt-auto text-black w-full py-2 rounded-full text-base flex items-center justify-center gap-2 transition delay-180 duration-300 ease-in-out">
               {item.price} บาท
             </button>

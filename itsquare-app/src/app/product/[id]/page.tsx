@@ -77,35 +77,46 @@ export default function ProductPage() {
     fetchProduct();
   }, [id]);
 
-  if (!product) return <p className="text-center mt-10">Loading...</p>;
+  if (!product) return <p className="text-center mt-6 text-sm">Loading...</p>;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center p-6" style={{ backgroundImage: "url('/bg-main.png')" }}>
-      <div className="bg-white p-6 rounded-xl shadow-lg max-w-2xl items-center">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center p-3 sm:p-4" style={{ backgroundImage: "url('/bg-main.png')" }}>
+      <div className="bg-white p-3 sm:p-4 rounded-lg shadow-md max-w-xs sm:max-w-md items-center">
         <div className="place-items-center">
           {product.part_image ? (
             <Image 
               src={`data:image/jpeg;base64,${product.part_image}`} 
-              alt={`${product.name}`} 
-              width={300} 
-              height={300} 
-              className="rounded-lg" 
+              alt={`ภาพของ ${product.name}`} 
+              width={200} 
+              height={200} 
+              className="rounded-md object-cover"
             />
           ) : (
-            <p className="text-gray-500">No image available</p>
+            <p className="text-gray-500 text-sm">No image available</p>
           )}
         </div>
-        <h1 className="text-2xl font-bold mt-4 text-black">{product.name}</h1>
-        <p className="text-gray-600">รหัสสินค้า: {product.part_code}</p>
+
+        <h1 className="text-lg sm:text-xl font-bold mt-2 mb-2 text-black text-opacity-80">{product.name}</h1>
 
         {/* Product Condition */}
-        <p className="text-sm mt-2 text-gray-600">
+        <p className="text-xs sm:text-sm mt-1 text-gray-600">
           สภาพสินค้า: <span className="text-black font-semibold">{getConditionLabel(product.condition)}</span>
         </p>
 
-        <p className="text-xl font-semibold mt-2 text-black">{product.price} บาท</p>
-        
-        <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+        {/* Product Description Placeholder */}
+        <div>
+          <p className="mt-1 text-xs sm:text-sm text-gray-500 text-opacity-50">
+            Write a detailed yet concise product description for a PC component. Include key specifications, features, and benefits. Ensure it sounds engaging for potential buyers. 
+            The product is a {product.name}.
+          </p>
+        </div>
+
+        {/* Price & Add to Cart */}
+        <p className="text-lg sm:text-xl mt-2 text-black text-right">
+          {product.price} บาท
+        </p>
+
+        <button className="mt-3 bg-blue-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:bg-blue-600 w-full text-sm sm:text-base">
           เพิ่มสู่ตะกร้า
         </button>
       </div>
