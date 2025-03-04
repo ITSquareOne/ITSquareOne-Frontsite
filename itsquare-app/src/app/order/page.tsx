@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { getAddress, Address } from "../utils/api";
+import { createAddress, getAddress, editAddress, deleteAddress, Address } from "../utils/api";
+import { Dialog } from "@headlessui/react";
 
 
 interface CartItem {
@@ -22,17 +23,22 @@ export default function CheckoutPage() {
   ];
 
   // Address Selection State
-  const [selectedTab, setSelectedTab] = useState<"old" | "new">("new");
+  const [selectedTab, setSelectedTab] = useState<"old" | "new">("old");
 
   // Address Fields State
   const [recipient, setRecipient] = useState("");
   const [address, setAddress] = useState("");
-  const [contact, setContact] = useState("");
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isDeleteItemOpen, setIsDeleteItemOpen] = useState(false);
+  const [selectedAddressID, setSelectedAddressID] = useState<number | null>(null);
+  const [isEditAddressModalOpen, setIsEditAddressModalOpen] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState<number | null>(null);
+
+  const [updateAddress, setUpdateAddress] = useState("");
 
   
   useEffect(() => {
@@ -41,12 +47,12 @@ export default function CheckoutPage() {
         setToken(storedToken);
     }
   }, []);
-
   useEffect(() => {
-    if (selectedTab === "old") {
+    if (token) {
       fetchAddresses();
     }
-  }, [selectedTab]);
+  }, [token]);
+
 
   const fetchAddresses = async () => {
     if (!token) return;
@@ -60,6 +66,71 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
+  const handleCreateAddress = async () => {
+    if (!token) {
+      console.error("No token found");
+      return;
+    }
+  
+    if (!address.trim()) {
+      console.error("Address cannot be empty");
+      return;
+    }
+  
+    try {
+      const newAddress = await createAddress(token, address);
+      setSavedAddresses((prev) => [...prev, newAddress]); 
+      setAddress(""); 
+      setSelectedTab("old"); 
+    } catch (error) {
+      console.error("Failed to create address", error);
+    }
+  };
+  const handleDelete = async () => {
+    if (!selectedAddressID) return;
+    if (!token) {
+        console.error("No token found");
+        return;
+    }
+    try {
+        await deleteAddress(token, selectedAddressID); 
+        setSavedAddresses((prev) => prev.filter((addr) => addr.address_id !== selectedAddressID));
+    } catch (error) {
+        console.error("Failed to delete address", error);
+    } finally {
+        setIsDeleteItemOpen(false);
+    }
+    
+};
+    const handleEditAddress = async () => {
+        if (!token || !editingAddressId || !updateAddress.trim()) return;
+    
+        try {
+        await editAddress(token, editingAddressId, updateAddress);
+    
+        // อัปเดตที่อยู่ใหม่ใน State
+        setSavedAddresses((prev) =>
+            prev.map((addr) =>
+            addr.address_id === editingAddressId ? { ...addr, address: updateAddress } : addr
+            )
+        );
+    
+        setIsEditAddressModalOpen(false); // ปิด Modal
+        } catch (error) {
+        console.error("Failed to update address", error);
+        }
+  };
+const handleDeleteItemClick = (add_id: number) => {
+    setSelectedAddressID(add_id);
+    setIsDeleteItemOpen(true);
+};
+
+const handleEditClick = (addr: Address) => {
+    setEditingAddressId(addr.address_id ?? null);
+    setUpdateAddress(addr.address || ""); 
+    setIsEditAddressModalOpen(true);
+  };
+  
 
   const totalPrice = cartItems.reduce((total, item) => total + item.price, 0);
   const shippingCost = 25;
@@ -110,37 +181,27 @@ export default function CheckoutPage() {
           </div>
         </div>
         {/* Right Section: Shipping Details with Tabs */}
-        <div className="w-full lg:flex-1 bg-white text-black rounded-lg shadow-lg flex flex-col">
+        <div className="w-full lg:flex-1 bg-white text-black rounded-lg shadow-lg flex flex-col min-h-[33vh]">
           <h3 className="bg-yellow-400 text-center text-lg font-semibold py-2 rounded-t-lg">ที่อยู่จัดส่ง</h3>
           {/* Address Tabs */}
           <div className="flex border-b bg-gray-200">
             <button
-              className={`flex-1 py-2 text-center ${selectedTab === "new" ? "bg-white text-black font-semibold" : "text-gray-500"}`}
-              onClick={() => setSelectedTab("new")}
-            >
-              เพิ่มที่อยู่ใหม่
-            </button>
-            <button
               className={`flex-1 py-2 text-center ${selectedTab === "old" ? "bg-white text-black font-semibold" : "text-gray-500"}`}
               onClick={() => setSelectedTab("old")}
             >
-              ที่อยู่เดิม
+                ที่อยู่เดิม
+            </button>
+            <button
+              className={`flex-1 py-2 text-center ${selectedTab === "new" ? "bg-white text-black font-semibold" : "text-gray-500"}`}
+              onClick={() => setSelectedTab("new")}
+            >
+              เพิ่มที่อยู่
             </button>
           </div>
           {/* Address Content */}
-          <div className="p-4 pb-0">
+          <div className="p-4 pb-0 ">
           {selectedTab === "new" ? (
               <>
-                <div className="mb-4">
-                  <label className="block text-gray-600 text-sm font-medium">ชื่อผู้รับ</label>
-                  <input
-                    type="text"
-                    placeholder="ชื่อผู้รับ"
-                    className="border border-gray-300 rounded-md px-3 py-2 w-full"
-                    value={recipient}
-                    onChange={(e) => setRecipient(e.target.value)}
-                  />
-                </div>
                 <div className="mb-4">
                   <label className="block text-gray-600 text-sm font-medium">ที่อยู่</label>
                   <textarea
@@ -149,7 +210,7 @@ export default function CheckoutPage() {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                   />
-                   <button className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-normal">
+                    <button onClick={handleCreateAddress} className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-normal">
                         เพิ่มที่อยู่ใหม่
                     </button>
                 </div>
@@ -159,15 +220,14 @@ export default function CheckoutPage() {
               <p className="text-center text-gray-600">กำลังโหลด...</p>
             ) : savedAddresses.length > 0 ? (
               savedAddresses.map((addr, index) => (
-                <div key={index} className="bg-gray-100 p-2 mb-3 rounded-md my-2 flex justify-between items-center">
+                <div key={index} className="bg-gray-100 p-4 mb-3 rounded-md my-2 flex justify-between items-center shadow-md">
                     <p className="text-sm">{addr.address}</p>
                     <div className="flex space-x-2">
                     <button className="bg-green-500 hover:bg-green-600 text-white p-1 px-2 shadow-sm rounded-md transition" onClick={() => setSelectedAddress(addr)}>
                         เลือก
                         </button>
-
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white p-1 px-2 shadow-sm rounded-md transition">✏️</button>
-                        <button className="bg-red-500 hover:bg-red-600 text-white p-1 px-2 shadow-sm rounded-md transition">
+                        <button onClick={() => handleEditClick(addr)} className="bg-blue-500 hover:bg-blue-600 text-white p-1 px-2 shadow-sm rounded-md transition">✏️</button>
+                        <button onClick={() => handleDeleteItemClick(addr.address_id as number)} className="bg-red-500 hover:bg-red-600 text-white p-1 px-2 shadow-sm rounded-md transition">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <polyline points="3 6 5 6 21 6"></polyline>
                                 <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
@@ -180,14 +240,62 @@ export default function CheckoutPage() {
                 </div>
               ))
             ) : (
-              <p className="text-gray-600">ไม่มีที่อยู่ที่บันทึกไว้</p>
+              <p className="text-gray-600 mb-4">ไม่มีที่อยู่ที่บันทึกไว้</p>
             )}
-            {selectedAddress && (
-            <div className="mt-4 mb-4 p-4 bg-gray-200 rounded-md shadow-md">
-                <h1 className="text-lg font-medium">ที่อยู่ที่เลือก</h1>
-                <h1 className="text-gray-700">{selectedAddress.address}</h1>
-            </div>
-            )}
+            {selectedTab !== "new" &&  (
+                <div className="mt-4 mb-4 p-4 bg-gray-200 rounded-md shadow-md">
+                    <h1 className="text-lg font-medium">ที่อยู่ที่เลือก</h1>
+                    <h1 className="text-gray-700">{selectedAddress?.address ?? "ยังไม่ได้เลือกที่อยู่"}</h1>
+                </div>
+                )}
+            <Dialog open={isDeleteItemOpen} onClose={() => setIsDeleteItemOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg shadow-xl p-6 md:w-1/4 w-3/4 text-center justify-center text-black">
+                    <div className="flex justify-center mb-4">
+                        <svg className="items-center flex " width="64" height="64" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M24 7H20.9C20.4216 4.67358 18.3751 3.003 16 3H14C11.6249 3.003 9.57843 4.67358 9.1 7H6C5.44772 7 5 7.44772 5 8C5 8.55228 5.44772 9 6 9H7V22C7.00331 24.7601 9.23995 26.9967 12 27H18C20.7601 26.9967 22.9967 24.7601 23 22V9H24C24.5523 9 25 8.55228 25 8C25 7.44772 24.5523 7 24 7ZM14 5H16C17.271 5.00155 18.4036 5.8023 18.829 7H11.171C11.5964 5.8023 12.729 5.00155 14 5ZM21 22C21 23.6569 19.6569 25 18 25H12C10.3431 25 9 23.6569 9 22V9H21V22ZM13 21C13.5523 21 14 20.5523 14 20V14C14 13.4477 13.5523 13 13 13C12.4477 13 12 13.4477 12 14V20C12 20.5523 12.4477 21 13 21ZM18 20C18 20.5523 17.5523 21 17 21C16.4477 21 16 20.5523 16 20V14C16 13.4477 16.4477 13 17 13C17.5523 13 18 13.4477 18 14V20Z" fill="rgba(227, 31, 38, 1)"></path></svg>
+                    </div>
+                    <h1 className="text-2xl font-bold mb-4">คุณแน่ใจที่จะลบที่อยู่นี้ใช่หรือไม่?</h1>
+                    <div className="space-y-3">
+                        <button
+                        onClick={handleDelete}
+                        className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg mr-4 hover:bg-red-600 transition"
+                        >
+                        ยืนยัน
+                        </button>
+                        <button
+                        onClick={() => setIsDeleteItemOpen(false)}
+                        className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                        >
+                        ยกเลิก
+                        </button>
+                    </div>
+                    </div>
+            </Dialog>
+            <Dialog open={isEditAddressModalOpen} onClose={() => setIsEditAddressModalOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg shadow-xl p-6 w-2/4 text-center text-black">
+                    <h2 className="text-xl font-bold mb-4">แก้ไขที่อยู่ของคุณ</h2>
+                    <div className="space-y-3">
+                    <label className="block text-left font-semibold">ที่อยู่ในการจัดส่ง</label>
+                    <textarea 
+                        placeholder="กรุณากรอกที่อยู่ของคุณ"
+                        value={updateAddress}
+                        onChange={(e) => setUpdateAddress(e.target.value)}
+                        className="w-full h-32 border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+                        ></textarea>
+                        <button
+                        onClick={handleEditAddress}
+                        className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg mr-8 hover:bg-green-600 transition"
+                        >
+                        บันทึก
+                        </button>
+                        <button
+                        onClick={() => setIsEditAddressModalOpen(false)}
+                        className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                        >
+                        ยกเลิก
+                        </button>
+                    </div>
+                </div>
+            </Dialog>
           </div>
           {/* Payment Summary */}
         </div>
