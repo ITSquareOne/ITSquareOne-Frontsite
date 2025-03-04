@@ -2,49 +2,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Dialog } from "@headlessui/react";
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  condition: number;
-  part_code: string;
-  part_image: string;
-  brand: string;
-  type: string;
-}
-
-interface Item {
-  id?: number;
-  part_code: string;
-  condition: number;
-  price: number;
-  part_image: string;
-}
-
-
-interface Brands {
-  brand_id: number;
-  brand_name: string;
-  logo?: string;
-}
-
-interface types {
-  type_id: number;
-  type_name: string;
-}
-
-
-interface Parts {
-  part_code: string;
-  name: string;
-  brand_id: number;
-  type_id: number;
-}
+import { Product, Item, Brands, types, Parts } from "../utils/api";
 
 
 export default function technician() {
-  const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("วิเคราะห์ยอดขาย");
   const menuItems = ["จัดการแบรนด์สินค้าในคลัง", "จัดการคลังสินค้า", "จัดการแผงขายสินค้า"];
   const [token, setToken] = useState<string | null>(null);
@@ -135,6 +96,7 @@ export default function technician() {
           condition: item.condition,
           part_code: item.part_code,
           part_image: item.part_image,
+          description: part.description,
           brand: brands.find((b: any) => b.brand_id === part.brand_id)?.brand_name || "Other",
           type: types.find((t: any) => t.type_id === part.type_id)?.type_name || "Other"
         };
@@ -188,6 +150,7 @@ export default function technician() {
         {
           part_code: parts.part_code,
           name: parts.name,
+          description: parts.description,
           brand_id: parts.brand_id,
           type_id: parts.type_id
         }, 
@@ -202,6 +165,7 @@ export default function technician() {
       setParts({
         part_code: "",
         name: "",
+        description: "",
         brand_id: 0,
         type_id: 0
       });
@@ -279,6 +243,7 @@ export default function technician() {
           {
             part_code: editParts.part_code,
             name: editParts.name,
+            description: editParts.description,
             brand_id: editParts.brand_id,
             type_id: editParts.type_id
           }, 
@@ -541,7 +506,7 @@ useEffect(() => {
               ))}
             </select>
             <label className="block font-medium">ราคา</label>
-            <input className="border w-full p-2 mb-2" placeholder="กรุณากรอกราคาสินค้า" type="number" value={item?.price === 0 ? "" : item?.price} onChange={(e) => setItem({...item!, price: Number(e.target.value)})} />
+            <input className="border w-full p-2 mb-2" placeholder="กรุณากรอกราคาสินค้า" type="number" value={item?.price === 0 ? "" : item?.price} onChange={(e) => setItem({...item!, price: Number(e.target.value)})} />  
             <label className="block font-medium">อัปโหลดรูปภาพ</label>
             <input 
                 type="file" 
@@ -653,9 +618,11 @@ useEffect(() => {
           <div className="bg-white rounded-lg shadow-xl p-6 w-2/4 text-start text-black">
             <h2 className="text-xl font-bold mb-4 text-center">เพิ่มสินค้าภายในคลัง</h2>
             <label className="block font-medium">รหัสของสินค้า</label>
-            <input className="border w-full p-2 mb-2" value={parts?.part_code} onChange={(e) => setParts({...parts!, part_code: e.target.value})} />
+            <input className="border w-full p-2 mb-2" placeholder="กรอกรหัสของสินค้า" value={parts?.part_code} onChange={(e) => setParts({...parts!, part_code: e.target.value})} />
             <label className="block font-medium">ชื่อของสินค้า</label>
-            <input className="border w-full p-2 mb-2" value={parts?.name} onChange={(e) => setParts({...parts!, name: e.target.value})} />
+            <input className="border w-full p-2 mb-2" placeholder="กรอกชื่อของสินค้า" value={parts?.name} onChange={(e) => setParts({...parts!, name: e.target.value})} />
+            <label className="block font-medium">รายละเอียดของสินค้า</label>
+            <textarea rows={3}  placeholder="กรอกรายละเอียดของสินค้า" className="border w-full p-2 mb-2" value={parts?.description} onChange={(e) => setParts({...parts!, description: e.target.value})} />
             <label className="block font-medium">แบรนด์</label>
             <select 
               className="border w-full p-2 mb-2" 
@@ -692,6 +659,8 @@ useEffect(() => {
             <input className="border w-full p-2 mb-2" value={editParts?.part_code} onChange={(e) => setEditParts({...editParts!, part_code: e.target.value})} />
             <label className="block font-medium">ชื่อของสินค้า</label>
             <input className="border w-full p-2 mb-2" value={editParts?.name} onChange={(e) => setEditParts({...editParts!, name: e.target.value})} />
+            <label className="block font-medium">รายละเอียดของสินค้า</label>
+            <textarea className="border w-full p-2 mb-2" placeholder="กรอกรายละเอียดของสินค้า" rows={3} value={editParts?.description} onChange={(e) => setEditParts({...editParts!, description: e.target.value})} />
             <label className="block font-medium">แบรนด์</label>
             <select 
               className="border w-full p-2 mb-2" 

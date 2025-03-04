@@ -2,18 +2,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  condition: number;
-  part_code: string;
-  part_image: string;
-  brand_id: number;
-  type_id: number;
-}
+import { fetchItemsForCategory, Product } from "../utils/api";
 
 const categoryMap: { [key: string]: number } = {
   "All": 0,
@@ -34,48 +23,6 @@ export default function Category() {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
 
-  const fetchItems = async () => {
-    if (!token) return; 
-    
-    try {
-      const [partItemsResponse, partsResponse] = await Promise.all([
-      axios.get("http://localhost:3000/api/part-items", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }), axios.get("http://localhost:3000/api/parts", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }),
-    ]);
-    const partItems = partItemsResponse.data;
-    const parts = partsResponse.data;
-    if (Array.isArray(partItems) && Array.isArray(parts)) {
-      const mergedProducts = partItems.map((item: any) => {
-        const part = parts.find((p: any) => p.part_code === item.part_code) || {};
-        return {
-          id: item.part_id,
-          name: part.name,
-          price: item.price,
-          condition: item.condition,
-          part_code: item.part_code,
-          part_image: item.part_image,
-          brand_id: part.brand_id || 0,
-          type_id: part.type_id || 0,
-        };
-      });
-      setProduct(mergedProducts);
-    } else {
-      console.error("Fetch error: Data format incorrect", { partItems, parts });
-      }
-    } catch (error) {
-      console.error("Fetch error: " + error);
-    }
-  };
-
 useEffect(() => {
   const storedToken = localStorage.getItem("token");
     if (storedToken) {
@@ -84,13 +31,17 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  fetchItems();
-}, [token]); 
+  const getItems = async () => {
+    const products = await fetchItemsForCategory(token);
+    setProduct(products);
+  };
+  getItems();
+}, [token]);
 
 
   const filteredProducts = product.filter((item) => {
     return (
-      (selectedCategory === "All" || item.type_id === categoryMap[selectedCategory]) &&
+      (selectedCategory === "All" || item.type === categoryMap[selectedCategory]) &&
       (searchQuery === "" || item.name.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   });
