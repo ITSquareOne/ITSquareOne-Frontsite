@@ -110,7 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="mt-16 mb-12">{children}</div> 
 
         {/* Fixed Bottom Bar - Copyright */}
-        <footer className="fixed bottom-0 left-0 w-full bg-gray-100 text-black p-2 py-1/3 text-xs md:py-4 border-t border-gray-300">
+        <footer className="fixed bottom-0 left-0 w-full bg-gray-100 text-black p-2 py-1/3 text-xs md:py-3 border-t border-gray-300">
   <div className="container mx-auto flex justify-between items-center px-4 md:text-l ">
     {/* Left Side: Copyright */}
     <div>© 2024 ITSquareOne. All Rights Reserved.</div>
