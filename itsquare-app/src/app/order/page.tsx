@@ -29,6 +29,7 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState("");
   const [contact, setContact] = useState("");
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -161,7 +162,10 @@ export default function CheckoutPage() {
                 <div key={index} className="bg-gray-100 p-2 mb-3 rounded-md my-2 flex justify-between items-center">
                     <p className="text-sm">{addr.address}</p>
                     <div className="flex space-x-2">
-                        <button className="bg-green-500 hover:bg-green-600 text-white p-1 px-2 shadow-sm rounded-md transition">เลือก</button>
+                    <button className="bg-green-500 hover:bg-green-600 text-white p-1 px-2 shadow-sm rounded-md transition" onClick={() => setSelectedAddress(addr)}>
+                        เลือก
+                        </button>
+
                         <button className="bg-blue-500 hover:bg-blue-600 text-white p-1 px-2 shadow-sm rounded-md transition">✏️</button>
                         <button className="bg-red-500 hover:bg-red-600 text-white p-1 px-2 shadow-sm rounded-md transition">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -177,6 +181,12 @@ export default function CheckoutPage() {
               ))
             ) : (
               <p className="text-gray-600">ไม่มีที่อยู่ที่บันทึกไว้</p>
+            )}
+            {selectedAddress && (
+            <div className="mt-4 mb-4 p-4 bg-gray-200 rounded-md shadow-md">
+                <h1 className="text-lg font-medium">ที่อยู่ที่เลือก</h1>
+                <h1 className="text-gray-700">{selectedAddress.address}</h1>
+            </div>
             )}
           </div>
           {/* Payment Summary */}
