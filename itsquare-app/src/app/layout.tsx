@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CartProvider } from "./components/CartContext";
 import { Kanit } from "next/font/google";
 import "./globals.css";
 
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${kanit.className} alo guys`}>
+      <CartProvider>
         {/* ✅ Navbar - ITSquareOne on Left, Sign In/Sign Up on Right */}
         <nav className="bg-white border-gray-200 p-5 w-full fixed top-0 left-0 z-50 shadow-md"> 
           {/* Ensures navbar stays at the top with shadow */}
@@ -51,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </a>
                 </>) : (
                   <>
-                    <a href="/order" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                    <a href="/cart" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
                   Cart
                   </a>
                   <a href="/profile" className="text-lg text-white shadow-lg bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
@@ -80,18 +82,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {!isLoggedIn ? (
                 <>
                   <li>
-                    <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">Sign in</a>
+                    <a href="/sign-in" className="text-lg text-gray-900 hover:text-blue-700">Sign in</a>
                   </li>
                   <li>
-                    <a href="./sign-up" className="text-lg text-gray-900 hover:text-blue-700">Sign Up</a>
+                    <a href="/sign-up" className="text-lg text-gray-900 hover:text-blue-700">Sign Up</a>
                   </li>
                 </>) : (
                   <>
                     <li>
-                      <a href="./order" className="text-lg text-gray-900 hover:text-blue-700">Cart</a>
+                      <a href="/cart" className="text-lg text-gray-900 hover:text-blue-700">Cart</a>
                     </li>
                     <li>
-                      <a href="./profile" className="text-lg text-gray-900 hover:text-blue-700">Profile</a>
+                      <a href="/profile" className="text-lg text-gray-900 hover:text-blue-700">Profile</a>
                     </li>
                   </>
                 )}
@@ -120,6 +122,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </div>
       </footer>
+      </CartProvider>
       </body>
     </html>
   );
