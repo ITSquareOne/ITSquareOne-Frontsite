@@ -294,5 +294,19 @@ export const getStatusForUser = async (token: string) => {
       return [];
     }
   };
+
+export const deleteUserOrder = async (token: string, itemId: number) => {
+    try {
+        await axios.delete(`${api_url}/orders/${itemId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            },
+        });
+    } catch (error) {
+        console.error("Error deleting address:", error);
+        throw error;
+    }
+};
   
   
