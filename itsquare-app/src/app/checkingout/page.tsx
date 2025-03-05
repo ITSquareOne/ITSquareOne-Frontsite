@@ -3,29 +3,11 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { createAddress, getAddress, editAddress, deleteAddress, Address } from "../utils/api";
 import { Dialog } from "@headlessui/react";
-
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
+import { useCart } from "../components/CartContext";
 
 export default function CheckoutPage() {
-  const cartItems: CartItem[] = [
-    { id: 1, name: "RAM DDR2(800) BLACKBERRY", price: 3350, image: "/ram.png" },
-    { id: 2, name: "RAM DDR2(800) BLACKBERRY", price: 3350, image: "/ram.png" },
-    { id: 3, name: "RAM DDR2(800) BLACKBERRY", price: 3350, image: "/ram.png" },
-    { id: 4, name: "RAM DDR2(800) BLACKBERRY", price: 3350, image: "/ram.png" },
-    { id: 5, name: "RAM DDR2(800) BLACKBERRY", price: 3350, image: "/ram.png" },
-    { id: 6, name: "RAM DDR2(800) BLACKBERRY", price: 3350, image: "/ram.png" }
-  ];
-
-  // Address Selection State
+  const { cart } = useCart();
   const [selectedTab, setSelectedTab] = useState<"old" | "new">("old");
-
-  // Address Fields State
   const [recipient, setRecipient] = useState("");
   const [address, setAddress] = useState("");
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
@@ -131,9 +113,12 @@ const handleEditClick = (addr: Address) => {
     setIsEditAddressModalOpen(true);
   };
   
-
-  const totalPrice = cartItems.reduce((total, item) => total + item.price, 0);
-  const shippingCost = 25;
+  const totalPrice = cart.reduce((total, item) => total + item.price, 0);
+  const shippingCost = (() => {
+    if (totalPrice < 1000) return 25;
+    if (totalPrice <= 5000) return 25 + totalPrice * 0.02;
+    return 25 + totalPrice * 0.05;
+  })();
   const finalPrice = totalPrice + shippingCost;
 
   return (
@@ -148,14 +133,15 @@ const handleEditClick = (addr: Address) => {
             <h3 className="bg-yellow-400 text-center text-lg font-semibold py-2 rounded-t-lg">รายการสินค้า</h3>
             {/* 🔥 Scrollable List (Height-Controlled) */}
             <div className="p-4 space-y-4 overflow-y-auto" style={{ maxHeight: "400px" }}>
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex items-center bg-gray-100 p-2 rounded-lg shadow-md">
-                  <Image src={item.image} alt={item.name} width={60} height={60} className="rounded-md" />
-                  <div className="ml-4 flex-1">
-                    <p className="text-sm font-semibold">{item.name}</p>
-                    <p className="text-blue-600 font-bold">THB {item.price}</p>
+              {cart.map((item) => (
+                  <div key={item.id} className="flex flex-row">
+                      <Image src={`${item.image}`} alt="PC Case" width={150} height={100} className="mr-4"/>
+                      <div> 
+                          <p>{item.name}</p>
+                          <p>{item.price} บาท</p>
+                          <p className="mb-2">จำนวน: {item.quantity}</p>
+                      </div>
                   </div>
-                </div>
               ))}
             </div>
             <div className="text-sm w-full flex justify-end">

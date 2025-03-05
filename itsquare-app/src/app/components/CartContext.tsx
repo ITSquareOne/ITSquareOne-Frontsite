@@ -33,6 +33,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
     }, [cart]);
 
+    useEffect(() => {
+        const checkAuth = () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                setCart([]);
+                localStorage.removeItem("cart");
+            }
+        };
+    
+        checkAuth(); // เรียกใช้งานครั้งแรก
+        window.addEventListener("storage", checkAuth); // ฟัง event เมื่อ localStorage เปลี่ยนแปลง
+    
+        return () => {
+            window.removeEventListener("storage", checkAuth); // Cleanup เมื่อ component ถูก unmount
+        };
+    }, []);
+    
     const addToCart = (product: CartItem) => {
         setCart((prevCart) => {
             const cartArray = prevCart ?? [];
