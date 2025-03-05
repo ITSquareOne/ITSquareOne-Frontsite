@@ -2,10 +2,14 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useCart } from "../components/CartContext";
 
 export default function Payment() {
-  const [totalPrice, setTotalPrice] = useState<number>(0);
   const [token, setToken] = useState<string | null>(null);
+  const { cart } = useCart();
+  const totalPrice = cart.reduce((total, item) => total + item.price, 0);
+  const [base64Image, setBase64Image] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // Retrieve token from localStorage when page loads
   useEffect(() => {
@@ -19,28 +23,24 @@ export default function Payment() {
     };
   }, []);
 
-  // Fetch payment details when token is available
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBase64Image(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+
+  };
+
+  useEffect(() => {
+    console.log(base64Image);
+  }, [base64Image]);
   useEffect(() => {
     if (!token) return;
-
-    const fetchPaymentDetails = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/api/orders/4", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        });
-
-        if (response.data && response.data.total_price) {
-          setTotalPrice(response.data.total_price);
-        }
-      } catch (error) {
-        console.error("Error fetching payment details:", error);
-      }
-    };
-
-    fetchPaymentDetails();
   }, [token]);
 
   return (
@@ -80,14 +80,19 @@ export default function Payment() {
           {/* ✅ Display Dynamic Payment Amount */}
           <p className="text-lg font-bold text-gray-800">ชำระเงิน {totalPrice} บาท</p>
 
+          <div className="mt-4">
+            <label className="block text-gray-700 font-semibold mb-2">อัปโหลดสลิปการโอน</label>
+            <input type="file" accept="image/*" onChange={handleFileChange} className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" />
+          </div>
+
           {/* Buttons */}
           <div className="gap-3 flex justify-center">
-            <button className="mt-4 bg-gray-400 text-white py-2 px-6 rounded-md hover:bg-gray-500 transition">
-              ยกเลิก
-            </button>
             <button className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition">
               เสร็จสิ้น
             </button>
+            <button className="mt-4 bg-gray-400 text-white py-2 px-6 rounded-md hover:bg-gray-500 transition">
+              ยกเลิก
+            </button>   
           </div>
         </div>
       </div>

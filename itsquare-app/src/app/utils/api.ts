@@ -264,3 +264,35 @@ export const createOrder = async (token: string, addressId: number, partIds: num
         throw error;
     }
 };
+
+export const getAllStatus = async (token: string) => {
+    try {
+      const response = await axios.get(`${api_url}/orders`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch order status", error);
+      return [];
+    }
+  };
+
+export const getStatusForUser = async (token: string) => {
+    try {
+      const response = await axios.get(`${api_url}/orders/me`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch order status", error);
+      return [];
+    }
+  };
+  
+  
