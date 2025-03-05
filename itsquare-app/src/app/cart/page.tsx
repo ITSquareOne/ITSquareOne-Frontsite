@@ -35,9 +35,8 @@ export default function PcBuildSummary() {
                     <Image src={`${item.image}`} alt="PC Case" width={150} height={100} className="mr-4"/>
                     <div> 
                         <p>{item.name}</p>
-                        <p>{item.price} บาท</p>
-                        <p className="mb-2">จำนวน: {item.quantity}</p>
-                        <button className="bg-red-500 hover:bg-red-600 text-white transition p-1 px-2 shadow-md rounded-lg" onClick={() => removeFromCart(item.id)}>ลบสินค้า</button>
+                        <p className="mt-2 text-xl text-blue-500">{item.price} บาท</p>
+                        <button className="bg-red-500 hover:bg-red-600 text-white transition p-1 px-2 shadow-md rounded-lg mt-2" onClick={() => removeFromCart(item.id)}>ลบสินค้า</button>
                     </div>
                 </div>
             ))}

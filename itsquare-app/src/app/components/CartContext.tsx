@@ -6,7 +6,6 @@ interface CartItem {
   name: string;
   price: number;
   image: string;
-  quantity: number;
 }
 
 interface CartContextType {
@@ -28,7 +27,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }, []);
 
     useEffect(() => {
-        if (cart !== null) {  // รอให้ `cart` โหลดค่าก่อนแล้วค่อยเซฟ
+        if (cart !== null) {  
             localStorage.setItem("cart", JSON.stringify(cart));
         }
     }, [cart]);
@@ -42,39 +41,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
             }
         };
     
-        checkAuth(); // เรียกใช้งานครั้งแรก
-        window.addEventListener("storage", checkAuth); // ฟัง event เมื่อ localStorage เปลี่ยนแปลง
-    
+        checkAuth(); 
+        window.addEventListener("storage", checkAuth); 
+
         return () => {
-            window.removeEventListener("storage", checkAuth); // Cleanup เมื่อ component ถูก unmount
+            window.removeEventListener("storage", checkAuth); 
         };
     }, []);
-    
+
     const addToCart = (product: CartItem) => {
         setCart((prevCart) => {
             const cartArray = prevCart ?? [];
-            const existingItem = cartArray.find((item) => item.id === product.id);
-            if (existingItem) {
-                return cartArray.map((item) =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-                );
-            } else {
-                return [...cartArray, { ...product, quantity: 1 }];
+            if (!cartArray.some((item) => item.id === product.id)) {
+                return [...cartArray, product];
             }
+            return cartArray; 
         });
     };
     
     const removeFromCart = (productId: number) => {
-        setCart((prevCart) => {
-            const cartArray = prevCart ?? [];
-            return cartArray.map((item) =>
-                item.id === productId ? { ...item, quantity: item.quantity - 1 } : item
-            ).filter((item) => item.quantity > 0);
-        });
+        setCart((prevCart) => (prevCart ?? []).filter((item) => item.id !== productId));
     };
 
     if (cart === null) {
-        return <div>Loading...</div>; // กัน Hydration Error
+        return <div>Loading...</div>; 
     }
 
     return (

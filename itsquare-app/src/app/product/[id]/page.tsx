@@ -15,27 +15,23 @@ export default function ProductPage() {
     const [token, setToken] = useState<string | null>(null);
     const { cart, addToCart } = useCart(); // ดึง cart และ addToCart จาก Context
     const [IsAdding, setIsAdding] = useState(false);
+    const [alreadyInCart, setAlreadyInCart] = useState(false);
 
   const handleAddToCart = () => {
     if (!product) return;
     try {
       const existingItem = cart.find((item) => item.id === product.id);
-  
       if (existingItem) {
-        addToCart({
-          ...existingItem,
-          quantity: existingItem.quantity + 1,
-        });
+        setAlreadyInCart(true);
       } else {
         addToCart({
           id: product.id,
           name: product.name,
           price: product.price,
-          image: `data:image/jpeg;base64,${product.part_image}`,
-          quantity: 1,
+          image: `data:image/jpeg;base64,${product.part_image}`
         });
+        setIsAdding(true); 
       }
-      setIsAdding(true); 
     } catch (error) {
       console.log(error);
     }
@@ -108,6 +104,17 @@ export default function ProductPage() {
                       ปิด
                   </button>
                 </div>
+              </div>
+            </Dialog>
+            <Dialog open={alreadyInCart} onClose={() => setAlreadyInCart(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl p-6 md:w-1/4 w-3/4 text-center text-black">
+                <h2 className="text-xl font-semibold text-red-600">สินค้านี้อยู่ในตะกร้าแล้ว ❗</h2>
+                <button
+                  onClick={() => setAlreadyInCart(false)}
+                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                >
+                  ปิด
+                </button>
               </div>
             </Dialog>
             <div className="text-left mt-4 text-gray-700">

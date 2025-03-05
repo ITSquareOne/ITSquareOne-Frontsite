@@ -1,24 +1,23 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { createAddress, getAddress, editAddress, deleteAddress, Address } from "../utils/api";
+import { createOrder, createAddress, getAddress, editAddress, deleteAddress, Address } from "../utils/api";
 import { Dialog } from "@headlessui/react";
 import { useCart } from "../components/CartContext";
 
 export default function CheckoutPage() {
   const { cart } = useCart();
   const [selectedTab, setSelectedTab] = useState<"old" | "new">("old");
-  const [recipient, setRecipient] = useState("");
   const [address, setAddress] = useState("");
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState("");
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isDeleteItemOpen, setIsDeleteItemOpen] = useState(false);
   const [selectedAddressID, setSelectedAddressID] = useState<number | null>(null);
   const [isEditAddressModalOpen, setIsEditAddressModalOpen] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState<number | null>(null);
+  const [isOrdering, setIsOrdering] = useState(false);
 
   const [updateAddress, setUpdateAddress] = useState("");
 
@@ -68,6 +67,36 @@ export default function CheckoutPage() {
       console.error("Failed to create address", error);
     }
   };
+  const handleCreateOrder = async () => {
+    if (!token || !selectedAddress) {
+      alert("กรุณาเลือกที่อยู่ก่อนทำการสั่งซื้อ");
+      return;
+    }
+
+    const partIds = cart.map(item => item.id);
+
+    if (!Array.isArray(partIds) || partIds.length === 0) {
+        console.error("No parts selected");
+        alert("กรุณาเลือกสินค้าอย่างน้อย 1 รายการก่อนสั่งซื้อ");
+        return;
+    }
+
+    const requestBody = {
+        address_id: selectedAddress.address_id,
+        part_ids: partIds
+    };
+
+    console.log("Sending order request:", requestBody);
+    try {
+        if (selectedAddress.address_id && partIds.length > 0) {
+          const order = await createOrder(token, selectedAddress.address_id, partIds);
+          console.log("Order created:", order);
+          setIsOrdering(true);
+        } 
+    } catch (error) {
+        console.error("Failed to create order", error);
+    }
+};
   const handleDelete = async () => {
     if (!selectedAddressID) return;
     if (!token) {
@@ -115,7 +144,8 @@ const handleEditClick = (addr: Address) => {
   
   const totalPrice = cart.reduce((total, item) => total + item.price, 0);
   const shippingCost = (() => {
-    if (totalPrice < 1000) return 25;
+    if (totalPrice <= 0) return 0;
+    if (totalPrice < 1000 && totalPrice > 0) return 25;
     if (totalPrice <= 5000) return 25 + totalPrice * 0.02;
     return 25 + totalPrice * 0.05;
   })();
@@ -138,8 +168,7 @@ const handleEditClick = (addr: Address) => {
                       <Image src={`${item.image}`} alt="PC Case" width={150} height={100} className="mr-4"/>
                       <div> 
                           <p>{item.name}</p>
-                          <p>{item.price} บาท</p>
-                          <p className="mb-2">จำนวน: {item.quantity}</p>
+                          <p className="text-xl text-blue-500">{item.price} บาท</p>
                       </div>
                   </div>
               ))}
@@ -159,7 +188,7 @@ const handleEditClick = (addr: Address) => {
                 <span>ยอดชำระทั้งหมด</span>
                 <span>{finalPrice} บาท</span>
               </div>
-              <button className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-normal">
+              <button onClick={handleCreateOrder} className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-normal transition">
                 สั่งสินค้า
               </button>
             </div>
@@ -167,7 +196,7 @@ const handleEditClick = (addr: Address) => {
           </div>
         </div>
         {/* Right Section: Shipping Details with Tabs */}
-        <div className="w-full lg:flex-1 bg-white text-black rounded-lg shadow-lg flex flex-col min-h-[33vh]">
+        <div className="w-full lg:flex-1 bg-white text-black rounded-lg shadow-lg flex flex-col min-h-[33vh] md:mb-0 mb-10">
           <h3 className="bg-yellow-400 text-center text-lg font-semibold py-2 rounded-t-lg">ที่อยู่จัดส่ง</h3>
           {/* Address Tabs */}
           <div className="flex border-b bg-gray-200">
@@ -255,6 +284,21 @@ const handleEditClick = (addr: Address) => {
                         </button>
                     </div>
                     </div>
+            </Dialog>
+            <Dialog open={isOrdering} onClose={() => setIsOrdering(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg shadow-xl p-6 md:w-1/4 w-3/4 text-center text-black">
+                  <div>
+                    <h2 className="text-xl font-semibold text-green-600">ทำการสั่งซื้อสินค้าเรียบร้อย ✅</h2>
+                    <p className="text-xl font-semibold text-gray-600">กรุณาทำการชำระเงินในลำดับถัดไป</p>
+                    <a
+                      href="/qrcode"
+                      onClick={() => setIsOrdering(false)}
+                      className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                    >
+                      ตกลง
+                    </a>
+                  </div>
+                </div>
             </Dialog>
             <Dialog open={isEditAddressModalOpen} onClose={() => setIsEditAddressModalOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
                 <div className="bg-white rounded-lg shadow-xl p-6 w-2/4 text-center text-black">
