@@ -173,17 +173,18 @@ export default function Category() {
           <div key={item.part_id} className="bg-white rounded-xl shadow-lg w-full md:w-[250px] h-auto flex flex-col items-center p-4 mb-4">
 
             <div className="flex justify-center items-center border-2 border-gray-200 w-full md:h-[200px] rounded-xl overflow-hidden">
-              {item.part_image ? (
+              {/* {item.part_image ? ( */}
                 <Image
                   src={`data:image/jpeg;base64,${item.part_image}`}
                   alt={`ภาพของ ${item.name}`} // ✅ Added alt text describing the product
                   width={250}
                   height={300}
-                  className="w-full h-full object-cover"
+                  className="w-full text-center object-cover"
                 />
-              ) : (
-                <p className="text-gray-500 text-center">ไม่มีรูปภาพ</p>
-              )}
+              {/* ) : (
+                <p className="text-gray-500 text-center ">ไม่มีรูปภาพ</p>
+              ) */}
+              {/* } */}
             </div>
 
 
@@ -194,7 +195,10 @@ export default function Category() {
             <div className="text-black text-sm font-medium mt-1 mb-2 w-full">
               สภาพสินค้า: <span className="text-gray-600">{getConditionLabel(item.condition)}</span>
             </div>
-            <button onClick={() => router.push(`product/${item.part_id}`)} className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-md mt-auto text-black w-full py-2 rounded-full text-base flex items-center justify-center gap-2 transition delay-180 duration-300 ease-in-out">
+            {/* Price & Cart Button */}
+            <button onClick={() => router.push(`product/${item.part_id}`)}
+              className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-md mt-auto text-black w-full py-2 rounded-full text-base flex items-center justify-center gap-2 transition delay-180 duration-300 ease-in-out">
+              <Image src="/Shopping cart.png" alt="icon" width={20} height={20} />
               {item.price} บาท
             </button>
           </div>

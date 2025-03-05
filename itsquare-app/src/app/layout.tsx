@@ -46,10 +46,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </a>                </>) : (
                   <>
                     <a href="/sign-in" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                  Cart
+                  ตะกร้า
                   </a>
                   <a href="/profile" className="text-lg text-white shadow-lg bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                    Profile
+                    โปรไฟล์
                   </a>
                   </>
                 )}
@@ -64,33 +64,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {isOpen ? "✖" : "☰"}
             </button>
           </div>
-
-          {/* Mobile Dropdown */}
-          {isOpen && (
-            <div className="md:hidden mt-3">
-              <ul className="flex flex-col items-center space-y-3">
-                <li>
-                  <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">
-                    เข้าสู่ระบบ
-                  </a>
-                </li>
-              </ul>
-            </div>
-          )}
           {/* ✅ Mobile Dropdown Menu */}
           <div className={`${isOpen ? "block" : "hidden"} md:hidden mt-3`}>
             <ul className="flex flex-col items-center space-y-3">
-              {/* <li>
-                <a href="#" className="text-lg text-gray-900 hover:text-blue-700">Cart</a>
-              </li> */}
               {!isLoggedIn ? (
                 <>
-                  <li>
-                    <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">เข้าสู่ระบบ</a>
-                  </li>
-                  <li>
-                    <a href="./sign-up" className="text-lg text-gray-900 hover:text-blue-700">ลงทะเบียน</a>
-                  </li>
+                  <a href="./sign-in" className="text-lg text-gray-900 hover:text-blue-700">
+                    เข้าสู่ระบบ
+                  </a>
                 </>) : (
                   <>
                     <li>

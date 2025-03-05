@@ -115,7 +115,7 @@ export default function Sign_in() {
         </div>
 
         {/* Forgot Password Link */}
-        <a onClick={() => setIsOpen(true)} className="cursor-pointer underline mt-4">ลืมรหัสผ่าน?</a>
+        <a onClick={() => setIsOpen(true)} className="cursor-pointer underline mt-1">ลืมรหัสผ่าน?</a>
 
         {/* Login Button (Now stays in place) */}
         <button className="mt-2 bg-gray-800 hover:bg-black text-white w-40 text-center mx-auto rounded-md py-2 transition" onClick={handleLogin}>
