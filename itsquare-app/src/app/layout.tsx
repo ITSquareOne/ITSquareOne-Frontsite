@@ -104,7 +104,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="pt-[80px]">
           {children}
         </div>
+        <footer className="fixed bottom-0 left-0 w-full bg-gray-100 text-black p-2 py-1/3 text-xs md:py-3 border-t border-gray-300">
+        <div className="container mx-auto flex justify-between items-center px-4 md:text-l ">
+          {/* Left Side: Copyright */}
+          <div>© 2024 ITSquareOne. All Rights Reserved.</div>
 
+          {/* Right Side: Links */}
+          <div className="space-x-3 flex">
+            <a href="https://maps.app.goo.gl/YjUgSDAomFCyLzsf6" className="hover:text-blue-500">Location</a>
+            <div>|</div>
+            <a href="/" className="hover:text-blue-500">Home</a>
+            <div>|</div>
+            <img src="\Github_logo.svg" alt="GitHub logo" className="h-3 md:h-4 inline" />
+            <a href="https://github.com/ITSquareOne" className="hover:text-blue-500 space-x-0">GitHub</a>
+          </div>
+        </div>
+      </footer>
       </body>
     </html>
   );

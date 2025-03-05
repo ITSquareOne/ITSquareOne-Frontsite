@@ -55,7 +55,6 @@ export default function ProfilePage() {
   }
 
   const loadAddress = async () => {
-    console.log("getAddress function:", getAddress);
     if (!token) return;
     try {
         const addressList = await getAddress(token);
