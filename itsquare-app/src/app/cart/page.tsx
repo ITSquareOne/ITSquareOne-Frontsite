@@ -18,9 +18,9 @@ export default function PcBuildSummary() {
             <Image src="/monitor.svg" alt="Monitor" width={100} height={100} />
             <Image src="/cpu_full.svg" alt="PC Case" width={100} height={100} />
           </div>
-          <button className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold">
+          <a href="/main-cate" className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold">
             Build a PC
-          </button>
+          </a>
         </div>
 
         {/* Right Section: Cart Summary */}

@@ -363,3 +363,16 @@ export const getProfile = async (token: string) => {
     }
 }
 
+export const confirmPayment = async (token: string, orderId: number) => {
+    try {
+        await axios.get(`${api_url}/orders/confirmPayment/${orderId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+        });
+    } catch (err) {
+      console.log(err);
+    }
+}
+

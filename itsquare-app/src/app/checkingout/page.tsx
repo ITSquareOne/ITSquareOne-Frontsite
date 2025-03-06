@@ -113,23 +113,23 @@ export default function CheckoutPage() {
     }
     
 };
-    const handleEditAddress = async () => {
-        if (!token || !editingAddressId || !updateAddress.trim()) return;
-    
-        try {
-        await editAddress(token, editingAddressId, updateAddress);
-    
-        // อัปเดตที่อยู่ใหม่ใน State
-        setSavedAddresses((prev) =>
-            prev.map((addr) =>
-            addr.address_id === editingAddressId ? { ...addr, address: updateAddress } : addr
-            )
-        );
-    
-        setIsEditAddressModalOpen(false); // ปิด Modal
-        } catch (error) {
-        console.error("Failed to update address", error);
-        }
+  const handleEditAddress = async () => {
+      if (!token || !editingAddressId || !updateAddress.trim()) return;
+  
+      try {
+      await editAddress(token, editingAddressId, updateAddress);
+  
+      // อัปเดตที่อยู่ใหม่ใน State
+      setSavedAddresses((prev) =>
+          prev.map((addr) =>
+          addr.address_id === editingAddressId ? { ...addr, address: updateAddress } : addr
+          )
+      );
+  
+      setIsEditAddressModalOpen(false); // ปิด Modal
+      } catch (error) {
+      console.error("Failed to update address", error);
+      }
   };
 const handleDeleteItemClick = (add_id: number) => {
     setSelectedAddressID(add_id);
@@ -291,8 +291,11 @@ const handleEditClick = (addr: Address) => {
                     <h2 className="text-xl font-semibold text-green-600">ทำการสั่งซื้อสินค้าเรียบร้อย ✅</h2>
                     <p className="text-xl mb-4 font-semibold text-gray-600">กรุณาทำการชำระเงินในลำดับถัดไป</p>
                     <a
-                      href="/qrcode"
-                      onClick={() => setIsOrdering(false)}
+                      href="/status"
+                      onClick={() => {
+                        localStorage.removeItem("cart"); 
+                        setIsOrdering(false);
+                      }}
                       className=" bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
                     >
                       ตกลง

@@ -2,24 +2,27 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useCart } from "../components/CartContext";
+import { useSearchParams } from 'next/navigation';
+import { confirmPayment } from "../utils/api";
 
 export default function Payment() {
   const [token, setToken] = useState<string | null>(null);
-  const { cart } = useCart();
-  const totalPrice = cart.reduce((total, item) => total + item.price, 0);
+  const searchParams = useSearchParams(); 
+  const totalPrice = searchParams.get('totalPrice'); 
+  const orderId = searchParams.get('orderId'); 
   const [base64Image, setBase64Image] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  // Retrieve token from localStorage when page loads
+  console.log(totalPrice);
+  console.log(orderId);
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    document.body.style.overflow = "hidden"; // Disable scrolling
+    document.body.style.overflow = "hidden"; 
     if (storedToken) {
       setToken(storedToken);
     }
     return () => {
-      document.body.style.overflow = "auto"; // Enable scrolling when leaving
+      document.body.style.overflow = "auto";
     };
   }, []);
 
@@ -34,6 +37,18 @@ export default function Payment() {
       reader.readAsDataURL(file);
     }
 
+  };
+
+  const handleConfirmPayment = async () => {
+    if (!token || !orderId) return; // ตรวจสอบว่ามี token และ orderId หรือไม่
+    try {
+      await confirmPayment(token, parseInt(orderId));
+      alert("การชำระเงินสำเร็จ!");
+      window.location.href = "/status";
+    } catch (error) {
+      console.log(error);
+      alert("เกิดข้อผิดพลาดในการยืนยันการชำระเงิน");
+    }
   };
 
   useEffect(() => {
@@ -78,7 +93,9 @@ export default function Payment() {
           </div>
 
           {/* ✅ Display Dynamic Payment Amount */}
-          <p className="text-lg font-bold text-gray-800">ชำระเงิน {totalPrice} บาท</p>
+          <p className="text-lg font-bold text-gray-800">
+            ชำระเงิน {totalPrice} บาท {/* แสดงค่า totalPrice */}
+          </p>
 
           <div className="mt-4">
             <label className="block text-gray-700 font-semibold mb-2">อัปโหลดสลิปการโอน</label>
@@ -87,8 +104,8 @@ export default function Payment() {
 
           {/* Buttons */}
           <div className="gap-3 flex justify-center">
-            <button className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition">
-              เสร็จสิ้น
+            <button onClick={handleConfirmPayment} className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition">
+              ยืนยัน
             </button>
             <button className="mt-4 bg-gray-400 text-white py-2 px-6 rounded-md hover:bg-gray-500 transition">
               ยกเลิก

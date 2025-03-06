@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CartProvider } from "./components/CartContext";
 import { Kanit } from "next/font/google";
 import "./globals.css";
+import { getProfile, User } from "./utils/api";
 
 const kanit = Kanit({
   weight: "500",
@@ -13,15 +14,30 @@ const kanit = Kanit({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [techProfile, setTechProfile] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const role = techProfile?.role;
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
   })
+
+  useEffect(() => {
+      const fetchProfile = async () => {
+          if (!token) return;
+          const profileData = await getProfile(token);
+          if (profileData) {
+              setTechProfile(profileData); 
+          }
+      };
+    fetchProfile();
+  }, [token]);
 
 
   return (
@@ -59,6 +75,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <a href="/profile" className="text-lg text-white shadow-lg bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
                     Profile
                   </a>
+                  {role === "technician" && (
+                     <a href="/status-tech" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                        จัดการออร์เดอร์
+                     </a>
+                  )}
+                  {role === "student" && (
+                     <a href="/status" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                        ติดตามสถานะ
+                     </a>
+                  )}
+                  {role === "manager" && (
+                     <a href="/manager-mode" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                        แผงควบคุม
+                     </a>
+                  )}
                   </>
                 )}
               
@@ -95,6 +126,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <li>
                       <a href="/profile" className="text-lg text-gray-900 hover:text-blue-700">Profile</a>
                     </li>
+                    {role === "technician" && (
+                      <li>
+                      <a href="/status-tech" className="text-lg text-gray-900 hover:text-blue-700">
+                          จัดการออร์เดอร์
+                      </a>
+                      </li>
+                    )}
+                    {role === "student" && (
+                      <li>
+                      <a href="/status" className="text-lg text-gray-900 hover:text-blue-700">
+                          ติดตามสถานะ
+                      </a>
+                      </li>
+                    )}
+                    {role === "manager" && (
+                      <li>
+                      <a href="/manager-mode"className="text-lg text-gray-900 hover:text-blue-700">
+                          แผงควบคุม
+                      </a>
+                      </li>
+                    )}
                   </>
                 )}
               
