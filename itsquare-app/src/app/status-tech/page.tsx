@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { deleteUserOrder, getAllStatus, updateOrderStatus } from "../utils/api"; // 🔹 นำเข้า API
+import { getProfile, deleteUserOrder, getAllStatus, updateOrderStatus, User } from "../utils/api"; // 🔹 นำเข้า API
 import { Dialog } from "@headlessui/react";
 
 export default function OrderHistory() {
@@ -10,8 +10,8 @@ export default function OrderHistory() {
   const [token, setToken] = useState<string | null>(null);
   const [isDeletingOrder, setIsDeletingOrder] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<number | null>(null);
+  const [techProfile, setTechProfile] = useState<User | null>(null);
 
-  
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
@@ -20,10 +20,23 @@ export default function OrderHistory() {
     }
   }, []);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+        if (!token) return;
+        const profileData = await getProfile(token);
+        if (profileData) {
+            setTechProfile(profileData); // ✅ อัปเดต state
+        }
+    };
+
+    fetchProfile();
+  }, [token]);
+
   const confirmDeleteOrder = (orderId : number) => {
     setOrderToDelete(orderId);
     setIsDeletingOrder(true);
   };
+
 
   const handleDeleteOrder = async (orderId: number) => {
     if (!token) {
@@ -38,8 +51,29 @@ export default function OrderHistory() {
         await fetchOrders(token);
     } catch (error) {
         alert("เกิดข้อผิดพลาดในการลบคำสั่งซื้อ");
-    }
-};
+        }
+    };
+    const handleStatusChange = async (orderId: number, newStatus: string, totalPrice: number) => {
+        if (!token) {
+            console.error("No token found!");
+            return;
+        }
+        try {
+            if (techProfile && techProfile.user_id) {
+                console.log(orderId, newStatus, techProfile.user_id, totalPrice);
+                await updateOrderStatus(token, orderId, newStatus, techProfile.user_id, totalPrice);
+                setOrders((prevOrders) => 
+                    prevOrders.map(order => 
+                        order.id === orderId ? { ...order, status: newStatus } : order
+                    )
+                );
+                alert("อัปเดตสถานะสำเร็จ!");
+                fetchOrders(token);
+            }     
+        } catch (error) {
+            alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
+        }
+    };
 
   // 🔹 ดึงข้อมูลออเดอร์จาก API
   const fetchOrders = async (token: string) => {
@@ -85,7 +119,7 @@ export default function OrderHistory() {
                     <div className="grid grid-cols-4 gap-4 items-center">
                         {/* Left - Order Image */}
                         <div className="flex justify-center">
-                            <Image src={order.image || "/cpu_full.png"} alt="Product" width={80} height={80} />
+                            <Image src={order.image || "/cpu_full.png"} alt="Product" width={80} height={80} className="mt-4 object-contain w-24 h-24" />
                         </div>
                 
                         {/* Middle - Order Date */}
@@ -110,14 +144,15 @@ export default function OrderHistory() {
                         <select
                             className="border rounded-md px-2 py-1 text-sm"
                             value={order.status}
-                            onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                            onChange={(e) => handleStatusChange(order.order_id, e.target.value, order.total_price)}
                             disabled={order.status === "canceled_by_user"} 
                         >
                             <option value="inspection">กำลังตรวจสอบ</option>
+                            <option value="to_pay">รอการชำระเงิน</option>
                             <option value="building">กำลังประกอบ</option>
                             <option value="shipping">กำลังจัดส่ง</option>
-                            <option value="shipped">จัดส่งสำเร็จ</option>
-                            <option value="canceled">ยกเลิก</option>
+                            <option value="delivered">จัดส่งสำเร็จ</option>
+                            <option value="canceled_by_tech">ยกเลิกคำสั่งซื้อ</option>
                         </select>
 
                         {/* ถังขยะลบคำสั่งซื้อ */}

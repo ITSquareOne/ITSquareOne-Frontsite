@@ -325,20 +325,41 @@ export const getOrderDetails = async (token: string, itemId: number) => {
   }
 };
 
-
-
-export const updateOrderStatus = async (token: string, itemId: number, status: string) => {
-  try {
-      await axios.put(`${api_url}/orders/${itemId}`, {status}, {
-      headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          },
-      });
-  } catch (error) {
-      console.error("Error updating status:", error);
-      throw error;
-  }
+export const updateOrderStatus = async (
+    token: string, 
+    itemId: number, 
+    status: string, 
+    technicianId: number, 
+    totalPrice: number
+) => {
+    try {
+        await axios.put(`${api_url}/orders/${itemId}`, {
+            status,
+            technician_id: technicianId,  
+            total_price: totalPrice       
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+        });
+    } catch (error) {
+        console.error("Error updating status:", error);
+        throw error;
+    }
 };
 
+export const getProfile = async (token: string) => {
+    try {
+        const response = await axios.get(`${api_url}/users/me`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+        });
+        return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+}
 
