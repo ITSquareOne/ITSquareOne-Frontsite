@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { getProfile, deleteUserOrder, getAllStatus, updateOrderStatus, User } from "../utils/api"; // 🔹 นำเข้า API
+import { getProfile, deleteUserOrder, getAllStatus, updateOrderStatus, User, canceledByTech } from "../utils/api"; // 🔹 นำเข้า API
 import { Dialog } from "@headlessui/react";
 
 export default function OrderHistory() {
@@ -58,22 +58,30 @@ export default function OrderHistory() {
             console.error("No token found!");
             return;
         }
+    
         try {
-            if (techProfile && techProfile.user_id) {
-                console.log(orderId, newStatus, techProfile.user_id, totalPrice);
+            if (newStatus === "canceled_by_tech") {
+                await canceledByTech(token, orderId);
+                alert("คำสั่งซื้อถูกยกเลิกโดยช่างแล้ว!");
+            } else if (techProfile && techProfile.user_id) {
                 await updateOrderStatus(token, orderId, newStatus, techProfile.user_id, totalPrice);
-                setOrders((prevOrders) => 
-                    prevOrders.map(order => 
-                        order.id === orderId ? { ...order, status: newStatus } : order
-                    )
-                );
                 alert("อัปเดตสถานะสำเร็จ!");
-                fetchOrders(token);
-            }     
+            }
+    
+            // อัปเดต state
+            setOrders((prevOrders) => 
+                prevOrders.map(order => 
+                    order.id === orderId ? { ...order, status: newStatus } : order
+                )
+            );
+    
+            fetchOrders(token); // โหลดรายการใหม่
         } catch (error) {
+            console.error("Failed to update status:", error);
             alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
         }
     };
+    
 
   // 🔹 ดึงข้อมูลออเดอร์จาก API
   const fetchOrders = async (token: string) => {
@@ -168,7 +176,8 @@ export default function OrderHistory() {
                 
                         {/* Right - Status & Button */}
                         <div className="text-lg font-bold text-black text-center">
-                            <button className="text-black font-semibold underline mt-2">ดูรายละเอียด</button>
+                            <a href={`/qrcode?totalPrice=${order.total_price}&orderId=${order.order_id}`}
+                            className="text-black font-semibold underline mt-2">ดูรายละเอียด</a>
                         </div>
                     </div>
                     <div className="flex justify-end items-center gap-3 mr-12">

@@ -12,9 +12,7 @@ export default function Payment() {
   const orderId = searchParams.get('orderId'); 
   const [base64Image, setBase64Image] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  console.log(totalPrice);
-  console.log(orderId);
+  
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     document.body.style.overflow = "hidden"; 

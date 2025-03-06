@@ -12,6 +12,23 @@ export interface Product {
     type: string | number;
   }
   
+export interface OrderItem {
+    part_item_id: number;
+    order_id: number;
+    part_id: number;
+    quantity: number;
+    price: number;
+    condition: number;
+    part_code: string;
+    ordered_by: number;
+    part_image: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+  }
+export type Order = OrderItem[];
+
+
 export interface Item {
     id?: number;
     part_code: string;
@@ -308,17 +325,16 @@ export const deleteUserOrder = async (token: string, itemId: number) => {
         throw error;
     }
 };
-  
-
 
 export const getOrderDetails = async (token: string, itemId: number) => {
   try {
-      await axios.get(`${api_url}/orders/details/${itemId}`, {
+      const response = await axios.get(`${api_url}/orders/details/${itemId}`, {
       headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
           },
       });
+      return response.data;
   } catch (error) {
       console.error("Error deleting address:", error);
       throw error;
@@ -363,9 +379,27 @@ export const getProfile = async (token: string) => {
     }
 }
 
+
+
 export const confirmPayment = async (token: string, orderId: number) => {
     try {
-        await axios.get(`${api_url}/orders/confirmPayment/${orderId}`, {
+        const response = await axios.put(`${api_url}/orders/confirmPayment/${orderId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+        });
+        console.log("Response from API:", response.data);
+        return response.data; // ส่งข้อมูลกลับมาที่ฟังก์ชันที่เรียกใช้
+    } catch (err) {
+      console.log(err);
+    }
+}
+
+
+export const canceledByTech = async (token: string, orderId: number) => {
+    try {
+        await axios.put(`${api_url}/orders/cancelbytech/${orderId}`, {}, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 Accept: "application/json",
@@ -375,4 +409,19 @@ export const confirmPayment = async (token: string, orderId: number) => {
       console.log(err);
     }
 }
+
+
+export const canceledByUser = async (token: string, orderId: number) => {
+    try {
+        await axios.put(`${api_url}/orders/cancelbyuser/${orderId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+        });
+    } catch (err) {
+      console.log(err);
+    }
+}
+
 

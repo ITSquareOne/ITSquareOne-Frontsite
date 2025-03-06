@@ -62,7 +62,7 @@ export default function OrderHistory() {
             .map((order, index) => (
               <div key={index} className="bg-white text-black w-3/4 rounded-xl p-6 shadow-md">
                 {/* Order Info */}
-                <div className="grid grid-cols-4 gap-4 border-b pb-2 mb-2 text-center">
+                <div className="grid grid-cols-5 gap-4 border-b pb-2 mb-2 text-center">
                     <span className="text-gray-500">เลขสั่งซื้อ #{order.order_id}</span>
                     <span className="text-gray-500">วันสั่งซื้อ</span>
                     <span className="text-gray-500">ราคาสุทธิ</span>
@@ -87,9 +87,11 @@ export default function OrderHistory() {
                             ? "ช่างยกเลิกคำสั่งซื้อ"
                             : "ไม่ทราบสถานะ"}
                     </span>
+                    <span></span>
+
                 </div>
                 
-                <div className="grid grid-cols-4 gap-4 items-center">
+                <div className="grid grid-cols-5 gap-4 items-center">
                     {/* Left - Order Image */}
                     <div className="flex justify-center">
                         <Image src={order.image || "/cpu_full.png"} alt="Product" width={80} height={80} className="mt-4 object-contain w-24 h-24" />
@@ -99,13 +101,16 @@ export default function OrderHistory() {
                     <div className="text-gray-600 text-center">{order.order_at.split("T")[0]}</div>
 
                     {/* Middle - Total Price */}
-                    <div className="text-lg font-bold text-black text-center">
+                    <div className="text-md font-bold text-black text-center">
                         {order.total_price} บาท
                     </div>
 
                     {/* Right - Status & Button */}
-                    <div className="text-lg font-bold text-black text-center flex flex-col space-y-4">
-                        <button className="text-black font-semibold underline">ดูรายละเอียด</button>
+                    <div className="text-lg font-light text-black text-center flex flex-col space-y-4">
+                        <a href={`/orders/${order.order_id}`} className="text-black underline">
+                            ดูรายละเอียด
+                        </a>         
+                                
                         {order.status === "to_pay" && (
                             <a
                                 href={`/qrcode?totalPrice=${order.total_price}&orderId=${order.order_id}`}
@@ -114,6 +119,12 @@ export default function OrderHistory() {
                                 ชำระเงิน
                             </a>
                         )}
+                    </div>
+                    
+                    <div className="text-md font-light text-black text-center flex flex-col space-y-4">
+                        <button className="bg-red-500 w-1/2 mx-auto text-center text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                            ยกเลิกคำสั่งซื้อ
+                        </button>       
                     </div>
                 </div>
               </div>
