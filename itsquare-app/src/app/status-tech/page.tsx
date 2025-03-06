@@ -86,15 +86,22 @@ export default function OrderHistory() {
 
       {/* 🏷 Filter Tabs */}
       <div className="flex justify-center pt-6 space-x-4">
-        {["all", "in-progress", "completed", "canceled_by_user"].map((type) => (
-          <button
-            key={type}
-            onClick={() => setFilter(type)}
-            className={`px-6 py-2 rounded-full font-semibold ${filter === type ? "bg-yellow-400 text-black" : "bg-white text-black"}`}
-          >
-            {type === "all" ? "All" : type === "in-progress" ? "In Progress" : type === "completed" ? "Completed" : "Canceled"}
-          </button>
-        ))}
+            {["all", "in-progress", "completed", "canceled"].map((type) => (
+                <button
+                    key={type}
+                    onClick={() => setFilter(type)}
+                    className={`px-6 py-2 rounded-full font-semibold ${
+                        filter === type ? "bg-yellow-400 text-black" : "bg-white text-black"}`}
+                >
+                    {type === "all"
+                        ? "All"
+                        : type === "in-progress"
+                        ? "In Progress"
+                        : type === "completed"
+                        ? "Completed"
+                        : "Canceled"}
+                </button>
+            ))}
       </div>
 
       {/* Order List */}
@@ -103,7 +110,14 @@ export default function OrderHistory() {
             <p className="text-gray-400">ไม่มีคำสั่งซื้อ</p>
             ) : (
             orders
-                .filter(order => filter === "all" || order.status === filter) // 🔹 กรองออเดอร์ตามสถานะ
+                .filter((order) => {
+                    if (filter === "all") return true;
+                    if (filter === "in-progress")
+                        return ["inspection", "to_pay", "building", "shipping"].includes(order.status);
+                    if (filter === "completed") return order.status === "delivered";
+                    if (filter === "canceled") return order.status === "canceled_by_user" || order.status === "canceled_by_tech";
+                    return false;
+                })
                 .map((order, index) => (
                 <div key={index} className="bg-white text-black w-3/4 rounded-xl p-6 shadow-md">
                     {/* Order Info */}
@@ -111,8 +125,26 @@ export default function OrderHistory() {
                     <span className="text-gray-500">เลขสั่งซื้อ #{order.order_id}</span>
                     <span className="text-gray-500">วันสั่งซื้อ</span>
                     <span className="text-gray-500">ราคาสุทธิ</span>
-                    <span className={`text-md ${order.status === "canceled_by_user" ? "text-red-600" : "text-green-500"}`}>                        
-                        {order.status}
+                    <span
+                        className={`text-md ${
+                            order.status.includes("canceled") ? "text-red-600" : "text-green-500"
+                        }`}
+                    >
+                        {order.status === "inspection"
+                            ? "กำลังตรวจสอบสเปค"
+                            : order.status === "to_pay"
+                            ? "รอการชำระเงิน"
+                            : order.status === "building"
+                            ? "กำลังประกอบ"
+                            : order.status === "shipping"
+                            ? "กำลังจัดส่ง"
+                            : order.status === "delivered"
+                            ? "จัดส่งสำเร็จ"
+                            : order.status === "canceled_by_user"
+                            ? "ผู้ใช้ยกเลิกคำสั่งซื้อ"
+                            : order.status === "canceled_by_tech"
+                            ? "ช่างยกเลิกคำสั่งซื้อ"
+                            : "ไม่ทราบสถานะ"}
                     </span>
                     </div>
             
