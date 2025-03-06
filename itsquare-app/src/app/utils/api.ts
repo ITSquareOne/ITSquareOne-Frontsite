@@ -309,4 +309,36 @@ export const deleteUserOrder = async (token: string, itemId: number) => {
     }
 };
   
-  
+
+
+export const getOrderDetails = async (token: string, itemId: number) => {
+  try {
+      await axios.get(`${api_url}/orders/details/${itemId}`, {
+      headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          },
+      });
+  } catch (error) {
+      console.error("Error deleting address:", error);
+      throw error;
+  }
+};
+
+
+
+export const updateOrderStatus = async (token: string, itemId: number, status: string) => {
+  try {
+      await axios.put(`${api_url}/orders/${itemId}`, {status}, {
+      headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          },
+      });
+  } catch (error) {
+      console.error("Error updating status:", error);
+      throw error;
+  }
+};
+
+

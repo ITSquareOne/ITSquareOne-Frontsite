@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { deleteUserOrder, getAllStatus } from "../utils/api"; // 🔹 นำเข้า API
+import { deleteUserOrder, getAllStatus, updateOrderStatus } from "../utils/api"; // 🔹 นำเข้า API
 import { Dialog } from "@headlessui/react";
 
 export default function OrderHistory() {
@@ -111,12 +111,13 @@ export default function OrderHistory() {
                             className="border rounded-md px-2 py-1 text-sm"
                             value={order.status}
                             onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                            disabled={order.status === "canceled_by_user"} // ปิดการใช้งาน dropdown ถ้ายกเลิกแล้ว
+                            disabled={order.status === "canceled_by_user"} 
                         >
-                            <option value="pending">กำลังตรวจสอบ</option>
-                            <option value="shipped">จัดส่งแล้ว</option>
-                            <option value="delivered">จัดส่งสำเร็จ</option>
-                            <option value="canceled_by_user">ยกเลิก</option>
+                            <option value="inspection">กำลังตรวจสอบ</option>
+                            <option value="building">กำลังประกอบ</option>
+                            <option value="shipping">กำลังจัดส่ง</option>
+                            <option value="shipped">จัดส่งสำเร็จ</option>
+                            <option value="canceled">ยกเลิก</option>
                         </select>
 
                         {/* ถังขยะลบคำสั่งซื้อ */}
