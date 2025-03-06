@@ -32,6 +32,20 @@ export default function OrderHistory() {
     fetchProfile();
   }, [token]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (token) {
+        await fetchOrders(token);
+      }
+    };
+    fetchData(); 
+  
+    const interval = setInterval(fetchData, 60000); 
+  
+    return () => clearInterval(interval); 
+  }, [token]);
+  
+
   const confirmDeleteOrder = (orderId : number) => {
     setOrderToDelete(orderId);
     setIsDeletingOrder(true);
@@ -176,8 +190,9 @@ export default function OrderHistory() {
                 
                         {/* Right - Status & Button */}
                         <div className="text-lg font-bold text-black text-center">
-                            <a href={`/qrcode?totalPrice=${order.total_price}&orderId=${order.order_id}`}
-                            className="text-black font-semibold underline mt-2">ดูรายละเอียด</a>
+                            <a href={`/orders/${order.order_id}`} className="text-black underline">
+                            ดูรายละเอียด
+                            </a>         
                         </div>
                     </div>
                     <div className="flex justify-end items-center gap-3 mr-12">

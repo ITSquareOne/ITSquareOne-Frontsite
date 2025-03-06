@@ -136,7 +136,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     {role === "student" && (
                       <li>
                       <a href="/status" className="text-lg text-gray-900 hover:text-blue-700">
-                          ติดตามสถานะ
+                          รายการคำสั่งซื้อ
                       </a>
                       </li>
                     )}

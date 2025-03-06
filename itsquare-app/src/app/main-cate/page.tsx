@@ -41,6 +41,7 @@ useEffect(() => {
 
   const filteredProducts = product.filter((item) => {
     return (
+      !item.order_id && 
       (selectedCategory === "All" || item.type === categoryMap[selectedCategory]) &&
       (searchQuery === "" || item.name.toLowerCase().includes(searchQuery.toLowerCase()))
     );

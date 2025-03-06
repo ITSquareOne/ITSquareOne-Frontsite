@@ -4,6 +4,7 @@ export interface Product {
     id: number;
     name: string;
     price: number;
+    order_id?: number;
     description?: string;
     condition: number;
     part_code: string;

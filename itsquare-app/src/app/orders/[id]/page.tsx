@@ -37,8 +37,17 @@ export default function OrderDetail () {
   }, [orderId, token]); 
 
   if (loading) return <div>⏳ Loading...</div>;
-  if (!order || order.length === 0) return <div>❌ ไม่พบข้อมูลคำสั่งซื้อ</div>;
-
+  if (!order || order.length === 0) 
+    return (
+      <div 
+        className="flex items-center justify-center h-screen bg-cover bg-center" 
+        style={{ backgroundImage: "url('/bg-main.png')" }}
+      >
+        <div className="text-center text-lg font-bold bg-white text-black p-4 rounded-lg shadow-lg">
+          ❌ ไม่พบข้อมูลคำสั่งซื้อ
+        </div>
+      </div>
+    );
   return (
     <div
       className="relative min-h-[93vh] flex flex-col items-center justify-center bg-cover bg-center p-6"

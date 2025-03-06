@@ -12,7 +12,7 @@ export default function Payment() {
   const orderId = searchParams.get('orderId'); 
   const [base64Image, setBase64Image] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  
+
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     document.body.style.overflow = "hidden"; 
@@ -38,16 +38,20 @@ export default function Payment() {
   };
 
   const handleConfirmPayment = async () => {
-    if (!token || !orderId) return; // ตรวจสอบว่ามี token และ orderId หรือไม่
-    try {
-      await confirmPayment(token, parseInt(orderId));
-      alert("การชำระเงินสำเร็จ!");
-      window.location.href = "/status";
-    } catch (error) {
-      console.log(error);
-      alert("เกิดข้อผิดพลาดในการยืนยันการชำระเงิน");
-    }
-  };
+  if (!token || !orderId) return;
+  if (!selectedFile) {
+    alert("กรุณาอัปโหลดสลิปการโอนก่อนยืนยันการชำระเงิน!!!");
+    return;
+  }
+  try {
+    await confirmPayment(token, parseInt(orderId));
+    alert("การชำระเงินสำเร็จ!");
+    window.location.href = "/status";
+  } catch (error) {
+    console.log(error);
+    alert("เกิดข้อผิดพลาดในการยืนยันการชำระเงิน");
+  }
+};
 
   useEffect(() => {
     console.log(base64Image);

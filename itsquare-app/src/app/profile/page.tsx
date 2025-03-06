@@ -14,7 +14,7 @@ export default function ProfilePage() {
     const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [profile, setProfile] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
-    const menuItems = ["ข้อมูลส่วนตัว", "ที่อยู่จัดส่งสินค้า", "รายการคำสั่งซื้อ"];
+    const menuItems = ["ข้อมูลส่วนตัว", "ที่อยู่จัดส่งสินค้า"];
     const [selected, setSelected] = useState("ข้อมูลส่วนตัว");
     const [isAddressOpen, setIsAddressOpen] = useState(false);
     const [addresses, setAddresses] = useState<Address[]>([]);
