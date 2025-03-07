@@ -9,6 +9,7 @@ export default function OrderHistory() {
   const [orders, setOrders] = useState<any[]>([]); 
   const [token, setToken] = useState<string | null>(null);
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -41,7 +42,6 @@ export default function OrderHistory() {
     if (!token || !orderId) return;
     try {
         await canceledByUser(token, orderId);
-        setIsDelModalOpen(true);
         fetchOrders(token);
     } catch (error) {
         console.error("เกิดข้อผิดพลาดในการยกเลิกคำสั่งซื้อ", error);
@@ -151,38 +151,39 @@ export default function OrderHistory() {
                             </a>
                         )}
                     </div>
-                    
+                    {order.status !== "canceled_by_user" && order.status !== "canceled_by_tech" && (
                     <div className="text-md font-light text-black text-center flex flex-col space-y-4">
-                        <button onClick={() => setIsDelModalOpen(true)} className="bg-red-500 w-1/2 mx-auto text-center text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                        <button onClick={() => {setIsDelModalOpen(true); setSelectedItem(order.order_id)}} className="bg-red-500 w-1/2 mx-auto text-center text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
                             ยกเลิกคำสั่งซื้อ
                         </button>
                     </div>
-                    <Dialog open={isDelModalOpen} onClose={() => setIsDelModalOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg shadow-xl p-6 md:w-1/4 w-3/4 text-center justify-center text-black">
-                        <div className="flex justify-center mb-4">
-                          <svg className="items-center flex " width="64" height="64" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M24 7H20.9C20.4216 4.67358 18.3751 3.003 16 3H14C11.6249 3.003 9.57843 4.67358 9.1 7H6C5.44772 7 5 7.44772 5 8C5 8.55228 5.44772 9 6 9H7V22C7.00331 24.7601 9.23995 26.9967 12 27H18C20.7601 26.9967 22.9967 24.7601 23 22V9H24C24.5523 9 25 8.55228 25 8C25 7.44772 24.5523 7 24 7ZM14 5H16C17.271 5.00155 18.4036 5.8023 18.829 7H11.171C11.5964 5.8023 12.729 5.00155 14 5ZM21 22C21 23.6569 19.6569 25 18 25H12C10.3431 25 9 23.6569 9 22V9H21V22ZM13 21C13.5523 21 14 20.5523 14 20V14C14 13.4477 13.5523 13 13 13C12.4477 13 12 13.4477 12 14V20C12 20.5523 12.4477 21 13 21ZM18 20C18 20.5523 17.5523 21 17 21C16.4477 21 16 20.5523 16 20V14C16 13.4477 16.4477 13 17 13C17.5523 13 18 13.4477 18 14V20Z" fill="rgba(227, 31, 38, 1)"></path></svg>
-                        </div>
-                        <h1 className="text-2xl font-bold mb-4">คุณแน่ใจที่จะยกเลิกคำสั่งซื้อนี้ใช่หรือไม่?</h1>
-                        <div className="space-y-3">
-                          <button
-                            onClick={() => handleCancelOrder(order.order_id)}
-                            className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg mr-4 hover:bg-red-600 transition"
-                          >
-                            ยืนยัน
-                          </button>
-                          <button
-                            onClick={() => setIsDelModalOpen(false)}
-                            className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-                          >
-                            ยกเลิก
-                          </button>
-                        </div>
-                      </div>
-                  </Dialog>
+                    )}
                 </div>
               </div>
             ))
         )}
+        <Dialog open={isDelModalOpen} onClose={() => setIsDelModalOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 md:w-1/4 w-3/4 text-center justify-center text-black">
+              <div className="flex justify-center mb-4">
+                <svg className="items-center flex " width="64" height="64" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M24 7H20.9C20.4216 4.67358 18.3751 3.003 16 3H14C11.6249 3.003 9.57843 4.67358 9.1 7H6C5.44772 7 5 7.44772 5 8C5 8.55228 5.44772 9 6 9H7V22C7.00331 24.7601 9.23995 26.9967 12 27H18C20.7601 26.9967 22.9967 24.7601 23 22V9H24C24.5523 9 25 8.55228 25 8C25 7.44772 24.5523 7 24 7ZM14 5H16C17.271 5.00155 18.4036 5.8023 18.829 7H11.171C11.5964 5.8023 12.729 5.00155 14 5ZM21 22C21 23.6569 19.6569 25 18 25H12C10.3431 25 9 23.6569 9 22V9H21V22ZM13 21C13.5523 21 14 20.5523 14 20V14C14 13.4477 13.5523 13 13 13C12.4477 13 12 13.4477 12 14V20C12 20.5523 12.4477 21 13 21ZM18 20C18 20.5523 17.5523 21 17 21C16.4477 21 16 20.5523 16 20V14C16 13.4477 16.4477 13 17 13C17.5523 13 18 13.4477 18 14V20Z" fill="rgba(227, 31, 38, 1)"></path></svg>
+              </div>
+              <h1 className="text-2xl font-bold mb-4">คุณแน่ใจที่จะยกเลิกคำสั่งซื้อนี้ใช่หรือไม่?</h1>
+              <div className="space-y-3">
+                <button
+                  onClick={() => handleCancelOrder(selectedItem)}
+                  className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg mr-4 hover:bg-red-600 transition"
+                >
+                  ยืนยัน
+                </button>
+                <button
+                  onClick={() => setIsDelModalOpen(false)}
+                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                >
+                  ยกเลิก
+                </button>
+              </div>
+            </div>
+        </Dialog>
       </div>
     </div>
   );

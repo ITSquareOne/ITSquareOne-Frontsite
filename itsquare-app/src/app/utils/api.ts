@@ -20,6 +20,7 @@ export interface OrderItem {
     quantity: number;
     price: number;
     condition: number;
+    brief?: string;
     part_code: string;
     ordered_by: number;
     part_image: string;
@@ -28,6 +29,15 @@ export interface OrderItem {
     deleted_at: string | null;
   }
 export type Order = OrderItem[];
+
+export interface CanceledOrder {
+  order_id: number;
+  status: string;
+  user_id: number;
+  address_id: number;
+  technician_id: number;
+  brief: string;
+}
 
 
 export interface Item {
@@ -396,6 +406,22 @@ export const getOrderDetails = async (token: string, itemId: number) => {
   }
 };
 
+
+export const getCanceledOrder = async (token: string, itemId: number) => {
+  try {
+      const response = await axios.get(`${api_url}/orders/${itemId}`, {
+      headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          },
+      });
+      return response.data;
+  } catch (error) {
+      console.error("Error deleting address:", error);
+      throw error;
+  }
+};
+
 export const updateOrderStatus = async (
     token: string, 
     itemId: number, 
@@ -478,5 +504,51 @@ export const canceledByUser = async (token: string, orderId: number) => {
       console.log(err);
     }
 }
+
+
+
+export const fetchSalesDaily = async (token: string) => {
+  try {
+      const response = await axios.put(`${api_url}/sales/daily`, {}, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+          },
+      });
+      return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export const fetchSalesMonthly = async (token: string) => {
+  try {
+      const response = await axios.put(`${api_url}/sales/monthly`, {}, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+          },
+      });
+      return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
+export const fetchSalesYearly = async (token: string) => {
+  try {
+      const response = await axios.put(`${api_url}/sales/yearly`, {}, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+          },
+      });
+      return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 
 
