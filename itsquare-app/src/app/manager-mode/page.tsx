@@ -2,18 +2,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Dialog } from "@headlessui/react";
+import { User, getUsers, getOneUser, editUser } from "@/app/utils/api";
+
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-interface User {
-  user_id: number;
-  username: string;
-  firstNameEn: string;
-  lastNameEn: string;
-  firstNameTh: string;
-  lastNameTh: string;
-  profile: string | null;
-  role: string;
-}
 
 const data = [
     { month: "Jan", users: 2000, orders: 8000, income: 50000 },
@@ -30,84 +22,51 @@ export default function manager() {
   const menuItems = ["วิเคราะห์ยอดขาย", "ยอดการสั่งซื้อ", "จัดการบัญชีพนักงาน", "จัดการบัญชีผู้ใช้"];
   const [token, setToken] = useState<string | null>(null);
 
-  const getOneUser = async (userId: number) => {
-    try {
-      const results = await axios.get<User>(`http://localhost:3000/api/managers/users/${userId}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/json"
-        }
-      });
-      setselectedUser(results.data);
-      setIsOpen(true);
-    } catch (err) {
-      console.log(err);
-    }
-  }
   useEffect(() => {
     console.log("Updated selectedUser:", selectedUser?.user_id);
   }, [selectedUser]);
 
-  const editUser = async () => {
-    if (!selectedUser) {
-      return;
+  const handleEditUser = async () => {
+    if (!selectedUser || !selectedUser.user_id || !selectedUser.role) return;
+    if (!token) return;
+  
+    const success = await editUser(selectedUser.user_id, selectedUser.role, token);
+    if (success) {
+      setIsOpen(false);
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.user_id === selectedUser.user_id ? { ...user, role: selectedUser.role } : user
+        )
+      );
     }
-    console.log("Sending request to update user:", selectedUser);
+  };
 
+  const handleGetOneUser = async (userId: any) => {
+    if (token) {
+      const user = await getOneUser(userId, token);
+      if (user) {
+        setselectedUser(user);
+        setIsOpen(true);
+      }
+    }
+    };
 
-    try {
-        const results = await axios.put(
-          `http://localhost:3000/api/managers/users/${selectedUser.user_id}/role`,
-          {
-            role: selectedUser.role,
-          },
-          {
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Accept": "application/json",
-              "Content-Type": "application/json"
-            }
-          }
-        );
-        console.log("Updated Successfully:", results.data);
-        setIsOpen(false);
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user.user_id === selectedUser.user_id
-              ? { ...user, role: selectedUser.role } 
-              : user
-          )
-        );
-      } catch (err) {
-        console.error("Error updating user:", err);
+  useEffect(() => {
+      const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        setToken(storedToken);
+      }
+  }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (token) {
+        const data = await getUsers(token); 
+        setUsers(data || []);
       }
     };
-  const getUsers = async () => {
-    try {
-      const results = await axios.get("http://localhost:3000/api/managers/users", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/json"
-        }
-      });
-      setUsers(results.data);
-    } catch (err) {
-      console.log(err);
-    }
-    
-  }
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      setToken(storedToken);
-
-    }
-}, []);
-
-  useEffect(() => {
-    getUsers();
-  }, [token]); 
+    fetchUsers();
+  }, [token]);
 
   return (
     <div 
@@ -214,7 +173,7 @@ export default function manager() {
                   <td className="border border-black px-4 py-2">{user.lastNameTh}</td>
                   <td className="border border-black px-4 py-2">{user.role}</td>
                   <td className="border border-black px-4 py-2">
-                    <button onClick={() => getOneUser(user.user_id)} className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition">Edit</button>
+                    <button onClick={() => handleGetOneUser(user.user_id)} className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition">Edit</button>
                   </td>
                 </tr>
               ))}
@@ -259,7 +218,7 @@ export default function manager() {
               </div>
 
               <button
-                onClick={editUser}
+                onClick={handleEditUser}
                 className="mt-4 mr-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
               >
                 แก้ไข
@@ -300,7 +259,7 @@ export default function manager() {
                   <td className="border border-black px-4 py-2">{user.lastNameTh}</td>
                   <td className="border border-black px-4 py-2">{user.role}</td>
                   <td className="border border-black px-4 py-2">
-                    <button onClick={() => getOneUser(user.user_id)} className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition">Edit</button>
+                    <button onClick={() => handleGetOneUser(user.user_id)} className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition">Edit</button>
                   </td>
                 </tr>
               ))}
@@ -345,7 +304,7 @@ export default function manager() {
               </div>
 
               <button
-                onClick={editUser}
+                onClick={handleEditUser}
                 className="mt-4 mr-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
               >
                 แก้ไข

@@ -89,9 +89,9 @@ export default function OrderDetail () {
           </tbody>
         </table>
 
-        <a href="/status" className="mt-8 px-4 py-2 bg-yellow-500 text-black rounded-lg shadow-md hover:bg-yellow-600 transition">
+        <button onClick={() => window.history.back()} className="mt-8 px-4 py-2 bg-yellow-500 text-black rounded-lg shadow-md hover:bg-yellow-600 transition">
           Back
-        </a>
+        </button>
       </div>
     </div>
   );
