@@ -157,7 +157,12 @@ export default function OrderHistory() {
                             ยกเลิกคำสั่งซื้อ
                         </button>
                     </div>
-                    )}02 723 4900
+                    )}
+                    {order.status === "canceled_by_tech" && (
+                      <div className="text-md font-light text-black text-center flex flex-col space-y-4">
+                          กรุณาติดต่อที่เบอร์<br/>02-723-4900
+                      </div>
+                    )}
                 </div>
               </div>
             ))

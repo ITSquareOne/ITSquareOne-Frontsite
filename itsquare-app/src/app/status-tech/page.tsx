@@ -189,7 +189,7 @@ export default function OrderHistory() {
                         </div>
                 
                         {/* Right - Status & Button */}
-                        <div className="text-lg font-bold text-black text-center">
+                        <div className="text-lg font-light text-black text-center flex flex-col space-y-4">
                             <a href={`/orders/${order.order_id}`} className="text-black underline">
                             ดูรายละเอียด
                             </a>         

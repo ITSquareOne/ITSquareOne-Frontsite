@@ -32,12 +32,15 @@ export default function Category() {
 
   useEffect(() => {
     const getItems = async () => {
+      if (!token) return; 
       const products = await fetchItemsForCategory(token);
       setProduct(products);
     };
+  
     getItems();
-  }, [token]);
-
+    const interval = setInterval(getItems, 60000); 
+    return () => clearInterval(interval); 
+  }, [token]); 
 
   const filteredProducts = product.filter((item) => {
     return (
