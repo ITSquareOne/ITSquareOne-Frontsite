@@ -115,7 +115,7 @@ export default function OrderHistory() {
                             : order.status === "canceled_by_user"
                             ? "ผู้ใช้ยกเลิกคำสั่งซื้อ"
                             : order.status === "canceled_by_tech"
-                            ? "ช่างยกเลิกคำสั่งซื้อ"
+                            ? "ถูกยกเลิกโดยช่างเทคนิค"
                             : "ไม่ทราบสถานะ"}
                     </span>
                     <span></span>
@@ -157,7 +157,7 @@ export default function OrderHistory() {
                             ยกเลิกคำสั่งซื้อ
                         </button>
                     </div>
-                    )}
+                    )}02 723 4900
                 </div>
               </div>
             ))
