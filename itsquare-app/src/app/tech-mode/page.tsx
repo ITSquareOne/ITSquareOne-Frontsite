@@ -6,8 +6,8 @@ import { Product, Item, Brands, types, Parts } from "../utils/api";
 
 
 export default function technician() {
-  const [selected, setSelected] = useState("วิเคราะห์ยอดขาย");
-  const menuItems = ["จัดการแบรนด์สินค้าในคลัง", "จัดการคลังสินค้า", "จัดการแผงขายสินค้า"];
+  const [selected, setSelected] = useState("จัดการแผงขายสินค้า");
+  const menuItems = ["จัดการแผงขายสินค้า", "จัดการคลังสินค้า", "จัดการแบรนด์สินค้าในคลัง"];
   const [token, setToken] = useState<string | null>(null);
   const [editItem, setEditItem] = useState<Item | null>(null);
   const [editBrand, setEditBrand] = useState<Brands | null>(null);

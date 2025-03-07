@@ -1,26 +1,22 @@
 "use client"
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { Dialog } from "@headlessui/react";
-import { User, getUsers, getOneUser, editUser } from "@/app/utils/api";
+import { User, getUsers, getOneUser, editUser, fetchSalesDaily, fetchSalesMonthly, fetchSalesYearly } from "@/app/utils/api";
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-
-const data = [
-    { month: "Jan", users: 2000, orders: 8000, income: 50000 },
-    { month: "Feb", users: 4000, orders: 15000, income: 120000 },
-    { month: "Mar", users: 6000, orders: 25000, income: 250000 },
-    { month: "Apr", users: 8000, orders: 50000, income: 500000 },
-    { month: "May", users: 10000, orders: 100000, income: 1000000 },
-  ];
 export default function manager() {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setselectedUser] = useState<User | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("วิเคราะห์ยอดขาย");
-  const menuItems = ["วิเคราะห์ยอดขาย", "ยอดการสั่งซื้อ", "จัดการบัญชีพนักงาน", "จัดการบัญชีผู้ใช้"];
+  const menuItems = ["วิเคราะห์ยอดขาย", "จัดการบัญชีพนักงาน", "จัดการบัญชีผู้ใช้"];
   const [token, setToken] = useState<string | null>(null);
+  const [salesData, setSalesData] = useState([]);
+  const [timeFrame, setTimeFrame] = useState<"daily" | "monthly" | "yearly">("daily");
+  const [totalOrder, setTotalOrder] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
+
 
   useEffect(() => {
     console.log("Updated selectedUser:", selectedUser?.user_id);
@@ -68,88 +64,108 @@ export default function manager() {
     fetchUsers();
   }, [token]);
 
+  const fetchData = async () => {
+    if (!token) return;
+  
+    let data;
+    if (timeFrame === "daily") {
+      data = await fetchSalesDaily(token);
+    } else if (timeFrame === "monthly") {
+      data = await fetchSalesMonthly(token);
+    } else if (timeFrame === "yearly") {
+      data = await fetchSalesYearly(token);
+    }
+  
+    if (data) {
+      const formattedData = data.map((item: any) => ({
+        date: timeFrame === "daily"
+          ? `${item.DateReport.Day}/${item.DateReport.Month}`
+          : timeFrame === "monthly"
+          ? `${item.DateReport.Month}/${item.DateReport.Year}`
+          : `${item.DateReport.Year}`,
+        orders: item.OrderCount,
+        income: item.Total,
+      }));
+  
+      setSalesData(formattedData);
+      setTotalOrder(formattedData.reduce((sum: any, item: { orders: any; }) => sum + item.orders, 0));
+      setTotalIncome(formattedData.reduce((sum: any, item: { income: any; }) => sum + item.income, 0));
+    }
+  };
+  
+  useEffect(() => {
+    fetchData();
+  }, [token, timeFrame]);
+
   return (
-    <div 
-      className="relative min-h-[93vh] flex bg-cover bg-center" 
-      style={{ backgroundImage: "url('/bg-main.png')" }}
-    >
-      <div className="w-1/4 m-12 mr-4 bg-white min-h-[80vh] p-6 rounded-xl">
-      <ul className="space-y-4">
-          {menuItems.map((item) => (
-            <li 
-              key={item}
-              className={`p-3 text-xl text-center font-medium rounded-full border-4 border-gray-300 cursor-pointer 
-                ${selected === item ? "bg-yellow-400 text-black hover:bg-yellow-600 hover:text-white transition" : "bg-white text-black hover:bg-slate-400  hover:text-white transition"}`}
-              onClick={() => setSelected(item)}
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="flex-1 bg-gray-100  p-6 rounded-lg my-12 mr-4">
-      {selected === "วิเคราะห์ยอดขาย" && 
-        <>
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-black">Total Users</h2>
-            <p className="text-2xl  text-black  font-bold">10,000 Users</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-black">Total Order</h2>
-            <p className="text-2xl  text-black font-bold">100,000 Orders</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-black">Total Income</h2>
-            <p className="text-2xl  text-black font-bold">$1,000,000</p>
-          </div>
-        </div>
-
-        <div className="bg-gray-300 flex items-center justify-center h-64 rounded-lg shadow-md p-4">
-          <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis yAxisId="left" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="users" stroke="#8884d8" strokeWidth={2} />
-            <Line type="monotone" dataKey="orders" stroke="#82ca9d" strokeWidth={2} />
-            <Line type="monotone" dataKey="income" stroke="#ff7300" strokeWidth={2} />
-          </LineChart>
-        </ResponsiveContainer>
-        </div>
-        </>
-       }
-      
-      {selected === "ยอดการสั่งซื้อ" && 
-        <>
-        <div className="bg-white p-4 rounded-lg shadow-md border-2 text-black border-gray-300 w-1/3 mb-6">
-          <h2 className="text-lg font-semibold">Total Order</h2>
-          <p className="text-2xl font-bold">100000 Orders</p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-6">
-          {[
-            { status: "Inspecting", count: "100000 Orders" },
-            { status: "In Progress", count: "100000 Orders" },
-            { status: "Completed", count: "100000 Orders" },
-            { status: "Canceled", count: "100000 Orders" },
-          ].map((item, index) => (
-            <div key={index} className="bg-white p-4 rounded-lg shadow-md border-2  text-black border-gray-300 flex flex-col justify-between">
-              <div>
-                <h2 className="text-lg font-semibold">{item.status}</h2>
-                <p className="text-2xl font-bold">{item.count}</p>
-              </div>
-              <button className="mt-4 bg-blue-500 text-white px-3 py-1 rounded-lg self-start">
-                View Order
-              </button>
+        <div 
+          className="relative min-h-[93vh] flex bg-cover bg-center" 
+          style={{ backgroundImage: "url('/bg-main.png')" }}
+        >
+            <div className="w-1/4 m-12 mr-4 bg-white min-h-[80vh] p-6 rounded-xl">
+            <ul className="space-y-4">
+                {menuItems.map((item) => (
+                  <li 
+                    key={item}
+                    className={`p-3 text-xl text-center font-medium rounded-full border-4 border-gray-300 cursor-pointer 
+                      ${selected === item ? "bg-yellow-400 text-black hover:bg-yellow-600 hover:text-white transition" : "bg-white text-black hover:bg-slate-400  hover:text-white transition"}`}
+                    onClick={() => setSelected(item)}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
-          ))}
-        </div>
+            <div className="flex-1 bg-gray-100  p-6 rounded-lg my-12 mr-4">
+        {selected === "วิเคราะห์ยอดขาย" && (
+        <>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold text-gray-700">เลือกช่วงเวลา:</h2>
+            <select
+              value={timeFrame}
+              onChange={(e) => setTimeFrame(e.target.value as "daily" | "monthly" | "yearly")}
+              className="p-2 border rounded-md text-black"
+            >
+              <option value="daily">รายวัน</option>
+              <option value="monthly">รายเดือน</option>
+              <option value="yearly">รายปี</option>
+            </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <h2 className="text-black">รายการทั้งหมด</h2>
+              <p className="text-2xl text-black font-bold">{totalOrder} รายการ</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <h2 className="text-black">รายได้ทั้งหมด</h2>
+              <p className="text-2xl text-black font-bold">{totalIncome.toLocaleString()} บาท</p>
+            </div>
+          </div>
+
+          <div className="bg-gray-300 flex items-center justify-center h-72 rounded-lg shadow-md p-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={salesData} margin={{ left: 50, right: 50}} >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="date"
+                  label={{ value: timeFrame === "daily" ? "วันที่/เดือน" : timeFrame === "monthly" ? "" : "", position: "bottom", offset: 0, dy: 0 }}
+                  padding={{ left: 10, right: 10 }}
+/>
+                <YAxis
+                  yAxisId="left"
+                  label={{ value: "เงิน (บาท)", angle: -90, position: "center",
+                    dx: -40 }}
+                />
+                <Tooltip />
+                <Legend wrapperStyle={{ paddingTop: 25 }} />
+                <Line type="monotone" dataKey="orders" stroke="#2475f0" strokeWidth={2} name="จำนวนออเดอร์" yAxisId="left"/>
+                <Line type="monotone" dataKey="income" stroke="#fa6220" strokeWidth={2} name="รายได้" yAxisId="left" />
+              </LineChart >
+            </ResponsiveContainer>
+          </div>
         </>
-      }
+      )}
 
       {selected === "จัดการบัญชีพนักงาน" && 
         <>

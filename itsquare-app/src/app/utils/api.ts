@@ -509,7 +509,7 @@ export const canceledByUser = async (token: string, orderId: number) => {
 
 export const fetchSalesDaily = async (token: string) => {
   try {
-      const response = await axios.put(`${api_url}/sales/daily`, {}, {
+      const response = await axios.get(`${api_url}/sales/daily`, {
           headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
@@ -523,7 +523,7 @@ export const fetchSalesDaily = async (token: string) => {
 
 export const fetchSalesMonthly = async (token: string) => {
   try {
-      const response = await axios.put(`${api_url}/sales/monthly`, {}, {
+      const response = await axios.get(`${api_url}/sales/monthly`, {
           headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
@@ -538,7 +538,7 @@ export const fetchSalesMonthly = async (token: string) => {
 
 export const fetchSalesYearly = async (token: string) => {
   try {
-      const response = await axios.put(`${api_url}/sales/yearly`, {}, {
+      const response = await axios.get(`${api_url}/sales/yearly`, {
           headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
