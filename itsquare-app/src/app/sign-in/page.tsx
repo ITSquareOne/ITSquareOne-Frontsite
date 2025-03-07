@@ -1,8 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios, { AxiosError } from "axios";
+import { useRouter } from "next/navigation"; // Change this line
 
 export default function Sign_in() {
+  const router = useRouter(); // Add this line
   const [isOpen, setIsOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
@@ -127,7 +129,7 @@ export default function Sign_in() {
           <div className="bg-white p-6 rounded-lg shadow-lg text-black text-center">
             <h2 className="text-xl font-semibold">✅ เข้าสู่ระบบสำเร็จ</h2>
             <p className="mt-2">คุณสามารถใช้งานระบบได้แล้ว</p>
-            <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md" onClick={() => window.location.href = "/"}>
+            <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md" onClick={() => router.replace("/")}>
               ไปที่หน้าหลัก
             </button>
           </div>

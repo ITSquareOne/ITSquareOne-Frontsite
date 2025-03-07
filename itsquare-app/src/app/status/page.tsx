@@ -53,7 +53,10 @@ export default function OrderHistory() {
           <div key={index} className="bg-white text-black w-3/4 rounded-xl p-6 shadow-md">
             {/* Order Info */}
             <div className="flex justify-between items-center border-b pb-2 mb-2">
+              <div>
               <span className="text-gray-500">เลขสั่งซื้อ</span>
+              <p className="text-gray-300">#7634</p>
+                </div>
               <span className="text-gray-500">วันสั่งซื้อ</span>
               <span className="text-gray-500">ราคาสุทธิ</span>
             </div>
