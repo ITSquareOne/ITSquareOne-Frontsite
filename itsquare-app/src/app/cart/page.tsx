@@ -15,7 +15,7 @@ export default function PcBuildSummary() {
   
   const handleCheckout = () => {
     if (!isComplete) {
-      setError("กรุณาเลือกชิ้นส่วนให้ครบขั้นต่ำก่อนทำการชำระเงิน! \n(CPU, Mainboard, Ram, Storage)");
+      setError("กรุณาเลือกชิ้นส่วนให้ครบขั้นต่ำก่อนทำการชำระเงิน! \n(CPU, Mainboard, Ram, Memory, Harddisk or SSD, Power Supply, Case)");
       return;
     }
     window.location.href = "/checkingout";
