@@ -20,7 +20,7 @@ function NavigationBar() {
   const [token, setToken] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { cart } = useCart(); // Now this is safe to use
-  
+
   const role = techProfile?.role;
 
   useEffect(() => {
@@ -69,28 +69,46 @@ function NavigationBar() {
             aria-label="Toggle menu"
           >
             {/* Hamburger Icon */}
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              {isOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
+            <div className="flex flex-row gap-6 items-center">
+              <div className="relative">
+                        <img
+                          src="/cart.svg"
+                          alt="Cart"
+                          className="cursor-pointer w-9 h-9 mr-4 mt-1"
+                          onClick={(e) => {
+                            e.stopPropagation();  // Add this to prevent event bubbling
+                            router.push("/cart");
+                          }}
+                        />
+                        {cart.length > 0 && (
+                          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                            {cart.length}
+                          </span>
+                        )}
+              </div>
+              <svg
+                className="w-6 h-6 text-[#757575] hover:text-gray-400"  // Add text color using Tailwind
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {isOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </div>
           </button>
           {/* Right Side (Sign In & Sign Up Buttons) */}
           <div className="hidden md:flex items-center space-x-5 mr-4">
@@ -109,10 +127,10 @@ function NavigationBar() {
                       จัดการออร์เดอร์
                     </a>
                     <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
-                        <div className="flex flex-col">
+                      <div className="flex flex-col">
                         <span className="underline">{techProfile?.username}</span>
                         <span className="text-xs text-end">{techProfile?.role}</span>
-                        </div>
+                      </div>
                       {techProfile?.profile ? (
                         <img
                           src={`data:image/jpeg;base64,${techProfile.profile}`}
@@ -139,15 +157,15 @@ function NavigationBar() {
                 )}
                 {role === "student" && (
                   <div className="flex gap-4">
-                    
+
                     <a href="/status" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
                       ติดตามสถานะ
                     </a>
                     <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
-                        <div className="flex flex-col">
+                      <div className="flex flex-col">
                         <span className="underline">{techProfile?.username}</span>
                         <span className="text-xs text-end">{techProfile?.role}</span>
-                        </div>
+                      </div>
                       {techProfile?.profile ? (
                         <img
                           src={`data:image/jpeg;base64,${techProfile.profile}`}
@@ -163,7 +181,7 @@ function NavigationBar() {
                       )}
                     </a>
                     <div className="relative">
-                      <img 
+                      <img
                         src="/cart.svg"
                         alt="Cart"
                         className="cursor-pointer w-9 h-9 mr-4 mt-1"
@@ -183,10 +201,10 @@ function NavigationBar() {
                       แผงควบคุม
                     </a>
                     <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
-                        <div className="flex flex-col">
+                      <div className="flex flex-col">
                         <span className="underline">{techProfile?.username}</span>
                         <span className="text-xs text-end">{techProfile?.role}</span>
-                        </div>
+                      </div>
                       {techProfile?.profile ? (
                         <img
                           src={`data:image/jpeg;base64,${techProfile.profile}`}
@@ -201,7 +219,7 @@ function NavigationBar() {
                         />
                       )}
                     </a>
-                    
+
                   </div>
                 )}
                 <img
@@ -220,7 +238,7 @@ function NavigationBar() {
         className={`${isOpen ? "block" : "hidden"
           } md:hidden fixed top-[48px] left-0 w-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out`}
       >
-        <ul className="flex flex-col items-center space-y-3 py-4">
+        <ul className="flex flex-col items-center space-y-3 py-4 pt-10">
           {!isLoggedIn ? (
             <>
               <li>
@@ -229,9 +247,6 @@ function NavigationBar() {
             </>
           ) : (
             <>
-              <li>
-                <a href="/cart" className="text-lg text-gray-900 hover:text-blue-700">ตะกร้า</a>
-              </li>
               <li>
                 <a href="/profile" className="text-lg text-gray-900 hover:text-blue-700">โปรไฟล์</a>
               </li>
