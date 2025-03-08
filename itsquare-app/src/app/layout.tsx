@@ -107,11 +107,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         <a href="/status-tech" className="text-lg text-white shadow-lg bg-pink-500 hover:bg-pink-600 p-2 px-6 rounded-full transition duration-300 ease-in-out">
                           จัดการออร์เดอร์
                         </a>
-                        <a href="/profile" className="text-lg text-white shadow-lg hover:text-gray-300 bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                          โปรไฟล์  <img
-                            src={`data:image/jpeg;base64,${techProfile?.profile}`}
-                            className="w-8 h-8 rounded-full object-cover flex bg-pink-500"
-                          />
+                        <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
+                            <div className="flex flex-col">
+                            <span className="underline">{techProfile?.username}</span>
+                            <span className="text-xs text-end">{techProfile?.role}</span>
+                            </div>
+                          {techProfile?.profile ? (
+                            <img
+                              src={`data:image/jpeg;base64,${techProfile.profile}`}
+                              className="w-8 h-8 rounded-full object-cover"
+                              alt="Profile"
+                            />
+                          ) : (
+                            <img
+                              src="/profile.svg"
+                              className="w-8 h-8 rounded-full object-cover bg-white"
+                              alt="Default Profile"
+                            />
+                          )}
                         </a>
                         <img
                           src="/config.svg"
@@ -154,12 +167,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     )}
                     {role === "manager" && (
                       <div className="flex gap-4">
-                        <a href="/profile" className="text-lg text-white shadow-lg bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                          โปรไฟล์
-                        </a>
                         <a href="/manager-mode" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
                           แผงควบคุม
                         </a>
+                        <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
+                            <div className="flex flex-col">
+                            <span className="underline">{techProfile?.username}</span>
+                            <span className="text-xs text-end">{techProfile?.role}</span>
+                            </div>
+                          {techProfile?.profile ? (
+                            <img
+                              src={`data:image/jpeg;base64,${techProfile.profile}`}
+                              className="w-8 h-8 rounded-full object-cover"
+                              alt="Profile"
+                            />
+                          ) : (
+                            <img
+                              src="/profile.svg"
+                              className="w-8 h-8 rounded-full object-cover bg-white"
+                              alt="Default Profile"
+                            />
+                          )}
+                        </a>
+                        
                       </div>
                     )}
                     <img
