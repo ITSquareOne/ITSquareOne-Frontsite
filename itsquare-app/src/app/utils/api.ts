@@ -316,7 +316,7 @@ export const createOrder = async (token: string, addressId: number, partIds: num
   try {
       const requestBody = {
           address_id: addressId,
-          part_ids: partIds,
+          part_ids: partIds,        
       };
 
       const response = await axios.post(

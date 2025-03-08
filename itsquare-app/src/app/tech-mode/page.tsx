@@ -51,27 +51,29 @@ export default function technician() {
     { label: "ต่ำกว่ามาตรฐาน", value: 25 },
   ];
 
+  const api_url = "http://localhost:3000/api";
+
   const fetchItems = async () => {
     if (!token) return; 
     
     try {
       const [partItemsResponse, partsResponse, brandsResponse, typeResponse] = await Promise.all([
-      axios.get("http://localhost:3000/api/part-items", {
+      axios.get(`${api_url}/part-items`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
-      }), axios.get("http://localhost:3000/api/parts", {
+      }), axios.get(`${api_url}/parts`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
-      }), axios.get("http://localhost:3000/api/brands", {
+      }), axios.get(`${api_url}/brands`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
-      }), axios.get("http://localhost:3000/api/part-types", {
+      }), axios.get(`${api_url}/part-types`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -111,9 +113,8 @@ export default function technician() {
   };
 
   const addItem = async () => {
-  //  console.log(item);
     try {
-      await axios.post(`http://localhost:3000/api/part-items`, 
+      await axios.post(`${api_url}/part-items`, 
         {
           part_code: item.part_code,
           condition: item.condition,
@@ -146,7 +147,7 @@ export default function technician() {
     console.log(parts);
     console.log(token);
     try {
-      await axios.post(`http://localhost:3000/api/parts`, 
+      await axios.post(`${api_url}/parts`, 
         {
           part_code: parts.part_code,
           name: parts.name,
@@ -178,12 +179,11 @@ export default function technician() {
   }
 
   const addBrand = async () => {
-  //  console.log(brand);
     if (!brand) {
       return;
     }
     try {
-      await axios.post(`http://localhost:3000/api/brands`, 
+      await axios.post(`${api_url}/brands`, 
         {
           brand_name: brand.brand_name,
         }, 
@@ -210,7 +210,7 @@ export default function technician() {
       return;
     }
     try {
-      await axios.put(`http://localhost:3000/api/part-items/${editItem.id}`, 
+      await axios.put(`${api_url}/part-items/${editItem.id}`, 
         {
           condition: editItem.condition,
           price: editItem.price,
@@ -239,7 +239,7 @@ export default function technician() {
         return;
       }
       try {
-        await axios.put(`http://localhost:3000/api/parts/${editParts.part_code}`, 
+        await axios.put(`${api_url}/parts/${editParts.part_code}`, 
           {
             part_code: editParts.part_code,
             name: editParts.name,
@@ -270,7 +270,7 @@ export default function technician() {
         return;
       }
       try {
-        await axios.put(`http://localhost:3000/api/brands/${editBrand.brand_id}`, 
+        await axios.put(`${api_url}/brands/${editBrand.brand_id}`, 
           {
             brand_name: editBrand.brand_name,
           }, 
@@ -296,7 +296,7 @@ export default function technician() {
         return;
       }
       try {
-        await axios.delete(`http://localhost:3000/api/part-items/${deleteItem.id}`, 
+        await axios.delete(`${api_url}/part-items/${deleteItem.id}`, 
           {  
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -319,7 +319,7 @@ export default function technician() {
       return;
     }
     try {
-      await axios.delete(`http://localhost:3000/api/parts/${deletePart.part_code}`, 
+      await axios.delete(`${api_url}/parts/${deletePart.part_code}`, 
         {  
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -342,7 +342,7 @@ export default function technician() {
       return;
     }
     try {
-      await axios.delete(`http://localhost:3000/api/brands/${deleteBrand.brand_id}`, 
+      await axios.delete(`${api_url}/brands/${deleteBrand.brand_id}`, 
         {  
         headers: {
           "Authorization": `Bearer ${token}`,
