@@ -10,9 +10,9 @@ export default function PcBuildSummary() {
   return (
     <div 
     
-    className="min-h-screen flex flex-col text-white overflow-hidden py-[10vh]">
+    className="min-h-screen flex flex-col text-white overflow-hidden pt-[5vh]">
       {/* Main Content */}
-      <div className="flex flex-col lg:flex-row items-center lg:items-start gap-32 px-8 py-6 flex-grow justify-center">
+      <div className="flex flex-col lg:flex-row items-center lg:items-start gap-32 px-8  flex-grow justify-center">
         {/* Left Section: Your Computer */}
         <div className="flex flex-col items-center">
           <h2 className="text-2xl font-bold">YOUR COMPUTER</h2>
