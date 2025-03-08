@@ -8,14 +8,14 @@ export default function PcBuildSummary() {
   const [error, setError] = useState<string | null>(null);
 
   const totalPrice = cart.reduce((total, item) => total + item.price, 0);
-  const requiredTypes = [1, 2, 4];
+  const requiredTypes = [1, 2, 4, 7, 8];
   const cartTypes = new Set(cart.map((item) => item.type));
   const has5or6 = cartTypes.has(5) || cartTypes.has(6);
   const isComplete = requiredTypes.every((type) => cartTypes.has(type)) && has5or6;
   
   const handleCheckout = () => {
     if (!isComplete) {
-      setError("กรุณาเลือกชิ้นส่วนให้ครบก่อนทำการชำระเงิน! \n(CPU, Mainboard, Ram, Storage)");
+      setError("กรุณาเลือกชิ้นส่วนให้ครบขั้นต่ำก่อนทำการชำระเงิน! \n(CPU, Mainboard, Ram, Storage)");
       return;
     }
     window.location.href = "/checkingout";

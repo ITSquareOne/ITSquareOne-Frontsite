@@ -10,7 +10,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ isOpen, onClose, onLogout }) 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000]">
       <div className="bg-white p-6 rounded-lg shadow-lg text-black text-center">
         <h2 className="text-xl font-semibold">คุณต้องการออกจากระบบใช่หรือไม่?</h2>
         <div className="mt-4 flex justify-center gap-8">
