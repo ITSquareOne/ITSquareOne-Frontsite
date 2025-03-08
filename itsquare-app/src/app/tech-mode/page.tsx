@@ -113,6 +113,7 @@ export default function technician() {
   };
 
   const addItem = async () => {
+    console.log(item);
     try {
       await axios.post(`${api_url}/part-items`, 
         {
@@ -488,6 +489,7 @@ useEffect(() => {
               value={item?.part_code} 
               onChange={(e) => setItem({...item!, part_code: e.target.value})}
             >
+                <option value="">-- เลือกสินค้า --</option>
                 {allparts.map((allparts) => (
                   <option key={allparts.part_code} value={allparts.part_code}>{allparts.name}</option>
                 ))}
