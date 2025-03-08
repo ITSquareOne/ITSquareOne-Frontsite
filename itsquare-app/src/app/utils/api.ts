@@ -313,38 +313,28 @@ export const deleteAddress = async (token: string, selectedAddressId: number): P
     }
 };
 export const createOrder = async (token: string, addressId: number, partIds: number[]) => {
-    try {
-        const requestBody = {
-            address_id: addressId,
-            part_ids: partIds,
-        };
+  try {
+      const requestBody = {
+          address_id: addressId,
+          part_ids: partIds,
+      };
 
-        console.log("🔍 Sending request body:", JSON.stringify(requestBody, null, 2));
-
-        const response = await fetch(`${api_url}/orders/create`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-        });
-
-        console.log("🔍 Response status:", response.status);
-
-        const responseData = await response.json();
-        console.log("🔍 Response data:", responseData);
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${JSON.stringify(responseData)}`);
-        }
-
-        return responseData;
-    } catch (error) {
-        console.error("🚨 Failed to create order", error);
-        throw error;
-    }
+      const response = await axios.post(
+          `${api_url}/orders/create`,
+          requestBody,
+          {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+              },
+          }
+      );
+      return response.data;
+  } catch (error) {
+      console.error("Failed to create order", error);
+      throw error;
+  }
 };
 
 export const getAllStatus = async (token: string) => {

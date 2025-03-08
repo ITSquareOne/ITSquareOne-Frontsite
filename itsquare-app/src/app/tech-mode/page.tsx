@@ -744,7 +744,7 @@ useEffect(() => {
           </tbody>
         </table>
         <div className="text-black gap-5 flex mt-4">
-          <button onClick={() => setIsAddBrandOpen(true)} className="bg-blue-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">เพิ่มสินค้าภายในคลัง</button>
+          <button onClick={() => setIsAddBrandOpen(true)} className="bg-blue-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">เพิ่มแบรนด์</button>
         </div>
         <Dialog open={isDeleteBrandOpen} onClose={() => setIsDeleteBrandOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl p-6 md:w-1/4 w-3/4 text-center justify-center text-black">

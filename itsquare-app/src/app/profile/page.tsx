@@ -196,7 +196,7 @@ const handleLogout = () => {
               {item}
             </li>
           ))}
-            <li className="p-2 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-400 transition hover:text-white" onClick={() => setIsModalOpen(true)}>ออกจากระบบ</li>
+            <li className="p-2 text-white bg-black rounded-lg cursor-pointer hover:bg-gray-800 transition hover:text-gray-100" onClick={() => setIsModalOpen(true)}>ออกจากระบบ</li>
           </ul>
         </div>
         {selected === "ข้อมูลส่วนตัว" &&

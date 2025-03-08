@@ -7,12 +7,15 @@ import { fetchItemsForCategory, Product } from "../utils/api";
 const categoryMap: { [key: string]: number } = {
   "All": 0,
   "CPU": 1,
-  "Power Supply": 2,
-  "Ram": 3,
-  "HDD & SSD": 4,
-  "Mainboard": 5,
-  "GPU": 6,
-  "Other": 7
+  "Mainboard": 2,
+  "VGA Card": 3,
+  "Memory": 4,
+  "Harddisk": 5,
+  "SSD": 6,
+  "Power Supply": 7,
+  "Case": 8,
+  "Others": 9
+
 };
 
 
@@ -25,7 +28,6 @@ export default function Category() {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    console.log(storedToken);
       if (storedToken) {
         setToken(storedToken);
     }
@@ -36,7 +38,6 @@ export default function Category() {
       if (!token) return; 
       const products = await fetchItemsForCategory(token);
       setProduct(products);
-      console.log(products);
     };
   
     getItems();
@@ -46,17 +47,12 @@ export default function Category() {
 
   const filteredProducts = product.filter((item) => {
     return (
-      !item.order_id && // ไม่ให้สินค้าที่ถูกสั่งซื้อแสดง no more stuff to order
+      !item.order_id && 
       (selectedCategory === "All" || item.type === categoryMap[selectedCategory]) &&
       (searchQuery === "" || item.name.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   });
-  if (!filteredProducts.length) {
-    return (<div className="text-white text-xl text-center mt-10">
-      ขออภัย
-      ยังไม่มีสินค้าในระบบ ณ ตอนนี้ !!!
-    </div>)
-  }
+
 
   return (
     <div
@@ -87,28 +83,34 @@ export default function Category() {
       </div>
 
       {/* Product Grid */}
-      <div className="w-full max-w-[1200px] mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-5">
-        {filteredProducts.map((item, index) => (
-          <div key={item.id || index} className="bg-white rounded-xl shadow-lg w-full md:w-[250px] h-auto flex flex-col items-center p-4 mb-4">
-            
-            <div className="border-2 border-gray-400 w-full md:h-[200px] rounded-xl overflow-hidden">
-              <Image src={`data:image/jpeg;base64,${item.part_image}`} alt="icon" width={250} height={300} className="w-full h-full object-cover" />
-            </div>
+      {filteredProducts.length > 0 ? (
+        <div className="w-full max-w-[1200px] mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-5">
+            {filteredProducts.map((item, index) => (
+              <div key={item.id || index} className="bg-white rounded-xl shadow-lg w-full md:w-[250px] h-auto flex flex-col items-center p-4 mb-4">
+                
+                <div className="border-2 border-gray-400 w-full md:h-[200px] rounded-xl overflow-hidden">
+                  <Image src={`data:image/jpeg;base64,${item.part_image}`} alt="icon" width={250} height={300} className="w-full h-full object-cover" />
+                </div>
 
-            {/* Product Name */}
-            <div className="text-black text-start w-full mt-3 pb-2 font-semibold text-sm md:text-m">
-              <p>{item.name}</p>
-            </div>
+                {/* Product Name */}
+                <div className="text-black text-start w-full mt-3 pb-2 font-semibold text-sm md:text-m">
+                  <p>{item.name}</p>
+                </div>
 
-            {/* Price & Cart Button */}
-            <button onClick={() => router.push(`product/${item.id}`)}
-              className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-md mt-auto text-black w-full py-2 rounded-full text-base flex items-center justify-center gap-2 transition delay-180 duration-300 ease-in-out">
-              <Image src="/Shopping cart.png" alt="icon" width={20} height={20} />
-              {item.price} บาท
-            </button>
+                {/* Price & Cart Button */}
+                <button onClick={() => router.push(`product/${item.id}`)}
+                  className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-md mt-auto text-black w-full py-2 rounded-full text-base flex items-center justify-center gap-2 transition delay-180 duration-300 ease-in-out">
+                  <Image src="/Shopping cart.png" alt="icon" width={20} height={20} />
+                  {item.price} บาท
+                </button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        ) : (
+          <div className="text-gray-500 text-center text-lg mt-10">
+            🛒 ยังไม่มีสินค้าในระบบ
+          </div>
+        )}
     </div>
   );
 }
