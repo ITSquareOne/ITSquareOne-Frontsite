@@ -5,11 +5,13 @@ import { Dialog } from "@headlessui/react";
 import axios from "axios";
 import { getAddress, createAddress, editAddress, deleteAddress, Address, User } from "../utils/api";
 import LogoutModal from "../components/LogoutModal";
+import Modal from "../components/Modal";
 
 export default function ProfilePage() {
     const router = useRouter();
     const [modalContent, setModalContent] = useState<React.ReactNode | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [isEditAddressModalOpen, setIsEditAddressModalOpen] = useState(false);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [profile, setProfile] = useState<User | null>(null);
@@ -64,46 +66,46 @@ export default function ProfilePage() {
     }
 };
 
-  const editProfile = async () => {
-    if (profile) {
-      try {
-        const updatedProfile = {
-          firstNameEn: profile.firstNameEn,
-          lastNameEn: profile.lastNameEn,
-          firstNameTh: profile.firstNameTh,
-          lastNameTh: profile.lastNameTh,
-          profile : profile.profile
-        };
-  
-      const results = await axios.put("http://localhost:3000/api/users/profile", updatedProfile, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/json"
-        }
+const editProfile = async () => {
+  if (profile) {
+    try {
+      const updatedProfile = {
+        firstNameEn: profile.firstNameEn,
+        lastNameEn: profile.lastNameEn,
+        firstNameTh: profile.firstNameTh,
+        lastNameTh: profile.lastNameTh,
+        profile : profile.profile
+      };
+
+    const results = await axios.put("http://localhost:3000/api/users/profile", updatedProfile, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/json"
       }
-    );
-    setProfile(results.data);
+    }
+  );
+  setProfile(results.data);
+  setModalContent(
+    <div>
+      <h2 className="text-xl font-semibold text-green-600">
+        อัปเดตโปรไฟล์สำเร็จ ✅ 
+      </h2>
+    </div>
+  );
+  setIsModalOpen(true);
+    
+  } catch (err) {
+    console.error("เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์", err);
     setModalContent(
       <div>
-        <h2 className="text-xl font-semibold text-green-600">
-          อัปเดตโปรไฟล์สำเร็จ ✅ 
+        <h2 className="text-xl font-semibold text-red-600">
+          อัปเดตโปรไฟล์ไม่สำเร็จ ❌
         </h2>
       </div>
     );
     setIsModalOpen(true);
-      
-    } catch (err) {
-      console.error("เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์", err);
-      setModalContent(
-        <div>
-          <h2 className="text-xl font-semibold text-red-600">
-            อัปเดตโปรไฟล์ไม่สำเร็จ ❌
-          </h2>
-        </div>
-      );
-      setIsModalOpen(true);
-    }
   }
+}
 }
 const handleCreateAddress = async () => {
     if (!token || !address) return;
@@ -177,6 +179,8 @@ const handleLogout = () => {
 };
 
   return (
+    <div className={isModalOpen ? ' bg-black opacity-50' : ''}>
+
     <div>
     {/* <div
       className="relative min-h-screen bg-cover bg-center flex justify-center items-center"
@@ -196,7 +200,10 @@ const handleLogout = () => {
               {item}
             </li>
           ))}
-            <li className="p-2 text-white bg-black rounded-lg cursor-pointer hover:bg-gray-800 transition hover:text-gray-100" onClick={() => setIsModalOpen(true)}>ออกจากระบบ</li>
+            <li className="p-2 text-white bg-black rounded-lg cursor-pointer hover:bg-gray-800 transition hover:text-gray-100" onClick={() => setIsLogoutModalOpen(true)}>ออกจากระบบ</li>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            {modalContent}
+            </Modal>
           </ul>
         </div>
         {selected === "ข้อมูลส่วนตัว" &&
@@ -351,6 +358,7 @@ const handleLogout = () => {
                   ) : (
                   <p>กำลังโหลดข้อมูล...</p>
                 )}
+
                 <Dialog open={isEditAddressModalOpen} onClose={() => setIsEditAddressModalOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
                   <div className="bg-white rounded-lg shadow-xl p-6 w-2/4 text-center text-black">
                         <h2 className="text-xl font-bold mb-4">แก้ไขที่อยู่ของคุณ</h2>
@@ -431,15 +439,15 @@ const handleLogout = () => {
                     </div>
                   </div>
               </Dialog>
-              
           </div>
         }
       </div>
     <LogoutModal
-      isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
+      isOpen={isLogoutModalOpen}
+      onClose={() => setIsLogoutModalOpen(false)}
       onLogout={handleLogout}
     />
+    </div>
     </div>
   );
 }
