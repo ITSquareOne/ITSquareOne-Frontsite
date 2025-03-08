@@ -11,6 +11,13 @@ export default function OrderHistory() {
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
+  const statusTranslations = {
+    "all": "ทั้งหมด",
+    "in-progress": "กำลังดำเนินการ",
+    "completed": "เสร็จสิ้น",
+    "canceled": "ยกเลิกแล้ว"
+  };
+
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
@@ -53,28 +60,21 @@ export default function OrderHistory() {
 }
 
   return (
-    <div className="min-h-screen bg-[#1A0C2F] text-white" style={{ backgroundImage: "url('/bg-main.png')" }}>
-
-      {/* 🏷 Filter Tabs */}
-      <div className="flex justify-center pt-6 space-x-4">
-            {["all", "in-progress", "completed", "canceled"].map((type) => (
-                <button
-                    key={type}
-                    onClick={() => setFilter(type)}
-                    className={`px-6 py-2 rounded-full font-semibold ${
-                        filter === type ? "bg-yellow-400 text-black" : "bg-white text-black"}`}
-                >
-                    {type === "all"
-                        ? "All"
-                        : type === "in-progress"
-                        ? "In Progress"
-                        : type === "completed"
-                        ? "Completed"
-                        : "Canceled"}
-                </button>
-            ))}
-      </div>
-
+    <div className="min-h-screen text-white">
+      <div className="container mx-auto px-4 py-6">
+        {/* 🏷 Filter Tabs */}
+        <div className="flex justify-center pt-6 space-x-4">
+              {["all", "in-progress", "completed", "canceled"].map((type) => (
+                  <button
+                      key={type}
+                      onClick={() => setFilter(type)}
+                      className={`px-6 py-2 rounded-full font-semibold ${
+                          filter === type ? "bg-yellow-400 text-black" : "bg-white text-black"}`}
+                  >
+                      {statusTranslations[type as keyof typeof statusTranslations]}
+                  </button>
+              ))}
+        </div>
       {/* Order List */}
       <div className="flex flex-col items-center mt-6 space-y-6">
       <p className="text-gray-400">หากสถานะของรายการอยู่ระหว่างการตรวจสอบ กรุณารอเจ้าหน้าที่สักครู่..</p>
@@ -120,21 +120,22 @@ export default function OrderHistory() {
                     </span>
                     <span></span>
 
-                </div>
-                
-                <div className="grid grid-cols-5 gap-4 items-center">
-                    {/* Left - Order Image */}
-                    <div className="flex justify-center">
-                        <Image src={order.image || "/cpu_full.png"} alt="Product" width={80} height={80} className="mt-4 object-contain w-24 h-24" />
-                    </div>
 
-                    {/* Middle - Order Date */}
-                    <div className="text-gray-600 text-center">{order.order_at.split("T")[0]}</div>
+                  </div>
+                  
+                  <div className="grid grid-cols-5 gap-4 items-center">
+                      {/* Left - Order Image */}
+                      <div className="flex justify-center">
+                          <Image src={order.image || "/cpu_full.png"} alt="Product" width={80} height={80} className="mt-4 object-contain w-24 h-24" />
+                      </div>
 
-                    {/* Middle - Total Price */}
-                    <div className="text-md font-bold text-black text-center">
-                        {order.total_price} บาท
-                    </div>
+                      {/* Middle - Order Date */}
+                      <div className="text-gray-600 text-center">{order.order_at.split("T")[0]}</div>
+
+                      {/* Middle - Total Price */}
+                      <div className="text-md font-bold text-black text-center">
+                          {order.total_price} บาท
+                      </div>
 
                     {/* Right - Status & Button */}
                     <div className="text-lg font-light text-black text-center flex flex-col space-y-4">

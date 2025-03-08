@@ -40,7 +40,7 @@ export default function Payment() {
   const handleConfirmPayment = async () => {
   if (!token || !orderId) return;
   if (!selectedFile) {
-    alert("กรุณาอัปโหลดสลิปการโอนก่อนยืนยันการชำระเงิน!!!");
+    alert("กรุณาอัปโหลดสลิปการโอนก่อนยืนยันการชำระเงิน");
     return;
   }
   try {
@@ -62,8 +62,8 @@ export default function Payment() {
 
   return (
     <div
-      className="relative min-h-screen flex flex-col items-center justify-center bg-cover bg-center px-4"
-      style={{ backgroundImage: "url('/bg-main.png')" }}
+      className="relative min-h-screen flex flex-col items-center bg-cover bg-center px-4 py-5"
+      
     >
       {/*Fixed to Bottom-Right9*/}
       <Image
@@ -82,7 +82,7 @@ export default function Payment() {
       />
 
       {/* Responsive QR Payment Card */}
-      <div className="mb-10 -mt-5 w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl">
+      <div className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl">
         {/* Header Section */}
         <div className="w-full py-2 bg-blue-700 rounded-tl-3xl text-center text-white font-bold">
           QR Payment
@@ -100,7 +100,7 @@ export default function Payment() {
           </p>
 
           <div className="mt-4">
-            <label className="block text-gray-700 font-semibold mb-2">อัปโหลดสลิปการโอน</label>
+            <label className="block text-gray-500 font-semibold mb-2">หลักฐานการชำระเงิน</label>
             <input type="file" accept="image/*" onChange={handleFileChange} className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" />
           </div>
 
@@ -111,7 +111,7 @@ export default function Payment() {
             </button>
             <button className="mt-4 bg-gray-400 text-white py-2 px-6 rounded-md hover:bg-gray-500 transition">
               ยกเลิก
-            </button>   
+            </button>
           </div>
         </div>
       </div>

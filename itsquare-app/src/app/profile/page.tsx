@@ -1,10 +1,10 @@
 "use client";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Modal from "../components/Modal";
 import { Dialog } from "@headlessui/react";
-import axios from "axios"
+import axios from "axios";
 import { getAddress, createAddress, editAddress, deleteAddress, Address, User } from "../utils/api";
+import LogoutModal from "../components/LogoutModal";
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -170,48 +170,33 @@ const base64GameChanger = (event: React.ChangeEvent<HTMLInputElement>) => {
   }
 };
 
-
-
-const handleLogout = async () => {
-    localStorage.removeItem("token");
-    setModalContent(
-        <div>
-          <h2 className="text-xl font-semibold text-green-600">ทำการออกจากระบบเรียบร้อย ✅</h2>
-        </div>
-      );
-    setIsModalOpen(true);
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1500); 
-      
-    return;
-  }
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  setToken(null);
+  router.push("/");
+};
 
   return (
-    <div className={isModalOpen ? ' bg-black opacity-50' : ''}>
-
-    <div
+    <div>
+    {/* <div
       className="relative min-h-screen bg-cover bg-center flex justify-center items-center"
       style={{ backgroundImage: "url('/bg-main.png')" }}
-    >
-      <div className="bg-white w-4/5 min-h-[70vh] shadow-lg rounded-xl text-black flex p-8 mx-12 -mt-20">
-        <div className="w-1/4 min-h-[70vh] h-full bg-gray-100 rounded-xl p-4 border border-black">
+    > */}
+      <div className=" min-h-[70vh] text-black flex p-8 -mt-10">
+        <div className="w-1/4 min-h-[70vh] h-full bg-gray-100 rounded-xl p-4 border border-gray-200">
           <h2 className="text-lg font-semibold">สวัสดีคุณ {profile?.firstNameTh}!!</h2>
           <ul className="mt-4 space-y-2">
           {menuItems.map((item) => (
             <li 
               key={item}
-              className={`p-2 bg-gray-200 rounded-lg cursor-pointer border-4 border-gray-200
+              className={`p-2 bg-gray-200 rounded-lg cursor-pointer drop-shadow-lg hover:bg-gray-400 transition hover:text-white
                 ${selected === item ? "bg-yellow-400 text-black hover:bg-yellow-600 hover:text-white transition" : "bg-white text-black hover:bg-slate-400  hover:text-white transition"}`}
               onClick={() => setSelected(item)}
             >
               {item}
             </li>
           ))}
-            <li className="p-2 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-400 transition hover:text-white" onClick={handleLogout}>ออกจากระบบ</li>
-            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-            {modalContent}
-            </Modal>
+            <li className="p-2 bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-400 transition hover:text-white" onClick={() => setIsModalOpen(true)}>ออกจากระบบ</li>
           </ul>
         </div>
         {selected === "ข้อมูลส่วนตัว" &&
@@ -450,7 +435,11 @@ const handleLogout = async () => {
           </div>
         }
       </div>
-    </div>
+    <LogoutModal
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+      onLogout={handleLogout}
+    />
     </div>
   );
 }

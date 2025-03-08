@@ -8,6 +8,14 @@ import { Dialog } from "@headlessui/react";
 
 
 
+// Function to convert condition percentage to a readable label
+const getConditionLabel = (condition: number) => {
+  if (condition >= 91) return "ใหม่เอี่ยม"; // Like New
+  if (condition >= 71) return "ดีเยี่ยม"; // Excellent
+  if (condition >= 41) return "ดี"; // Good
+  return "พอใช้"; // Fair
+};
+
 export default function ProductPage() {
     const {id} = useParams();
     const [product, setProduct] = useState<Product | null>(null);
