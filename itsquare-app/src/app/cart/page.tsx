@@ -34,7 +34,12 @@ export default function PcBuildSummary() {
           <div className="p-4 space-y-4 max-h-96 overflow-y-auto">
             {cart.map((item) => (
                 <div key={item.id} className="flex flex-row">
-                    <Image src={`${item.image}`} alt="PC Case" width={150} height={100} className="mr-4"/>
+                    <Image                     
+                    src={item.image && item.image.startsWith("data:image/jpeg;base64,") && !item.image.includes("undefined") ? item.image : "/sorry.jpg"}                    
+                    alt="PC Case" 
+                    width={150} 
+                    height={100}
+                    className="mr-4"/>
                     <div> 
                         <p>{item.name}</p>
                         <p className="mt-2 text-xl text-blue-500">{item.price} บาท</p>
