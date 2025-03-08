@@ -25,6 +25,7 @@ export default function Category() {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+    console.log(storedToken);
       if (storedToken) {
         setToken(storedToken);
     }
@@ -35,6 +36,7 @@ export default function Category() {
       if (!token) return; 
       const products = await fetchItemsForCategory(token);
       setProduct(products);
+      console.log(products);
     };
   
     getItems();
@@ -44,11 +46,17 @@ export default function Category() {
 
   const filteredProducts = product.filter((item) => {
     return (
-      !item.order_id && 
+      !item.order_id && // ไม่ให้สินค้าที่ถูกสั่งซื้อแสดง no more stuff to order
       (selectedCategory === "All" || item.type === categoryMap[selectedCategory]) &&
       (searchQuery === "" || item.name.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   });
+  if (!filteredProducts.length) {
+    return (<div className="text-white text-xl text-center mt-10">
+      ขออภัย
+      ยังไม่มีสินค้าในระบบ ณ ตอนนี้ !!!
+    </div>)
+  }
 
   return (
     <div

@@ -60,7 +60,6 @@ export default function OrderHistory() {
 }
 
   return (
-    <div className="min-h-screen text-white">
       <div className="container mx-auto px-4 py-6">
         {/* 🏷 Filter Tabs */}
         <div className="flex justify-center pt-6 space-x-4">
