@@ -78,9 +78,6 @@ export default function ProductPage() {
 
     if (!product) return <p className="text-center mt-10">Loading...</p>;
     
-
-  
-
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center p-6" style={{ backgroundImage: "url('/bg-main.png')" }}>
         <div className="bg-white p-6 rounded-xl shadow-lg max-w-2xl w-full text-center relative">

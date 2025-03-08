@@ -20,6 +20,7 @@ export interface OrderItem {
     quantity: number;
     price: number;
     condition: number;
+    brief?: string;
     part_code: string;
     ordered_by: number;
     part_image: string;
@@ -28,6 +29,15 @@ export interface OrderItem {
     deleted_at: string | null;
   }
 export type Order = OrderItem[];
+
+export interface CanceledOrder {
+  order_id: number;
+  status: string;
+  user_id: number;
+  address_id: number;
+  technician_id: number;
+  brief: string;
+}
 
 
 export interface Item {
@@ -110,6 +120,7 @@ export const fetchItemsForCategory = async (token: string | null): Promise<Produ
           name: part.name || "Unknown",
           price: item.price,
           condition: item.condition,
+          order_id: item.order_id,
           part_code: item.part_code,
           part_image: item.part_image,
           brand: part.brand_id || 0,
@@ -210,6 +221,59 @@ export const createAddress = async (token: string, address: string): Promise<Add
         console.error("Error creating address:", error);
         throw error;
     }
+};
+
+
+export const getUsers = async (token: string | null) => {
+  try {
+    const results = await axios.get(`${api_url}/managers/users`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/json"
+      }
+    });
+    return results.data;
+  } catch (err) {
+    console.log(err);
+  }
+  
+}
+
+export const getOneUser = async (userId: string, token: string | null): Promise<User | undefined> => {
+  try {
+    const results = await axios.get<User>(`${api_url}/managers/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
+    return results.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const editUser = async (userId: number, role: string, token: string | null): Promise<boolean> => {
+  if (!token) return false;
+  
+  try {
+    const results = await axios.put(
+      `${api_url}/managers/users/${userId}/role`,
+      { role },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("Updated Successfully:", results.data);
+    return true;
+  } catch (err) {
+    console.error("Error updating user:", err);
+    return false;
+  }
 };
 
 export const editAddress = async (
@@ -342,6 +406,22 @@ export const getOrderDetails = async (token: string, itemId: number) => {
   }
 };
 
+
+export const getCanceledOrder = async (token: string, itemId: number) => {
+  try {
+      const response = await axios.get(`${api_url}/orders/${itemId}`, {
+      headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          },
+      });
+      return response.data;
+  } catch (error) {
+      console.error("Error deleting address:", error);
+      throw error;
+  }
+};
+
 export const updateOrderStatus = async (
     token: string, 
     itemId: number, 
@@ -424,5 +504,51 @@ export const canceledByUser = async (token: string, orderId: number) => {
       console.log(err);
     }
 }
+
+
+
+export const fetchSalesDaily = async (token: string) => {
+  try {
+      const response = await axios.get(`${api_url}/sales/daily`, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+          },
+      });
+      return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export const fetchSalesMonthly = async (token: string) => {
+  try {
+      const response = await axios.get(`${api_url}/sales/monthly`, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+          },
+      });
+      return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
+export const fetchSalesYearly = async (token: string) => {
+  try {
+      const response = await axios.get(`${api_url}/sales/yearly`, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+          },
+      });
+      return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 
 

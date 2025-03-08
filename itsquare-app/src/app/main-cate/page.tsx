@@ -23,21 +23,24 @@ export default function Category() {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
 
-useEffect(() => {
-  const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      setToken(storedToken);
-  }
-}, []);
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        setToken(storedToken);
+    }
+  }, []);
 
-useEffect(() => {
-  const getItems = async () => {
-    const products = await fetchItemsForCategory(token);
-    setProduct(products);
-  };
-  getItems();
-}, [token]);
-
+  useEffect(() => {
+    const getItems = async () => {
+      if (!token) return; 
+      const products = await fetchItemsForCategory(token);
+      setProduct(products);
+    };
+  
+    getItems();
+    const interval = setInterval(getItems, 60000); 
+    return () => clearInterval(interval); 
+  }, [token]); 
 
   const filteredProducts = product.filter((item) => {
     return (
@@ -60,7 +63,7 @@ useEffect(() => {
                     ${selectedCategory === category ? "bg-gray-400 text-white" : "bg-white text-black hover:bg-gray-300"}`}>{category}</button>
         ))}
       </div>
-<br /><br />
+    <br /><br />
       {/* Search Bar */}
       <div className="relative w-full max-w-[600px] mb-4">
         <input

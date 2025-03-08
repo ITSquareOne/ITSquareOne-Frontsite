@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
-import { Order, getOrderDetails } from "@/app/utils/api";
+import { CanceledOrder, Order, getOrderDetails, getCanceledOrder } from "@/app/utils/api";
 
 export default function OrderDetail () {
     const { id } = useParams(); 
     const orderId = Number(id); 
     const [order, setOrder] = useState<Order | null>(null);
+    const [canceledOrder, setcanceledOrder] = useState<CanceledOrder | null>(null);
+
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -25,8 +27,14 @@ export default function OrderDetail () {
       if (!orderId || !token) return; 
       try {
         setLoading(true);
-        const data = await getOrderDetails(token, Number(orderId));
-        setOrder(data);
+        let data = await getOrderDetails(token, orderId);
+        if (Array.isArray(data) && data.length !== 0) {
+          setOrder(data);
+        } else {
+          data = await getCanceledOrder(token, orderId);
+          setcanceledOrder(data);
+        }
+
       } catch (error) {
         console.error("Error fetching order details:", error);
       }  finally {
@@ -37,17 +45,34 @@ export default function OrderDetail () {
   }, [orderId, token]); 
 
   if (loading) return <div>⏳ Loading...</div>;
-  if (!order || order.length === 0) 
+  
+  if (canceledOrder) {     
     return (
       <div 
         className="flex items-center justify-center h-screen bg-cover bg-center" 
         style={{ backgroundImage: "url('/bg-main.png')" }}
       >
-        <div className="text-center text-lg font-bold bg-white text-black p-4 rounded-lg shadow-lg">
-          ❌ ไม่พบข้อมูลคำสั่งซื้อ
-        </div>
+        <div className="bg-white rounded-xl shadow-lg p-6 w-[80%] max-w-4xl">
+        <h1 className="text-center text-xl font-bold mb-4 text-black">
+        ❌ คำสั่งซื้อถูกยกเลิก
+        </h1>
+        <h1 className="text-center text-xl font-bold mb-4 text-black">
+          รายละเอียดคำสั่งซื้อ #{orderId}
+        </h1>
+        <h2 className="text-center text-lg font-bold text-gray-700">
+            {canceledOrder?.brief.split(",").map((line, index) => (
+                <span key={index} className="block">{line.trim()}</span>
+            ))}
+        </h2>
+
+        <button onClick={() => window.history.back()} className="mt-8 px-4 py-2 bg-yellow-500 text-black rounded-lg shadow-md hover:bg-yellow-600 transition">
+          Back
+        </button>
       </div>
+    </div>
     );
+  }
+    
   return (
     <div
       className="relative min-h-[93vh] flex flex-col items-center justify-center bg-cover bg-center p-6"
@@ -66,7 +91,7 @@ export default function OrderDetail () {
             </tr>
           </thead>
           <tbody>
-            {order.map((item) => (
+            {order?.map((item) => (
               <tr key={item.part_id} className="border-t">
                 <td className="flex items-center gap-4 p-3">
                   <Image
@@ -89,9 +114,9 @@ export default function OrderDetail () {
           </tbody>
         </table>
 
-        <a href="/status" className="mt-8 px-4 py-2 bg-yellow-500 text-black rounded-lg shadow-md hover:bg-yellow-600 transition">
+        <button onClick={() => window.history.back()} className="mt-8 px-4 py-2 bg-yellow-500 text-black rounded-lg shadow-md hover:bg-yellow-600 transition">
           Back
-        </a>
+        </button>
       </div>
     </div>
   );

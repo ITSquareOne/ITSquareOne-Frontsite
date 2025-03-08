@@ -80,13 +80,6 @@ export default function CheckoutPage() {
         alert("กรุณาเลือกสินค้าอย่างน้อย 1 รายการก่อนสั่งซื้อ");
         return;
     }
-
-    const requestBody = {
-        address_id: selectedAddress.address_id,
-        part_ids: partIds
-    };
-
-    console.log("Sending order request:", requestBody);
     try {
         if (selectedAddress.address_id && partIds.length > 0) {
           const order = await createOrder(token, selectedAddress.address_id, partIds);
@@ -95,6 +88,7 @@ export default function CheckoutPage() {
         } 
     } catch (error) {
         console.error("Failed to create order", error);
+        alert("สินค้าดังกล่าวถูกสั่งซื้อไปแล้ว!!");
     }
 };
   const handleDelete = async () => {
