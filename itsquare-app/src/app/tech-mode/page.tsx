@@ -420,16 +420,14 @@ useEffect(() => {
 }, [token]); 
 
   return (
-    <div 
-      className="relative min-h-[93vh] flex bg-cover bg-center" 
-      style={{ backgroundImage: "url('/bg-main.png')" }}
-    >
+    <div
+      className="relative min-h-[93vh] flex bg-cover bg-center -top-12">
       <div className="w-1/4 m-12 mr-4 bg-white min-h-[80vh] p-6 rounded-xl">
       <ul className="space-y-4">
           {menuItems.map((item) => (
             <li 
               key={item}
-              className={`p-3 text-xl text-center font-medium rounded-full border-4 border-gray-300 cursor-pointer 
+              className={`p-3 text-xl text-center font-medium rounded-full shadow-lg border-gray-200 border-2 cursor-pointer 
                 ${selected === item ? "bg-yellow-400 text-black hover:bg-yellow-600 hover:text-white transition" : "bg-white text-black hover:bg-slate-400  hover:text-white transition"}`}
               onClick={() => setSelected(item)}
             >

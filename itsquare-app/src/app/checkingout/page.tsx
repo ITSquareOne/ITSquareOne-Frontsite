@@ -152,7 +152,7 @@ const handleEditClick = (addr: Address) => {
   const finalPrice = totalPrice + shippingCost;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#1B1038] text-white">
+    <div className="min-h-screen flex flex-col text-white">
       {/* Main Content */}
       <div className="flex flex-col lg:flex-row justify-center items-start px-8 py-6 gap-8">
         {/* Left Section: Product List */}

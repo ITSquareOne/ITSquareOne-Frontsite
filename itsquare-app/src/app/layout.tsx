@@ -68,25 +68,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 aria-label="Toggle menu"
               >
                 {/* Hamburger Icon */}
-                <svg 
-                  className="w-6 h-6" 
-                  fill="none" 
-                  stroke="currentColor" 
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
                   {isOpen ? (
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M6 18L18 6M6 6l12 12" 
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
                     />
                   ) : (
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M4 6h16M4 12h16M4 18h16" 
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
                     />
                   )}
                 </svg>
@@ -99,32 +99,54 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </a>
                 ) : (
                   <>
-                    <a href="/cart" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                      ตะกร้า
-                    </a>
-                    <a href="/profile" className="text-lg text-white shadow-lg bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                      โปรไฟล์
-                    </a>
-                    
                     {role === "technician" && (
-                     <a href="/status-tech" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                        จัดการออร์เดอร์
-                     </a>
-                  )}
-                  {role === "student" && (
-                     <a href="/status" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                        ติดตามสถานะ
-                     </a>
-                  )}
-                  {role === "manager" && (
-                     <a href="/manager-mode" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                        แผงควบคุม
-                     </a>
-                  )}
-                  <img
+                      <div className="flex gap-4">
+                        <a href="/profile" className="text-lg text-white shadow-lg hover:text-gray-300 bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                          โปรไฟล์
+                        </a>
+                        <a href="/main-cate" className="text-lg text-white shadow-lg hover:text-gray-300 bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                          หน้าสินค้า
+                        </a>
+                        <a href="/status-tech" className="text-lg text-white shadow-lg bg-pink-500 hover:bg-pink-600 p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                          จัดการออร์เดอร์
+                        </a>
+                        <img 
+                          src="/config.svg" 
+                          alt="" 
+                          className="h-11 w-11 cursor-pointer" 
+                          onClick={() => {
+                            router.push("/tech-mode?tab=stock"); // Add default tab parameter
+                          }}
+                        />
+                      </div>
+                    )}
+                    {role === "student" && (
+                      <div className="flex gap-4">
+                        <a href="/cart" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                          ตะกร้า
+                        </a>
+                        <a href="/profile" className="text-lg text-white shadow-lg bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                          โปรไฟล์
+                        </a>
+                        <a href="/status" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                          ติดตามสถานะ
+                        </a>
+                      </div>
+                    )}
+                    {role === "manager" && (
+                      <div className="flex gap-4">
+                        <a href="/profile" className="text-lg text-white shadow-lg bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                          โปรไฟล์
+                        </a>
+                        <a href="/manager-mode" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                          แผงควบคุม
+                        </a>
+                      </div>
+                    )}
+                    <img
                       src="/logout.svg"
                       alt="Logout"
-                      className="h-6 w-6 cursor-pointer"
+                      className="h-9 w-9 cursor-pointer"
                       onClick={() => setIsModalOpen(true)} // Open logout confirmation modal
                     />
                   </>
@@ -132,11 +154,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
             </div>
           </nav>
-                {/* ✅ Mobile Dropdown Menu */}
-          <div 
-            className={`${
-              isOpen ? "block" : "hidden"
-            } md:hidden fixed top-[48px] left-0 w-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out`}
+          {/* ✅ Mobile Dropdown Menu */}
+          <div
+            className={`${isOpen ? "block" : "hidden"
+              } md:hidden fixed top-[48px] left-0 w-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out`}
           >
             <ul className="flex flex-col items-center space-y-3 py-4">
               {!isLoggedIn ? (
@@ -177,7 +198,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   )}
                   {/* Logout option */}
                   <li>
-                    <button 
+                    <button
                       onClick={() => setIsModalOpen(true)}
                       className="text-lg text-gray-900 hover:text-red-600"
                     >
