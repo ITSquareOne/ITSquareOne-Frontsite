@@ -65,7 +65,7 @@ export default function Sign_in() {
         setIsModalOpen(true);
 
         setTimeout(() => {
-          window.location.href = "/profile"; // Redirect to profile after 1.5s
+          window.location.href = "/"; // Redirect to profile after 1.5s
         }, 1500);
       }
     } catch (err) {
