@@ -89,7 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </nav>
 
           {/* Main Content Area */}
-          <div className="pt-[80px] pb-[60px]"> {/* Adjust padding-top for navbar and padding-bottom for footer */}
+          <div className="my-20"> {/* Adjust padding-top for navbar and padding-bottom for footer */}
             {children}
           </div>
 

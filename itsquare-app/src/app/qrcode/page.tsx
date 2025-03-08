@@ -62,8 +62,8 @@ export default function Payment() {
 
   return (
     <div
-      className="relative min-h-screen flex flex-col items-center justify-center bg-cover bg-center px-4"
-      style={{ backgroundImage: "url('/bg-main.png')" }}
+      className="relative min-h-screen flex flex-col items-center bg-cover bg-center px-4 py-5"
+      
     >
       {/*Fixed to Bottom-Right9*/}
       <Image
@@ -111,7 +111,7 @@ export default function Payment() {
             </button>
             <button className="mt-4 bg-gray-400 text-white py-2 px-6 rounded-md hover:bg-gray-500 transition">
               ยกเลิก
-            </button>   
+            </button>
           </div>
         </div>
       </div>
