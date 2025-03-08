@@ -104,7 +104,7 @@ export default function OrderHistory() {
   };
 
   return (
-    <div className="min-h-screen text-white pb-24">
+    <div className="min-h-screen bg-[#1A0C2F] text-white pb-24" style={{ backgroundImage: "url('/bg-main.png')" }}>
 
       {/* 🏷 Filter Tabs */}
       <div className="flex justify-center pt-6 space-x-4">
@@ -189,7 +189,7 @@ export default function OrderHistory() {
                         </div>
                 
                         {/* Right - Status & Button */}
-                        <div className="text-lg font-bold text-black text-center">
+                        <div className="text-lg font-light text-black text-center flex flex-col space-y-4">
                             <a href={`/orders/${order.order_id}`} className="text-black underline">
                             ดูรายละเอียด
                             </a>         
