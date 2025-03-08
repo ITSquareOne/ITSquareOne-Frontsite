@@ -137,13 +137,7 @@ const handleEditClick = (addr: Address) => {
   };
   
   const totalPrice = cart.reduce((total, item) => total + item.price, 0);
-  const shippingCost = (() => {
-    if (totalPrice <= 0) return 0;
-    if (totalPrice < 1000 && totalPrice > 0) return 25;
-    if (totalPrice <= 5000) return 25 + totalPrice * 0.02;
-    return 25 + totalPrice * 0.05;
-  })();
-  const finalPrice = totalPrice + shippingCost;
+  const finalPrice = totalPrice;
 
   return (
     <div className="min-h-screen flex flex-col text-white">
@@ -176,7 +170,7 @@ const handleEditClick = (addr: Address) => {
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>การจัดส่ง</span>
-                <span>{shippingCost} บาท</span>
+                <span>FREE!</span>
               </div>
               <div className="flex justify-between font-normal text-lg mt-2">
                 <span>ยอดชำระทั้งหมด</span>

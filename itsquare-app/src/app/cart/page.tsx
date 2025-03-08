@@ -48,9 +48,12 @@ export default function PcBuildSummary() {
           {/* Total Price & Checkout (Stays Fixed at Bottom) */}
           <div className="flex justify-between items-center bg-gray-200 p-4 rounded-b-lg">
             <p className="text-lg font-semibold">Total: {totalPrice} THB</p>
-            <button  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-                <a href="/checkingout">ชำระเงิน</a>
-            </button>
+            {cart.length > 0 && (
+              <button  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+              <a href="/checkingout">ชำระเงิน</a>
+              </button>
+            )}
+           
           </div>
         </div>
       </div>
