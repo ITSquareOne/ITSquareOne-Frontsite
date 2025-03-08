@@ -20,7 +20,7 @@ function NavigationBar() {
   const [token, setToken] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { cart } = useCart(); // Now this is safe to use
-  
+
   const role = techProfile?.role;
 
   useEffect(() => {
@@ -70,7 +70,7 @@ function NavigationBar() {
           >
             {/* Hamburger Icon */}
             <svg
-              className="w-6 h-6"
+              className="w-6 h-6 text-[#757575] hover:text-gray-400"  // Add text color using Tailwind
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -109,10 +109,10 @@ function NavigationBar() {
                       จัดการออร์เดอร์
                     </a>
                     <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
-                        <div className="flex flex-col">
+                      <div className="flex flex-col">
                         <span className="underline">{techProfile?.username}</span>
                         <span className="text-xs text-end">{techProfile?.role}</span>
-                        </div>
+                      </div>
                       {techProfile?.profile ? (
                         <img
                           src={`data:image/jpeg;base64,${techProfile.profile}`}
@@ -139,15 +139,15 @@ function NavigationBar() {
                 )}
                 {role === "student" && (
                   <div className="flex gap-4">
-                    
+
                     <a href="/status" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
                       ติดตามสถานะ
                     </a>
                     <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
-                        <div className="flex flex-col">
+                      <div className="flex flex-col">
                         <span className="underline">{techProfile?.username}</span>
                         <span className="text-xs text-end">{techProfile?.role}</span>
-                        </div>
+                      </div>
                       {techProfile?.profile ? (
                         <img
                           src={`data:image/jpeg;base64,${techProfile.profile}`}
@@ -163,7 +163,7 @@ function NavigationBar() {
                       )}
                     </a>
                     <div className="relative">
-                      <img 
+                      <img
                         src="/cart.svg"
                         alt="Cart"
                         className="cursor-pointer w-9 h-9 mr-4 mt-1"
@@ -183,10 +183,10 @@ function NavigationBar() {
                       แผงควบคุม
                     </a>
                     <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
-                        <div className="flex flex-col">
+                      <div className="flex flex-col">
                         <span className="underline">{techProfile?.username}</span>
                         <span className="text-xs text-end">{techProfile?.role}</span>
-                        </div>
+                      </div>
                       {techProfile?.profile ? (
                         <img
                           src={`data:image/jpeg;base64,${techProfile.profile}`}
@@ -201,7 +201,7 @@ function NavigationBar() {
                         />
                       )}
                     </a>
-                    
+
                   </div>
                 )}
                 <img
