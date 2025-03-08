@@ -32,13 +32,13 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen bg-cover bg-center" style={{ backgroundImage: "url('/bg-main.png')" }}>
+    <div className="relative min-h-screen bg-cover bg-center">
       <Image
         src="/popo.png"
         alt="PoPo"
         width={600}
         height={500}
-        className="absolute right-0 top-0 md:bottom-[-10px] md:block xl:w-1/4 w-auto hidden object-contain"
+        className="absolute right-0 top-0 -mt-10 md:block xl:w-1/4 w-auto hidden object-contain"
       />
       <div className="absolute p-6 md:top-1/4 md:left-1/3 top-0 left-1/3 -translate-x-1/2 -translate-y-1/3 mt-20">
         <h1 className="lg:text-7xl md:text-5xl text-2xl font-bold md:mb-10 mb-6">สวัสดี,</h1>

@@ -8,7 +8,9 @@ export default function PcBuildSummary() {
   const totalPrice = cart.reduce((total, item) => total + item.price, 0);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#1B1038] text-white overflow-hidden py-[20vh]">
+    <div 
+    
+    className="min-h-screen flex flex-col text-white overflow-hidden py-[10vh]">
       {/* Main Content */}
       <div className="flex flex-col lg:flex-row items-center lg:items-start gap-32 px-8 py-6 flex-grow justify-center">
         {/* Left Section: Your Computer */}
