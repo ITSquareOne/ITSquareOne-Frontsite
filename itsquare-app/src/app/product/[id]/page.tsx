@@ -119,7 +119,14 @@ export default function ProductPage() {
             </Dialog>
             <div className="text-left mt-4 text-gray-700">
                 <p className="text-gray-600 text-md mb-4">รหัสชิ้นส่วน: {product.part_code}</p>
-                <p className="whitespace-pre-line">{product.description}</p>
+                <p className="whitespace-pre-line">
+                    {(product.description ?? "").split("|").map((line, index) => (
+                      <span key={index}>
+                        {line}
+                        <br />
+                      </span>
+                    ))}
+                </p>
           </div>
     </div>
 </div>
