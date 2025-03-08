@@ -5,8 +5,21 @@ import { useCart } from "../components/CartContext";
 
 export default function PcBuildSummary() {
   const { cart, removeFromCart } = useCart();
-  const totalPrice = cart.reduce((total, item) => total + item.price, 0);
+  const [error, setError] = useState<string | null>(null);
 
+  const totalPrice = cart.reduce((total, item) => total + item.price, 0);
+  const requiredTypes = [1, 2, 4];
+  const cartTypes = new Set(cart.map((item) => item.type));
+  const has5or6 = cartTypes.has(5) || cartTypes.has(6);
+  const isComplete = requiredTypes.every((type) => cartTypes.has(type)) && has5or6;
+  
+  const handleCheckout = () => {
+    if (!isComplete) {
+      setError("กรุณาเลือกชิ้นส่วนให้ครบก่อนทำการชำระเงิน! \n(CPU, Mainboard, Ram, Storage)");
+      return;
+    }
+    window.location.href = "/checkingout";
+  };
   return (
     <div 
     
@@ -50,12 +63,13 @@ export default function PcBuildSummary() {
             <p>รวมทั้งหมด: {totalPrice} บาท</p>
           </div>
 
-          {/* Total Price & Checkout (Stays Fixed at Bottom) */}
+          {error && <p className="text-red-500 text-center py-2 whitespace-pre">{error}</p>}
+
           <div className="flex justify-between items-center bg-gray-200 p-4 rounded-b-lg">
             <p className="text-lg font-semibold">Total: {totalPrice} THB</p>
             {cart.length > 0 && (
-              <button  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-              <a href="/checkingout">ชำระเงิน</a>
+              <button onClick={handleCheckout}  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+              ชำระเงิน
               </button>
             )}
            

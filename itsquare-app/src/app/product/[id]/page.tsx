@@ -28,7 +28,8 @@ export default function ProductPage() {
           id: product.id,
           name: product.name,
           price: product.price,
-          image: `data:image/jpeg;base64,${product.part_image}`
+          image: `data:image/jpeg;base64,${product.part_image}`,
+          type: product.type
         });
         setIsAdding(true); 
       }
