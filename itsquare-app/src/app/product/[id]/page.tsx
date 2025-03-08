@@ -95,10 +95,13 @@ export default function ProductPage() {
                 <div>
                   <h2 className="text-xl font-semibold text-green-600">เพิ่มสินค้าลงในตะกร้าเรียบร้อย ✅</h2>
                   <button
-                    onClick={() => setIsAdding(false)}
+                    onClick={() => {
+                      setIsAdding(false);
+                      window.location.href = "/main-cate";
+                    }}
                     className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-                    >
-                      ปิด
+                  >
+                    ปิด
                   </button>
                 </div>
               </div>
@@ -107,7 +110,7 @@ export default function ProductPage() {
               <div className="bg-white rounded-lg shadow-xl p-6 md:w-1/4 w-3/4 text-center text-black">
                 <h2 className="text-xl font-semibold text-red-600">สินค้านี้อยู่ในตะกร้าแล้ว ❗</h2>
                 <button
-                  onClick={() => setAlreadyInCart(false)}
+                  onClick={() => {setAlreadyInCart(false);  window.location.href = "/main-cate";}}
                   className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
                 >
                   ปิด
