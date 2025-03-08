@@ -78,7 +78,7 @@ export default function ProductPage() {
             </a>
             <div className="flex justify-center">
                 <Image 
-                    src={`data:image/jpeg;base64,${product.part_image}`}  
+                    src={product.part_image ? `data:image/jpeg;base64,${product.part_image}` : "/sorry.jpg"}
                     alt={product.name} 
                     width={200} 
                     height={200} 

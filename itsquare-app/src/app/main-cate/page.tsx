@@ -89,7 +89,7 @@ export default function Category() {
               <div key={item.id || index} className="bg-white rounded-xl shadow-lg w-full md:w-[250px] h-auto flex flex-col items-center p-4 mb-4">
                 
                 <div className="border-2 border-gray-400 w-full md:h-[200px] rounded-xl overflow-hidden">
-                  <Image src={`data:image/jpeg;base64,${item.part_image}`} alt="icon" width={250} height={300} className="w-full h-full object-cover" />
+                  <Image src={item.part_image ? `data:image/jpeg;base64,${item.part_image}` : "/sorry.jpg"} alt="icon" width={250} height={300} className="w-full h-full object-cover" />
                 </div>
 
                 {/* Product Name */}
