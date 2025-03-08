@@ -4,17 +4,6 @@ import axios from "axios";
 import { Dialog } from "@headlessui/react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  condition: number;
-  part_code: string;
-  part_image: string;
-  brand: string;
-  type: string;
-}
-
 interface User {
   user_id: number;
   username: string;
@@ -26,17 +15,6 @@ interface User {
   role: string;
 }
 
-interface Brands {
-  brand_id: number;
-  brand_name: string;
-}
-
-interface types {
-  type_id: number;
-  type_name: string;
-}
-
-
 const data = [
     { month: "Jan", users: 2000, orders: 8000, income: 50000 },
     { month: "Feb", users: 4000, orders: 15000, income: 120000 },
@@ -47,72 +25,10 @@ const data = [
 export default function manager() {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setselectedUser] = useState<User | null>(null);
-  const [product, setProduct] = useState<Product[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("วิเคราะห์ยอดขาย");
-  const menuItems = ["วิเคราะห์ยอดขาย", "ยอดการสั่งซื้อ", "จัดการคลังสินค้า", "จัดการบัญชีพนักงาน", "จัดการบัญชีผู้ใช้"];
+  const menuItems = ["วิเคราะห์ยอดขาย", "ยอดการสั่งซื้อ", "จัดการบัญชีพนักงาน", "จัดการบัญชีผู้ใช้"];
   const [token, setToken] = useState<string | null>(null);
-  const [editProduct, setEditProduct] = useState<Product | null>(null);
-  const [isEditProductOpen, setIsEditProductOpen] = useState(false);
-  const [brands, setBrands] = useState<Brands[]>([]);
-  const [types, setTypes] = useState<types[]>([]);
-
-  const fetchItems = async () => {
-    if (!token) return; 
-    
-    try {
-      const [partItemsResponse, partsResponse, brandsResponse, typeResponse] = await Promise.all([
-      axios.get("http://localhost:3000/api/part-items", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }), axios.get("http://localhost:3000/api/parts", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }), axios.get("http://localhost:3000/api/brands", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }), axios.get("http://localhost:3000/api/part-types", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }),
-    ]);
-    const partItems = partItemsResponse.data;
-    const parts = partsResponse.data;
-    const brands = brandsResponse.data;
-    const types = typeResponse.data;
-    setBrands(brandsResponse.data);
-    setTypes(typeResponse.data);
-
-    if (Array.isArray(partItems) && Array.isArray(parts) && Array.isArray(brands) && Array.isArray(types)) {
-      const mergedProducts = partItems.map((item: any) => {
-        const part = parts.find((p: any) => p.part_code === item.part_code) || {};
-        return {
-          id: item.part_id,
-          name: part.name,
-          price: item.price,
-          condition: item.condition,
-          part_code: item.part_code,
-          part_image: item.part_image,
-          brand: brands.find((b: any) => b.brand_id === part.brand_id)?.brand_name || "Other",
-          type: types.find((t: any) => t.type_id === part.type_id)?.type_name || "Other"
-        };
-      });
-      setProduct(mergedProducts);
-    } else {
-      console.error("Fetch error: Data format incorrect", { partItems, parts });
-      }
-    } catch (error) {
-      console.error("Fetch error: " + error);
-    }
-  };
 
   const getOneUser = async (userId: number) => {
     try {
@@ -178,26 +94,18 @@ export default function manager() {
     } catch (err) {
       console.log(err);
     }
+    
   }
-
-  const handleEdit = (item: Product) => {
-    setEditProduct(item);
-    setIsEditProductOpen(true);
-  };
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
+
     }
 }, []);
 
-useEffect(() => {
-  console.log("Updated editProduct:", editProduct);
-}, [editProduct]); 
-
   useEffect(() => {
-    fetchItems();
     getUsers();
   }, [token]); 
 
@@ -255,77 +163,7 @@ useEffect(() => {
         </div>
         </>
        }
-      {selected === "จัดการคลังสินค้า" && 
-        <>
-        <table className="w-full border border-blue-500 text-black">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border border-black px-4 py-2">ID</th>
-              <th className="border border-black px-4 py-2">Name</th>
-              <th className="border border-black px-4 py-2">Brand</th>
-              <th className="border border-black px-4 py-2">Category</th>
-              <th className="border border-black px-4 py-2">Price</th>
-              <th className="border border-black px-4 py-2">Edit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {product.map((item) => (
-                <tr key={item.id} className="text-center">
-                  <td className="border border-black px-4 py-2">{item.id}</td>
-                  <td className="border border-black px-4 py-2">{item.name}</td>
-                  <td className="border border-black px-4 py-2">{item.brand}</td>
-                  <td className="border border-black px-4 py-2">{item.type}</td>
-                  <td className="border border-black px-4 py-2">{item.price}</td>
-                  <td className="border border-black px-4 py-2">
-                    <button onClick={() => handleEdit(item)} className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition">Edit</button>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-        <Dialog open={isEditProductOpen} onClose={() => setIsEditProductOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 w-2/4 text-start text-black">
-            <h2 className="text-xl font-bold mb-4">Edit Item</h2>
-            <label className="block font-medium">ID</label>
-            <input className="border w-full p-2 mb-2" type="number" value={editProduct?.id} onChange={(e) => setEditProduct({...editProduct!, id: Number(e.target.value)})} />
-            <label className="block font-medium">Brand</label>
-            <select 
-              className="border w-full p-2 mb-2" 
-              value={editProduct?.brand} 
-              onChange={(e) => setEditProduct({...editProduct!, brand: e.target.value})}
-            >
-                {brands.map((brand) => (
-                  <option key={brand.brand_name} value={brand.brand_name}>{brand.brand_name}</option>
-                ))}
-            </select>
-
-            <label className="block font-medium">Type</label>
-            <select 
-              className="border w-full p-2 mb-2" 
-              value={editProduct?.type} 
-              onChange={(e) => setEditProduct({...editProduct!, type: e.target.value})}
-            >
-                {types.map((type) => (
-                  <option key={type.type_name} value={type.type_name}>{type.type_name}</option>
-                ))}
-            </select>
-
-            <label className="block font-medium">Item</label>
-            <input className="border w-full p-2 mb-2" value={editProduct?.part_code} onChange={(e) => setEditProduct({...editProduct!, name: e.target.value})} />
-
-            <label className="block font-medium">Name</label>
-            <input className="border w-full p-2 mb-2" value={editProduct?.name} onChange={(e) => setEditProduct({...editProduct!, name: e.target.value})} />
-
-            <label className="block font-medium">Price</label>
-            <input className="border w-full p-2 mb-2" type="number" value={editProduct?.price} onChange={(e) => setEditProduct({...editProduct!, price: Number(e.target.value)})} />            <div className="flex justify-end gap-2">
-              <button className="bg-green-500 text-white px-4 py-2 rounded">Save</button>
-              <button onClick={() => setIsEditProductOpen(false)} className="bg-gray-500 text-white px-4 py-2 rounded">Close</button>
-            </div>
-          </div>
-        </Dialog>
-        </>
-      }
-
+      
       {selected === "ยอดการสั่งซื้อ" && 
         <>
         <div className="bg-white p-4 rounded-lg shadow-md border-2 text-black border-gray-300 w-1/3 mb-6">

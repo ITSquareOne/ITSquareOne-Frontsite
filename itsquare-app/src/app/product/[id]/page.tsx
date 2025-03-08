@@ -2,17 +2,11 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import axios from "axios";
+import { fetchOneItem, Product } from "../../utils/api";
+import { useCart } from "../../components/CartContext";
+import { Dialog } from "@headlessui/react";
 
-interface Product {
-  part_id: number;
-  part_code: string;
-  name: string;
-  price: number;
-  condition: number;
-  part_image: string;
-  brand_id: number;
-}
+
 
 // Function to convert condition percentage to a readable label
 const getConditionLabel = (condition: number) => {
@@ -23,103 +17,119 @@ const getConditionLabel = (condition: number) => {
 };
 
 export default function ProductPage() {
-  const { id } = useParams();
-  const productId = typeof id === "string" ? decodeURIComponent(id) : "";
-  const [product, setProduct] = useState<Product | null>(null);
+    const {id} = useParams();
+    const [product, setProduct] = useState<Product | null>(null);
+    const decodedId = typeof id === 'string' ? decodeURIComponent(id) : ''; 
+    const [token, setToken] = useState<string | null>(null);
+    const { cart, addToCart } = useCart(); // ดึง cart และ addToCart จาก Context
+    const [IsAdding, setIsAdding] = useState(false);
+    const [alreadyInCart, setAlreadyInCart] = useState(false);
 
-  useEffect(() => {
-    console.log("Fetching product with part_id:", productId); // Debugging log
-
-    const fetchProduct = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("No token found. Please log in.");
-          return;
-        }
-
-        // Fetch product details from /api/part-items/partid/{partid}
-        const partItemRes = await axios.get(`http://localhost:3000/api/part-items/partid/${productId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
+  const handleAddToCart = () => {
+    if (!product) return;
+    try {
+      const existingItem = cart.find((item) => item.id === product.id);
+      if (existingItem) {
+        setAlreadyInCart(true);
+      } else {
+        addToCart({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: `data:image/jpeg;base64,${product.part_image}`
         });
-
-        if (!partItemRes.data) {
-          console.error("Product not found.");
-          return;
-        }
-
-        const partItem = partItemRes.data;
-
-        // Fetch product name from /api/parts using part_code
-        const partRes = await axios.get(`http://localhost:3000/api/parts?part_code=${partItem.part_code}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        });
-
-        const partData = partRes.data.length > 0 ? partRes.data[0] : { name: "Unknown Product", brand_id: null };
-
-        // Merge data
-        setProduct({
-          ...partItem,
-          name: partData.name,
-          brand_id: partData.brand_id,
-        });
-      } catch (error) {
-        console.error("Error fetching product:", error);
+        setIsAdding(true); 
       }
-    };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+    useEffect(() => {
+      const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+          setToken(storedToken);
+      }
+    }, []);
 
-    fetchProduct();
-  }, [id]);
+    useEffect(() => {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }, [cart]);
 
-  if (!product) return <p className="text-center mt-6 text-sm">Loading...</p>;
+    useEffect(() => {
+      console.log("Updated cart:", cart);
+    }, [cart]);
+    useEffect(() => {
+      if (token && decodedId) {
+        const fetchProduct = async () => {
+            try {
+                const fetchedProduct = await fetchOneItem(token, decodedId);
+                if (fetchedProduct) {
+                    setProduct(fetchedProduct);
+                } else {
+                    console.error("Product not found");
+                }
+            } catch (error) {
+                console.error("Error fetching product:", error);
+            }
+        };
+        fetchProduct();
+    }
+    }, [token, id]);
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center p-3 sm:p-4" style={{ backgroundImage: "url('/bg-main.png')" }}>
-      <div className="bg-white p-3 sm:p-4 rounded-lg shadow-md max-w-xs sm:max-w-md items-center">
-        <div className="place-items-center">
-          {product.part_image ? (
-            <Image 
-              src={`data:image/jpeg;base64,${product.part_image}`} 
-              alt={`ภาพของ ${product.name}`} 
-              width={200} 
-              height={200} 
-              className="rounded-md object-cover"
-            />
-          ) : (
-            <p className="text-gray-500 text-sm">No image available</p>
-          )}
-        </div>
+    if (!product) return <p className="text-center mt-10">Loading...</p>;
+    
 
-        <h1 className="text-lg sm:text-xl font-bold mt-2 mb-2 text-black text-opacity-80">{product.name}</h1>
+  
 
-        {/* Product Condition */}
-        <p className="text-xs sm:text-sm mt-1 text-gray-600">
-          สภาพสินค้า: <span className="text-black font-semibold">{getConditionLabel(product.condition)}</span>
-        </p>
-
-        {/* Product Description Placeholder */}
-        <div>
-          <p className="mt-1 text-xs sm:text-sm text-gray-500 text-opacity-50">
-            Write a detailed yet concise product description for a PC component. Include key specifications, features, and benefits. Ensure it sounds engaging for potential buyers. 
-            The product is a {product.name}.
-          </p>
-        </div>
-
-        {/* Price & Add to Cart */}
-        <p className="text-lg sm:text-xl mt-2 text-black text-right">
-          {product.price} บาท
-        </p>
-
-        <button className="mt-3 bg-blue-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:bg-blue-600 w-full text-sm sm:text-base">
-          เพิ่มสู่ตะกร้า
-        </button>
-      </div>
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center p-6" style={{ backgroundImage: "url('/bg-main.png')" }}>
+        <div className="bg-white p-6 rounded-xl shadow-lg max-w-2xl w-full text-center relative">
+            <a className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1 rounded-lg border border-blue-600 hover:bg-blue-600 inline-block transition " href="/main-cate">
+                back
+            </a>
+            <div className="flex justify-center">
+                <Image 
+                    src={`data:image/jpeg;base64,${product.part_image}`}  
+                    alt={product.name} 
+                    width={200} 
+                    height={200} 
+                    className="rounded-lg"
+                />
+            </div>
+            <h1 className="text-xl font-bold mt-4 text-black uppercase">{product.name}</h1>
+            <p className="text-blue-600 text-2xl font-bold">{product.price} บาท</p>
+            <button onClick={handleAddToCart} className="mt-4 bg-pink-500 text-white px-6 py-2 rounded-lg border hover:bg-pink-600 transition">
+              เพิ่มสู่ตะกร้า
+            </button>
+            <Dialog open={IsAdding} onClose={() => setIsAdding(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl p-6 md:w-1/4 w-3/4 text-center text-black">
+                <div>
+                  <h2 className="text-xl font-semibold text-green-600">เพิ่มสินค้าลงในตะกร้าเรียบร้อย ✅</h2>
+                  <button
+                    onClick={() => setIsAdding(false)}
+                    className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                    >
+                      ปิด
+                  </button>
+                </div>
+              </div>
+            </Dialog>
+            <Dialog open={alreadyInCart} onClose={() => setAlreadyInCart(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl p-6 md:w-1/4 w-3/4 text-center text-black">
+                <h2 className="text-xl font-semibold text-red-600">สินค้านี้อยู่ในตะกร้าแล้ว ❗</h2>
+                <button
+                  onClick={() => setAlreadyInCart(false)}
+                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                >
+                  ปิด
+                </button>
+              </div>
+            </Dialog>
+            <div className="text-left mt-4 text-gray-700">
+                <p className="text-gray-600 text-md mb-4">รหัสชิ้นส่วน: {product.part_code}</p>
+                <p className="whitespace-pre-line">{product.description}</p>
+          </div>
     </div>
+</div>
   );
 }
