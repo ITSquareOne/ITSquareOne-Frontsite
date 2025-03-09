@@ -15,6 +15,8 @@ export default function ProfilePage() {
     const [isEditAddressModalOpen, setIsEditAddressModalOpen] = useState(false);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [profile, setProfile] = useState<User | null>(null);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
     const [token, setToken] = useState<string | null>(null);
     const menuItems = ["ข้อมูลส่วนตัว", "ที่อยู่จัดส่งสินค้า"];
     const [selected, setSelected] = useState("ข้อมูลส่วนตัว");
@@ -24,7 +26,7 @@ export default function ProfilePage() {
     const [address, setAddress] = useState("");
     const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
     const [isDelModalOpen, setIsDelModalOpen] = useState(false);
-
+    const api_url = "http://localhost:3000/api";
 
     useEffect(() => {
       const storedToken = localStorage.getItem("token");
@@ -63,44 +65,48 @@ export default function ProfilePage() {
     }
 };
 
-const editProfile = async () => {
+const editPassword = async () => {
   if (profile) {
     try {
-      const updatedProfile = {
-        firstNameEn: profile.firstNameEn,
-        lastNameEn: profile.lastNameEn,
-        firstNameTh: profile.firstNameTh,
-        lastNameTh: profile.lastNameTh,
-        profile : profile.profile
+      const updatedPassword = {
+        currentPassword,
+        newPassword,
       };
 
-    const results = await axios.put("http://localhost:3000/api/users/profile", updatedProfile, {
+     await axios.put(`${api_url}/users/change-password`, updatedPassword, {
       headers: {
         "Authorization": `Bearer ${token}`,
         "Accept": "application/json"
       }
     }
   );
-  setProfile(results.data);
+
   setModalContent(
     <div>
       <h2 className="text-xl font-semibold text-green-600">
-        อัปเดตโปรไฟล์สำเร็จ ✅ 
+        เปลี่ยนรหัสผ่านสำเร็จ ✅ 
       </h2>
     </div>
   );
   setIsModalOpen(true);
     
   } catch (err) {
-    console.error("เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์", err);
-    setModalContent(
-      <div>
-        <h2 className="text-xl font-semibold text-red-600">
-          อัปเดตโปรไฟล์ไม่สำเร็จ ❌
-        </h2>
-      </div>
-    );
-    setIsModalOpen(true);
+    if (newPassword.length < 8) {
+      alert("กรุณาตั้งรหัสผ่านให้เกิน 8 ตัวอักษร!")
+    } else {
+      setModalContent(
+        <div>
+          <h2 className="text-xl text-center font-semibold text-red-600 whitespace-pre-line">
+            แก้ไขรหัสผ่านไม่สำเร็จ ❌<br />
+            กรุณาตรวจสอบความถูกต้องของรหัสผ่าน 
+          </h2>
+        </div>
+      );
+      setIsModalOpen(true);
+    }
+  } finally {
+    setNewPassword("");
+    setCurrentPassword("");
   }
 }
 }
@@ -236,75 +242,38 @@ const handleLogout = () => {
               
                 <div className="flex justify-center items-center pt-5">
                     <button
-                        onClick={editProfile}
+                        onClick={editPassword}
                         className=" bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition mr-4"
                     >
                       บันทึก
                     </button>
-                    <button onClick={() => setEditModalOpen(true)}  className=" bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">แก้ไข</button>
+                    <button onClick={() => setEditModalOpen(true)}  className=" bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">เปลี่ยนรหัสผ่าน</button>
                     
                     <Dialog open={isEditModalOpen} onClose={() => setEditModalOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-xl p-6 w-80 text-center text-black">
-                      <h2 className="text-xl font-bold mb-4">Edit User</h2>
+                      <h2 className="text-xl font-bold mb-4">Edit Password</h2>
                           <div className="space-y-3">
                           <div>
-                            <label className="block text-left font-semibold">ชื่อผู้ใช้งาน</label>
+                            <label className="block text-left font-semibold">รหัสผ่านปัจจุบัน</label>
                             <input
-                              type="text"
+                              type="password"
+                              placeholder="กรอกรหัสผ่าน"
                               className="w-full border p-2 rounded-md text-gray-400"
-                              value={profile.username}
-                              readOnly
+                              value={currentPassword}
+                              onChange={(e) => setCurrentPassword(e.target.value)}
                             />
                           </div>
                           <div>
-                            <label className="block text-left font-semibold">ชื่อ (TH)</label>
+                            <label className="block text-left font-semibold">รหัสผ่านใหม่</label>
                             <input
-                              type="text"
-                              className="w-full border p-2 rounded-md"
-                              value={profile.firstNameTh}
-                              onChange={(e) => setProfile({ ...profile, firstNameTh: e.target.value })}
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-left font-semibold">นามสกุล (TH)</label>
-                            <input
-                              type="text"
-                              className="w-full border p-2 rounded-md"
-                              value={profile.lastNameTh}
-                              onChange={(e) => setProfile({ ...profile, lastNameTh: e.target.value })}
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-left font-semibold">ชื่อ (EN)</label>
-                            <input
-                              type="text"
-                              className="w-full border p-2 rounded-md"
-                              value={profile.firstNameEn}
-                              onChange={(e) => setProfile({ ...profile, firstNameEn: e.target.value })}
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-left font-semibold">นามสกุล (EN)</label>
-                            <input
-                              type="text"
-                              className="w-full border p-2 rounded-md "
-                              value={profile.lastNameEn}
-                              onChange={(e) => setProfile({ ...profile, lastNameEn: e.target.value })}
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-left font-semibold">ประเภทของบัญชี</label>
-                            <input
-                              type="text"
+                              type="password"
+                              placeholder="กรอกรหัสผ่าน"
                               className="w-full border p-2 rounded-md text-gray-400"
-                              value={profile.role}
-                              readOnly
+                              value={newPassword}
+                              minLength={8}
+                              onChange={(e) => setNewPassword(e.target.value)}
                             />
                           </div>
-                         
                           <button
                             onClick={() => setEditModalOpen(false)}
                             className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
