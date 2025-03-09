@@ -143,7 +143,7 @@ export default function OrderHistory() {
                 .map((order, index) => (
                 <div key={index} className="bg-white text-black w-3/4 rounded-xl p-6 shadow-md">
                     {/* Order Info */}
-                    <div className="grid grid-cols-4 gap-4 border-b pb-2 mb-2 text-center">
+                    <div className="grid grid-cols-5 gap-4 border-b pb-2 mb-2 text-center">
                     <span className="text-gray-500">เลขสั่งซื้อ #{order.order_id}</span>
                     <span className="text-gray-500">วันสั่งซื้อ</span>
                     <span className="text-gray-500">ราคาสุทธิ</span>
@@ -168,9 +168,10 @@ export default function OrderHistory() {
                             ? "ช่างยกเลิกคำสั่งซื้อ"
                             : "ไม่ทราบสถานะ"}
                     </span>
+                    <span className="text-gray-500">ที่อยู่จัดส่ง</span>
                     </div>
             
-                    <div className="grid grid-cols-4 gap-4 items-center">
+                    <div className="grid grid-cols-5 gap-4 items-center mb-4">
                         {/* Left - Order Image */}
                         <div className="flex justify-center">
                             <Image src={order.image || "/cpu_full.png"} alt="Product" width={80} height={80} className="mt-4 object-contain w-24 h-24" />
@@ -193,6 +194,9 @@ export default function OrderHistory() {
                             <a href={`/orders/${order.order_id}`} className="text-black underline">
                             ดูรายละเอียด
                             </a>         
+                        </div>
+                        <div className="text-md font-light text-gray-600 text-center flex flex-col space-y-4">
+                            <span>{order.address.address}</span>
                         </div>
                     </div>
                     <div className="flex justify-end items-center gap-3 mr-12">

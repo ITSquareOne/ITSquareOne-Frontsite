@@ -153,7 +153,7 @@ const handleEditClick = (addr: Address) => {
             <div className="p-4 space-y-4 overflow-y-auto" style={{ maxHeight: "400px" }}>
               {cart.map((item) => (
                   <div key={item.id} className="flex flex-row">
-                      <Image src={item.image && item.image.startsWith("data:image/jpeg;base64,") && !item.image.includes("undefined") ? item.image : "/sorry.jpg"} alt={item.name}/>
+                      <Image src={item.image && item.image.startsWith("data:image/jpeg;base64,") && !item.image.includes("undefined") ? item.image : "/sorry.jpg"} width={70} height={70} alt={item.name}/>
                       <div> 
                           <p>{item.name}</p>
                           <p className="text-xl text-blue-500">{item.price} บาท</p>
