@@ -100,7 +100,7 @@ export default function Payment() {
           </p>
 
           <div className="mt-4">
-            <label className="block text-gray-500 font-semibold mb-2">หลักฐานการชำระเงิน</label>
+            <label className="block text-gray-500 font-semibold mb-2">หลักฐานการชำระเงิน (นี่คือ DEMO กรุณาแนบรูปอะไรก็ได้)</label>
             <input type="file" accept="image/*" onChange={handleFileChange} className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" />
           </div>
 

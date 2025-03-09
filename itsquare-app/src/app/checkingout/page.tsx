@@ -177,7 +177,7 @@ const handleEditClick = (addr: Address) => {
                 <span>{finalPrice} บาท</span>
               </div>
               <button onClick={handleCreateOrder} className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-normal transition">
-                สั่งสินค้า
+                สั่งประกอบคอมพิวเตอร์
               </button>
             </div>
           </div>

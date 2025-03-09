@@ -100,7 +100,7 @@ export default function OrderDetail () {
                     className="rounded-md border"
                   />
                   <div>
-                    <p className="font-semibold text-blue-500">{item.part_code}</p>
+                    <p className="font-semibold text-blue-500">รหัสสินค้า: {item.part_code}</p>
                     <p className="text-sm text-gray-500">สภาพ: {item.condition}%</p>
                   </div>
                 </td>

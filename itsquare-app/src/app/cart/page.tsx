@@ -135,7 +135,7 @@ export default function PcBuildSummary() {
             <p className="text-lg font-semibold">Total: {totalPrice} THB</p>
             {cart.length > 0 && (
               <button onClick={handleCheckout} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-                ชำระเงิน
+                สั่งประกอบคอมพิวเตอร์
               </button>
             )}
           </div>
