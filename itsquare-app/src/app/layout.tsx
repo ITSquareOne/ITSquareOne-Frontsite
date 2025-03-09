@@ -395,15 +395,6 @@ function NavigationBar() {
                   </li>
                   <li className="relative w-full">
                     <div className="flex items-center justify-center gap-4 p-3 rounded-lg w-full text-center text-black hover:bg-gray-100 transition-colors">
-                      <img
-                        src="/cart.svg"
-                        alt="Cart"
-                        className="w-6 h-6"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          router.push("/cart");
-                        }}
-                      />
                       <span>รายการคำสั่งซื้อ</span>
                       {cart.length > 0 && (
                         <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
