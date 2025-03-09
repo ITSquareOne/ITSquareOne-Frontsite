@@ -18,6 +18,13 @@ const categoryMap: { [key: string]: number } = {
 
 };
 
+const conditionOptions = [
+  { label: "คุณภาพเยี่ยม", value: 100 },
+  { label: "คุณภาพดี", value: 75 },
+  { label: "พอใช้", value: 50 },
+  { label: "ต่ำกว่ามาตรฐาน", value: 25 },
+];
+
 
 export default function Category() {
   const [product, setProduct] = useState<Product[]>([]);
@@ -114,12 +121,20 @@ export default function Category() {
               <div className="text-black text-start w-full mt-3 pb-2 font-semibold text-sm md:text-m">
                 <p>{item.name}</p>
               </div>
+              <div className="text-black text-start w-full mt-3 pb-2 font-semibold text-sm md:text-m">
+                <p>
+                  {conditionOptions.find(option => item.condition >= option.value)?.label || "ไม่ทราบสถานะ"}
+                </p>
+              </div>
+
+             
               {/* Price & Cart Button */}
               <button onClick={() => router.push(`product/${item.id}`)} className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-md mt-auto text-black w-full py-2 rounded-full text-base flex items-center justify-center gap-2 transition delay-180 duration-300 ease-in-out">
                 <Image src="/Shopping cart.png" alt="icon" width={20} height={20} />
                 {item.price} บาท
               </button>
             </div>
+            
           ))}
         </div>
       ) : (
