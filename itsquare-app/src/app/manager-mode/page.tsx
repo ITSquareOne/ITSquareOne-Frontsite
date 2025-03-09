@@ -107,7 +107,7 @@ export default function manager() {
                 {menuItems.map((item) => (
                   <li 
                     key={item}
-                    className={`p-3 text-xl text-center font-medium rounded-full border-4 border-gray-300 cursor-pointer 
+                    className={`p-2 text-xl text-start font-medium rounded-xl shadow-md border-2 border-gray-200 cursor-pointer 
                       ${selected === item ? "bg-yellow-400 text-black hover:bg-yellow-600 hover:text-white transition" : "bg-white text-black hover:bg-slate-400  hover:text-white transition"}`}
                     onClick={() => setSelected(item)}
                   >

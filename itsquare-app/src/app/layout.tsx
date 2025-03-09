@@ -68,26 +68,50 @@ function NavigationBar() {
             className="md:hidden p-2"
             aria-label="Toggle menu"
           >
-            {/* Hamburger Icon */}
             <div className="flex flex-row gap-6 items-center">
-              <div className="relative">
-                        <img
-                          src="/cart.svg"
-                          alt="Cart"
-                          className="cursor-pointer w-9 h-9 mr-4 mt-1"
-                          onClick={(e) => {
-                            e.stopPropagation();  // Add this to prevent event bubbling
-                            router.push("/cart");
-                          }}
-                        />
-                        {cart.length > 0 && (
-                          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                            {cart.length}
-                          </span>
-                        )}
-              </div>
+              {/* profile for all users */}
+              {isLoggedIn && (
+              <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
+                <div className="flex flex-col">
+                  <span className="underline">{Profile?.username}</span>
+                  <span className="text-xs text-end">{Profile?.role}</span>
+                </div>
+                {Profile?.profile ? (
+                  <img
+                    src={`data:image/jpeg;base64,${Profile.profile}`}
+                    className="w-8 h-8 rounded-full object-cover"
+                    alt="Profile"
+                  />
+                ) : (
+                  <img
+                    src="/profile.svg"
+                    className="w-8 h-8 rounded-full object-cover bg-white"
+                    alt="Default Profile"
+                  />
+                )}
+              </a>)}
+              {/* Cart for student in mobile view */}
+              {isLoggedIn && role === "student" && (
+                <div className="relative">
+                  <img
+                    src="/cart.svg"
+                    alt="Cart"
+                    className="cursor-pointer w-9 h-9 mr-4 mt-1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push("/cart");
+                    }}
+                  />
+                  {cart.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                      {cart.length}
+                    </span>
+                  )}
+                </div>
+              )}
+              {/* Hamburger Icon */}
               <svg
-                className="w-6 h-6 text-[#757575] hover:text-gray-400"  // Add text color using Tailwind
+                className="w-6 h-6 text-[#757575] hover:text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -234,10 +258,7 @@ function NavigationBar() {
         </div>
       </nav>
       {/* ✅ Mobile Dropdown Menu */}
-      <div
-        className={`${isOpen ? "block" : "hidden"
-          } md:hidden fixed top-[48px] left-0 w-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out`}
-      >
+      <div className={`${isOpen ? "block" : "hidden"} md:hidden fixed top-[48px] left-0 w-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out`}>
         <ul className="flex flex-col items-center space-y-3 py-4 pt-10">
           {!isLoggedIn ? (
             <>
@@ -250,28 +271,36 @@ function NavigationBar() {
               <li>
                 <a href="/profile" className="text-lg text-gray-900 hover:text-blue-700">โปรไฟล์</a>
               </li>
-              {/* Role-based menu items */}
-              {role === "technician" && (
-                <li>
-                  <a href="/status-tech" className="text-lg text-gray-900 hover:text-blue-700">
-                    จัดการออร์เดอร์
-                  </a>
-                </li>
-              )}
+
+              {/* Add cart icon for students */}
               {role === "student" && (
-                <li>
-                  <a href="/status" className="text-lg text-gray-900 hover:text-blue-700">
-                    รายการคำสั่งซื้อ
-                  </a>
+                <li className="relative">
+                  <div className="flex items-center gap-2">
+                    <div className="relative">
+                      <img
+                        src="/cart.svg"
+                        alt="Cart"
+                        className="cursor-pointer w-9 h-9"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push("/cart");
+                        }}
+                      />
+                      {cart.length > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                          {cart.length}
+                        </span>
+                      )}
+                    </div>
+                    <a href="/status" className="text-lg text-gray-900 hover:text-blue-700">
+                      รายการคำสั่งซื้อ
+                    </a>
+                  </div>
                 </li>
               )}
-              {role === "manager" && (
-                <li>
-                  <a href="/manager-mode" className="text-lg text-gray-900 hover:text-blue-700">
-                    แผงควบคุม
-                  </a>
-                </li>
-              )}
+
+              {/* Role-based menu items */}
+
               {/* Logout option */}
               <li>
                 <button
