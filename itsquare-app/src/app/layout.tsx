@@ -71,7 +71,7 @@ function NavigationBar() {
             <div className="flex flex-row gap-6 items-center">
               {/* profile for all users */}
               {isLoggedIn && (
-              <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
+              <a href="/profile" className="flex text-base text-black px-4 transition duration-300 ease-in-out items-center gap-2">
                 <div className="flex flex-col">
                   <span className="underline">{Profile?.username}</span>
                   <span className="text-xs text-end">{Profile?.role}</span>
@@ -137,20 +137,20 @@ function NavigationBar() {
           {/* Right Side (Sign In & Sign Up Buttons) */}
           <div className="hidden md:flex items-center space-x-5 mr-4">
             {!isLoggedIn ? (
-              <a href="/sign-in" className="text-lg text-white shadow-lg bg-[#FF619B] hover:bg-[#ff4388] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+              <a href="/sign-in" className="text-base text-white shadow-md bg-[#FF619B] hover:bg-[#ff4388] p-2 px-4 rounded-full transition duration-300 ease-in-out">
                 เข้าสู่ระบบ
               </a>
             ) : (
               <>
                 {role === "technician" && (
                   <div className="flex gap-4">
-                    <a href="/main-cate" className="text-lg text-white shadow-lg hover:text-gray-300 bg-[#190832] hover:bg-[#1b1a1d] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                    <a href="/main-cate" className="text-base text-white shadow-md hover:text-gray-300 bg-[#190832] hover:bg-[#1b1a1d] p-2 px-4 rounded-full transition duration-300 ease-in-out">
                       หน้าสินค้า
                     </a>
-                    <a href="/status-tech" className="text-lg text-white shadow-lg bg-pink-500 hover:bg-pink-600 p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                    <a href="/status-tech" className="text-base text-white shadow-md bg-pink-500 hover:bg-pink-600 p-2 px-4 rounded-full transition duration-300 ease-in-out">
                       จัดการออเดอร์
                     </a>
-                    <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
+                    <a href="/profile" className="flex text-base text-black px-4 transition duration-300 ease-in-out items-center gap-2">
                       <div className="flex flex-col">
                         <span className="underline">{Profile?.username}</span>
                         <span className="text-xs text-end">{Profile?.role}</span>
@@ -181,11 +181,13 @@ function NavigationBar() {
                 )}
                 {role === "student" && (
                   <div className="flex gap-4">
-
-                    <a href="/status" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                    <a href="/main-cate" className="text-base text-white shadow-md hover:text-gray-300 bg-[#190832] hover:bg-[#1b1a1d] p-2 px-4 rounded-full transition duration-300 ease-in-out">
+                      หน้าสินค้า
+                    </a>
+                    <a href="/status" className="text-base text-white shadow-md bg-[#296bf8] hover:bg-[#274dcc] p-2 px-4 rounded-full transition duration-300 ease-in-out">
                       ติดตามสถานะ
                     </a>
-                    <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
+                    <a href="/profile" className="flex text-base text-black px-4 transition duration-300 ease-in-out items-center gap-2">
                       <div className="flex flex-col">
                         <span className="underline">{Profile?.username}</span>
                         <span className="text-xs text-end">{Profile?.role}</span>
@@ -221,10 +223,13 @@ function NavigationBar() {
                 )}
                 {role === "manager" && (
                   <div className="flex gap-4">
-                    <a href="/manager-mode" className="text-lg text-white shadow-lg bg-[#296bf8] hover:bg-[#274dcc] p-2 px-6 rounded-full transition duration-300 ease-in-out">
+                     <a href="/main-cate" className="text-base text-white shadow-md hover:text-gray-300 bg-[#190832] hover:bg-[#1b1a1d] p-2 px-4 rounded-full transition duration-300 ease-in-out">
+                      หน้าสินค้า
+                    </a>
+                    <a href="/manager-mode" className="text-base text-white shadow-md bg-[#296bf8] hover:bg-[#274dcc] p-2 px-4 rounded-full transition duration-300 ease-in-out">
                       แผงควบคุม
                     </a>
-                    <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
+                    <a href="/profile" className="flex text-base text-black px-4 transition duration-300 ease-in-out items-center gap-2">
                       <div className="flex flex-col">
                         <span className="underline">{Profile?.username}</span>
                         <span className="text-xs text-end">{Profile?.role}</span>
@@ -257,97 +262,16 @@ function NavigationBar() {
           </div>
         </div>
       </nav>
-      {/* ✅ Mobile Dropdown Menu */}
-      <div className={`${isOpen ? "block" : "hidden"} md:hidden fixed top-[48px] left-0 w-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out`}>
-        <ul className="flex flex-col items-center space-y-3 py-4 pt-10">
-          {!isLoggedIn ? (
-            <>
-              <li>
-                <a href="/sign-in" className="text-lg text-gray-900 hover:text-blue-700">เข้าสู่ระบบ</a>
-              </li>
-            </>
-          ) : (
-            <>
-              {role === "manager" && (
-                <li>
-                  <a href="/manager-mode" className="text-lg text-gray-900 hover:text-blue-700">แผงควบคุม</a>
-                </li>
-              )}
-              {role === "technician" && (
-                <div>
-                  <li>
-                    <a href="/main-cate" className="text-lg text-gray-900 hover:text-blue-700">หน้าสินค้า</a>
-                  </li>
-                  <li>
-                    <a href="/status-tech" className="text-lg text-gray-900 hover:text-blue-700">จัดการออเดอร์</a>
-                  </li>
-                  <li>
-                    <a href="/tech-mode" className="text-lg text-gray-900 hover:text-blue-700">จัดการคลัง</a>
-                  </li>
-                </div>
-              )}
-              {role === "student" && (
-                <div>
-                  <li>
-                    <a href="/status" className="text-lg text-gray-900 hover:text-blue-700">ติดตามสถานะ</a>
-                  </li>
-                  <li>
-                    <a href="/cart" className="text-lg text-gray-900 hover:text-blue-700">รายการคำสั่งซื้อ</a>
-                  </li>
-                </div>
-              )}
-
-              {/* Add cart icon for students */}
-              {role === "student" && (
-                <li className="relative">
-                  <div className="flex items-center gap-2">
-                    <div className="relative">
-                      <img
-                        src="/cart.svg"
-                        alt="Cart"
-                        className="cursor-pointer w-9 h-9"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          router.push("/cart");
-                        }}
-                      />
-                      {cart.length > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                          {cart.length}
-                        </span>
-                      )}
-                    </div>
-                    <a href="/status" className="text-lg text-gray-900 hover:text-blue-700">
-                      รายการคำสั่งซื้อ
-                    </a>
-                  </div>
-                </li>
-              )}
-
-              {/* Role-based menu items */}
-
-              {/* Logout option */}
-              <li>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="text-lg text-gray-900 hover:text-red-600"
-                >
-                  ออกจากระบบ
-                </button>
-              </li>
-            </>
-          )}
-        </ul>
-      </div>
+     
       {/* Mobile Dropdown Menu */}
       <div className={`${
         isOpen ? "block" : "hidden"
-      } md:hidden fixed top-[48px] left-0 w-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out`}>
+      } md:hidden fixed top-[48px] left-0 w-full bg-white shadow-md z-40 transition-all duration-300 ease-in-out`}>
         <ul className="flex flex-col space-y-2 p-4">
           {!isLoggedIn ? (
             <li className="w-full">
               <a href="/sign-in" 
-                className="block w-full p-3 text-center text-black">
+                className="block w-full p -3 text-center text-black">
                 เข้าสู่ระบบ
               </a>
             </li>
@@ -355,8 +279,12 @@ function NavigationBar() {
             <>
               {role === "manager" && (
                 <li className="w-full">
+                  <a href="/main-cate" 
+                    className="block w-full p-3 text-center roundet-text-base bg-white text-black hover:text-white hover:bg-[#2761cc] transition-colors">
+                    หน้าสินค้า
+                  </a>
                   <a href="/manager-mode" 
-                    className="block w-full p-3 text-center rounded-lg bg-[#296bf8] text-white hover:bg-[#274dcc] transition-colors">
+                    className="block w-full p-3 text-center roundet-text-base bg-white text-black hover:text-white hover:bg-[#2761cc] transition-colors">
                     แผงควบคุม
                   </a>
                 </li>
@@ -388,13 +316,17 @@ function NavigationBar() {
               {role === "student" && (
                 <>
                   <li className="w-full">
+                  <a href="/main-cate" 
+                      className="mt-3 block w-full p-3 text-center text-black hover:bg-gray-100 transition-colors">
+                      หน้าสินค้า
+                    </a>
                     <a href="/status" 
                       className="mt-3 block w-full p-3 text-center text-black hover:bg-gray-100 transition-colors">
                       ติดตามสถานะ
                     </a>
                   </li>
                   <li className="relative w-full">
-                    <div className="flex items-center justify-center gap-4 p-3 rounded-lg w-full text-center text-black hover:bg-gray-100 transition-colors">
+                    <div className="flex items-center justify-center gap-4 p-3 roundet-text-base w-full text-center text-black hover:bg-gray-100 transition-colors">
                       <span>รายการคำสั่งซื้อ</span>
                       {cart.length > 0 && (
                         <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
@@ -410,7 +342,7 @@ function NavigationBar() {
               <li className="w-full">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="block w-full p-3 text-center rounded-lg bg-gray-100 text-gray-900 hover:bg-red-500 hover:text-white transition-colors"
+                  className="block w-full p-3 text-center roundet-text-base bg-gray-100 text-gray-900 hover:bg-red-500 hover:text-white transition-colors"
                 >
                   ออกจากระบบ
                 </button>
