@@ -106,10 +106,10 @@ export default function technician() {
       });
       setProduct(mergedProducts);
     } else {
-      console.error("Fetch error: Data format incorrect", { partItems, parts });
+      console.log("Fetch error: Data format incorrect", { partItems, parts });
       }
     } catch (error) {
-      console.error("Fetch error: " + error);
+      console.log("Fetch error: " + error);
     }
   };
 
@@ -141,7 +141,7 @@ export default function technician() {
       setIsAddItemOpen(false);
       alert("วางขายสินค้าสำเร็จ!");
     } catch (error) {
-      console.error("❌ เกิดข้อผิดพลาด:", error);
+      console.log("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
     }
   }
@@ -177,7 +177,7 @@ export default function technician() {
       setIsAddProductOpen(false);
       alert("เพิ่มสินค้าสำเร็จ!");
     } catch (error) {
-      console.error("❌ เกิดข้อผิดพลาด:", error);
+      console.log("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
     }
   }
@@ -203,7 +203,7 @@ export default function technician() {
       setIsAddBrandOpen(false);
       alert("เพิ่มแบรนด์สำเร็จ!");
     } catch (error) {
-      console.error("❌ เกิดข้อผิดพลาด:", error);
+      console.log("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
     }
   }
@@ -233,7 +233,7 @@ export default function technician() {
       setIsEditItemOpen(false);
       alert("แก้ไขสินค้าสำเร็จ!");
     } catch (error) {
-      console.error("❌ เกิดข้อผิดพลาด:", error);
+      console.log("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
     }
   }
@@ -265,7 +265,7 @@ export default function technician() {
         setIsEditPartsOpen(false);
         alert("แก้ไขสินค้าสำเร็จ!");
       } catch (error) {
-        console.error("❌ เกิดข้อผิดพลาด:", error);
+        console.log("❌ เกิดข้อผิดพลาด:", error);
         alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
       }
     }
@@ -293,7 +293,7 @@ export default function technician() {
         setIsEditBrandOpen(false);
         alert("แก้ไขแบรนด์สำเร็จ!");
       } catch (error) {
-        console.error("❌ เกิดข้อผิดพลาด:", error);
+        console.log("❌ เกิดข้อผิดพลาด:", error);
         alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
       }
     }
@@ -317,7 +317,7 @@ export default function technician() {
         setIsDeleteItemOpen(false);
         alert("ลบสินค้าเรียบร้อยแล้ว!");
       } catch (error) {
-        console.error("❌ เกิดข้อผิดพลาด:", error);
+        console.log("❌ เกิดข้อผิดพลาด:", error);
         alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
       }
     }
@@ -341,7 +341,7 @@ export default function technician() {
       setIsDeletePartOpen(false);
       alert("ลบสินค้าเรียบร้อยแล้ว!");
     } catch (error) {
-      console.error("❌ เกิดข้อผิดพลาด:", error);
+      console.log("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการลบสินค้า อาจมีสินค้าที่เกี่ยวข้องวางจำหน่ายอยู่!");
     }
   }
@@ -365,7 +365,7 @@ export default function technician() {
       setIsDeleteBrandOpen(false);
       alert("ลบแบรนด์สำเร็จ!");
     } catch (error) {
-      console.error("❌ เกิดข้อผิดพลาด:", error);
+      console.log("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการลบแบรนด์ อาจมีสินค้าที่เกี่ยวข้องวางจำหน่ายอยู่!");
     }
   }
@@ -414,7 +414,7 @@ export default function technician() {
       setState((prev: any) => ({ ...prev, part_image: reader.result as string }));
     };
     reader.onerror = (error) => {
-      console.error("❌ เกิดข้อผิดพลาดในการอ่านไฟล์:", error);
+      console.log("❌ เกิดข้อผิดพลาดในการอ่านไฟล์:", error);
       alert("ไม่สามารถอ่านไฟล์รูปภาพได้");
     };
 };
