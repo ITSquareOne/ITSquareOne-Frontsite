@@ -95,17 +95,32 @@ export default function Category() {
     );
   });
 
+  // making star rating for condition
+  const renderStars = (condition: number) => {
+    const totalStars = 5; // Maximum number of stars
+    const rating = Math.round((condition / 100) * totalStars); // Convert 100 scale to 5-star rating
+
+    return (
+      <div className="flex text-yellow-400">
+        {[...Array(totalStars)].map((_, index) => (
+          <span key={index}>
+            {index < rating ? "★" : "☆"} {/* Filled or empty star */}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+
   return (
-    <div className="relative min-h-screen bg-cover bg-center px-8 items-center flex flex-col"
-      style={{ backgroundImage: "url('/bg-main.png')", backgroundAttachment: "fixed" }}>
+    <div className="relative min-h-screen bg-cover bg-center px-8 items-center flex flex-col">
 
       {/* Category Filters */}
       <div className="container flex flex-row mt-4 md:mt-9 gap-4 flex-wrap justify-center">
         {Object.keys(categoryMap).map((category) => (
           <button key={category} onClick={() => setSelectedCategory(category)}
-            className={`px-3 py-1 rounded-full text-base ${
-              selectedCategory === category ? "bg-gray-400 text-white" : "bg-white text-black hover:bg-gray-300"
-            }`}>
+            className={`px-3 py-1 rounded-full text-base ${selectedCategory === category ? "bg-gray-400 text-white" : "bg-white text-black hover:bg-gray-300"
+              }`}>
             {category}
           </button>
         ))}
@@ -136,17 +151,17 @@ export default function Category() {
             <div key={item.id || index} className="bg-white rounded-xl shadow-lg w-full md:w-[250px] h-auto flex flex-col items-center p-4 mb-4">
               <div className="border-2 border-gray-400 w-full md:h-[200px] rounded-xl overflow-hidden">
                 <Image src={item.part_image ? `data:image/jpeg;base64,${item.part_image}` : "/sorry.jpg"} alt="icon"
-                  width={250} height={300} className="w-full h-full object-cover"/>
+                  width={250} height={300} className="w-full h-full object-cover" />
               </div>
-
+              {/* Condition stars */}
+              <div className="text-gray-500 w-full mt-2 font-semibold text-md md:text-m">
+                <div className=" gap-2 flex items-center mt-2">
+                  <span className="font-thin">คุณภาพ :</span> {renderStars(item.condition)}
+                </div>
+              </div>
               {/* Product Name */}
-              <div className="text-black text-start w-full mt-3 pb-2 font-semibold text-sm md:text-m">
+              <div className="text-black text-start w-full pb-2 mt-1 font-semibold text-sm md:text-m">
                 <p>{item.name}</p>
-              </div>
-
-              {/* Condition Label */}
-              <div className="text-black text-start w-full mt-3 pb-2 font-semibold text-sm md:text-m">
-                <p>{conditionOptions.find(option => item.condition >= option.value)?.label || "ไม่ทราบสถานะ"}</p>
               </div>
 
               {/* Price & Cart Button */}
