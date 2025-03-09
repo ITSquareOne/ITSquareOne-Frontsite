@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { fetchItemsForCategory, Product } from "../utils/api";
+import { useCart, componentLimits } from "../components/CartContext";
 
 const categoryMap: { [key: string]: number } = {
   "All": 0,
@@ -26,6 +27,7 @@ const conditionOptions = [
 ];
 
 export default function Category() {
+  const { cart, getTypeCount } = useCart();
   const [product, setProduct] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -111,19 +113,81 @@ export default function Category() {
     );
   };
 
+  // Function to get component count status
+  const getComponentCountLabel = (categoryName: string) => {
+    if (categoryName === "All") return null;
+    
+    const typeId = categoryMap[categoryName];
+    
+    // For regular components with limits
+    if (componentLimits[typeId] !== undefined) {
+      const count = getTypeCount(typeId);
+      const { min, max } = componentLimits[typeId];
+      const isFull = count >= max;
+      
+      // Special handling for storage devices
+      if (typeId === 5 || typeId === 6) {
+        // Calculate total storage devices
+        const totalStorage = getTypeCount(5) + getTypeCount(6);
+        // Mark as met if either there are items of this type, or if the combined storage requirement is met
+        const isMet = count > 0 || totalStorage > 0;
+        
+        return {
+          label: `${count}/${max}`,
+          isFull,
+          isMet
+        };
+      }
+      
+      // For other components, check if minimum count is met
+      const isMet = count >= min;
+      
+      return {
+        label: `${count}/${max}`,
+        isFull,
+        isMet
+      };
+    }
+    
+    // For VGA and Others which don't have limits
+    return null;
+  };
 
   return (
     <div className="relative min-h-screen bg-cover bg-center px-8 items-center flex flex-col">
 
       {/* Category Filters */}
       <div className="container flex flex-row mt-4 md:mt-9 gap-4 flex-wrap justify-center">
-        {Object.keys(categoryMap).map((category) => (
-          <button key={category} onClick={() => setSelectedCategory(category)}
-            className={`px-3 py-1 rounded-full text-base ${selectedCategory === category ? "bg-gray-400 text-white" : "bg-white text-black hover:bg-gray-300"
-              }`}>
-            {category}
-          </button>
-        ))}
+        {Object.keys(categoryMap).map((category) => {
+          const countStatus = getComponentCountLabel(category);
+          
+          return (
+            <button 
+              key={category} 
+              onClick={() => setSelectedCategory(category)}
+              className={`
+                px-3 py-1 rounded-full text-base relative
+                ${selectedCategory === category 
+                  ? "bg-gray-400 text-white" 
+                  : "bg-white text-black hover:bg-gray-300"
+                }
+                ${countStatus?.isFull ? "opacity-50" : ""}
+              `}
+            >
+              {category}
+              {countStatus && (
+                <span 
+                  className={`
+                    absolute -top-2 -right-2 text-xs px-1.5 py-0.5 rounded-full
+                    ${countStatus.isMet ? "bg-green-500 text-white" : "bg-gray-200 text-gray-700"}
+                  `}
+                >
+                  {countStatus.label}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
       <br /><br />
 
@@ -147,31 +211,46 @@ export default function Category() {
       {/* Product Grid */}
       {filteredProducts.length > 0 ? (
         <div className="w-full max-w-[1200px] mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-5">
-          {filteredProducts.map((item, index) => (
-            <div key={item.id || index} className="bg-white rounded-xl shadow-lg w-full md:w-[250px] h-auto flex flex-col items-center p-4 mb-4">
-              <div className="border-2 border-gray-400 w-full md:h-[200px] rounded-xl overflow-hidden">
-                <Image src={item.part_image ? `data:image/jpeg;base64,${item.part_image}` : "/sorry.jpg"} alt="icon"
-                  width={250} height={300} className="w-full h-full object-cover" />
-              </div>
-              {/* Condition stars */}
-              <div className="text-gray-500 w-full mt-2 font-semibold text-md md:text-m">
-                <div className=" gap-2 flex items-center mt-2">
-                  <span className="font-thin">คุณภาพ :</span> {renderStars(item.condition)}
+          {filteredProducts.map((item, index) => {
+            // Check if this component type has a limit
+            const typeId = item.type as number;
+            const hasLimit = componentLimits[typeId];
+            const isAtLimit = hasLimit ? getTypeCount(typeId) >= componentLimits[typeId].max : false;
+            
+            return (
+              <div key={item.id || index} className={`
+                  bg-white rounded-xl shadow-lg w-full md:w-[250px] h-auto flex flex-col items-center p-4 mb-4
+                  ${isAtLimit ? 'opacity-50' : ''}
+                `}>
+                <div className="relative border-2 border-gray-400 w-full md:h-[200px] rounded-xl overflow-hidden">
+                  {hasLimit && (
+                    <div className="absolute top-2 right-2 bg-white bg-opacity-80 rounded-full px-2 py-1 text-xs">
+                      {getTypeCount(typeId)}/{componentLimits[typeId].max} {hasLimit.name}
+                    </div>
+                  )}
+                  <Image src={item.part_image ? `data:image/jpeg;base64,${item.part_image}` : "/sorry.jpg"} alt="icon"
+                    width={250} height={300} className="w-full h-full object-cover" />
                 </div>
-              </div>
-              {/* Product Name */}
-              <div className="text-black text-start w-full pb-2 mt-1 font-semibold text-sm md:text-m">
-                <p>{item.name}</p>
-              </div>
+                {/* Condition stars */}
+                <div className="text-gray-500 w-full mt-2 font-semibold text-md md:text-m">
+                  <div className=" gap-2 flex items-center mt-2">
+                    <span className="font-thin">คุณภาพ :</span> {renderStars(item.condition)}
+                  </div>
+                </div>
+                {/* Product Name */}
+                <div className="text-black text-start w-full pb-2 mt-1 font-semibold text-sm md:text-m">
+                  <p>{item.name}</p>
+                </div>
 
-              {/* Price & Cart Button */}
-              <button onClick={() => router.push(`product/${item.id}`)}
-                className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-md mt-auto text-black w-full py-2 rounded-full text-base flex items-center justify-center gap-2">
-                <Image src="/Shopping cart.png" alt="icon" width={20} height={20} />
-                {item.price} บาท
-              </button>
-            </div>
-          ))}
+                {/* Price & Cart Button */}
+                <button onClick={() => router.push(`product/${item.id}`)}
+                  className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-md mt-auto text-black w-full py-2 rounded-full text-base flex items-center justify-center gap-2">
+                  <Image src="/Shopping cart.png" alt="icon" width={20} height={20} />
+                  {item.price} บาท
+                </button>
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div className="text-gray-500 text-center text-lg mt-10">🛒 ยังไม่มีสินค้าในระบบ</div>

@@ -13,12 +13,39 @@ interface CartContextType {
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: number) => void;
+  getTypeCount: (type: number) => number;
 }
+
+// Define component limit types
+export interface ComponentLimit {
+  min: number;
+  max: number;
+  name: string;
+}
+
+export type ComponentLimits = {
+  [key: number]: ComponentLimit;
+}
+
+// Component limits configuration
+export const componentLimits: ComponentLimits = {
+  1: { min: 1, max: 1, name: "CPU" },          // CPU
+  2: { min: 1, max: 1, name: "Mainboard" },    // Mainboard
+  3: { min: 0, max: 1, name: "VGA Card" },     // VGA Card
+  4: { min: 1, max: 4, name: "Memory" },       // RAM
+  5: { min: 0, max: 2, name: "Harddisk" },     // Harddisk (max updated to 2)
+  6: { min: 0, max: 2, name: "SSD" },          // SSD (max updated to 2)
+  7: { min: 1, max: 1, name: "Power Supply" }, // Power Supply
+  8: { min: 1, max: 1, name: "Case" },         // Case
+};
+
+// Special rule: Either Harddisk or SSD is required (combined min: 1)
+export const requiredStorageTypes = [5, 6]; // Harddisk or SSD
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-    const [cart, setCart] = useState<CartItem[] | null>(null); // เริ่มต้นเป็น null
+    const [cart, setCart] = useState<CartItem[] | null>(null); // Start as null
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -50,12 +77,55 @@ export function CartProvider({ children }: { children: ReactNode }) {
         };
     }, []);
 
+    const getTypeCount = (type: number) => {
+        if (!cart) return 0;
+        return cart.filter(item => Number(item.type) === type).length;
+    };
+
     const addToCart = (product: CartItem) => {
         setCart((prevCart) => {
             const cartArray = prevCart ?? [];
+            const productType = Number(product.type);
+            
+            // Check if this type has a limit
+            const limit = componentLimits[productType];
+            
+            if (limit) {
+                // For components with max=1, replace the existing item
+                if (limit.max === 1) {
+                    // Remove existing items of this type
+                    const filteredCart = cartArray.filter(item => Number(item.type) !== productType);
+                    // Add the new item
+                    return [...filteredCart, product];
+                } 
+                // For components with max>1, check if we're below the limit
+                else {
+                    const typeCount = cartArray.filter(item => Number(item.type) === productType).length;
+                    
+                    if (typeCount < limit.max) {
+                        // Below the limit, add normally
+                        if (!cartArray.some((item) => item.id === product.id)) {
+                            return [...cartArray, product];
+                        }
+                    } else {
+                        // At the limit, remove the oldest item of this type and add the new one
+                        const itemsOfType = cartArray.filter(item => Number(item.type) === productType);
+                        const oldestItem = itemsOfType[0];
+                        
+                        // Filter out the oldest item of this type
+                        const updatedCart = cartArray.filter(item => item.id !== oldestItem.id);
+                        
+                        // Add the new item
+                        return [...updatedCart, product];
+                    }
+                }
+            }
+            
+            // For other types without limits, add normally if not already in cart
             if (!cartArray.some((item) => item.id === product.id)) {
                 return [...cartArray, product];
             }
+            
             return cartArray; 
         });
     };
@@ -77,7 +147,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, getTypeCount }}>
             {children}
         </CartContext.Provider>
     );
