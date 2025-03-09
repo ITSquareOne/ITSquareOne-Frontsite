@@ -105,7 +105,7 @@ export default function Sign_in() {
               <input
                 required
                 type="text"
-                className={`w-full border-2 rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all
+                className={`w-full border-2 rounded-lg py-2.5 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all
                   ${inputError.username ? "border-red-500" : "border-gray-300"}`}
                 placeholder="กรอกชื่อผู้ใช้งาน"
                 value={username}
@@ -125,7 +125,7 @@ export default function Sign_in() {
                 <input
                   type={showPassword ? "text" : "password"}
                   required
-                  className={`w-full border-2 rounded-lg py-2.5 px-4 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all
+                  className={`w-full border-2 rounded-lg py-2.5 px-4 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all
                     ${inputError.password ? "border-red-500" : "border-gray-300"}`}
                   placeholder="กรอกรหัสผ่าน"
                   value={password}

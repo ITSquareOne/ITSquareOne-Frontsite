@@ -6,7 +6,20 @@ import { fetchOneItem, Product, User, getProfile } from "../../utils/api";
 import { useCart } from "../../components/CartContext";
 import { Dialog } from "@headlessui/react";
 
+const renderStars = (condition: number) => {
+  const totalStars = 5;
+  const rating = Math.round((condition / 100) * totalStars);
 
+  return (
+    <div className="flex text-yellow-400">
+      {[...Array(totalStars)].map((_, index) => (
+        <span key={index}>
+          {index < rating ? "★" : "☆"}
+        </span>
+      ))}
+    </div>
+  );
+};
 
 export default function ProductPage() {
     const {id} = useParams();
@@ -105,6 +118,10 @@ export default function ProductPage() {
             </div>
             <h1 className="text-xl font-bold mt-4 text-black uppercase">{product.name}</h1>
             <p className="text-blue-600 text-2xl font-bold">{product.price} บาท</p>
+            <div className="flex items-center justify-center gap-2 mt-2">
+              <span className="text-gray-600">สภาพ:</span>
+              {renderStars(product.condition)}
+            </div>
             {Profile?.role === "student" && (
               <button onClick={handleAddToCart} className="mt-4 bg-pink-500 text-white px-6 py-2 rounded-lg border hover:bg-pink-600 transition">
               เพิ่มสู่ตะกร้า
