@@ -182,10 +182,6 @@ const handleLogout = () => {
     <div className={isModalOpen ? ' bg-black opacity-50' : ''}>
 
     <div>
-    {/* <div
-      className="relative min-h-screen bg-cover bg-center flex justify-center items-center"
-      style={{ backgroundImage: "url('/bg-main.png')" }}
-    > */}
       <div className=" min-h-[70vh] text-black flex p-8 -mt-10">
         <div className="w-1/4 min-h-[70vh] h-full bg-gray-100 rounded-xl p-4 border border-gray-200">
           <h2 className="text-lg font-semibold">สวัสดีคุณ {profile?.firstNameTh}!!</h2>

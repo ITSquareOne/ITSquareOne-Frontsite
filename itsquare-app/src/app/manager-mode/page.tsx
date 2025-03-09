@@ -99,9 +99,7 @@ export default function manager() {
 
   return (
         <div 
-          className="relative min-h-[93vh] flex bg-cover bg-center" 
-          style={{ backgroundImage: "url('/bg-main.png')" }}
-        >
+          className="relative min-h-[93vh] flex bg-cover bg-center">
             <div className="w-1/4 m-12 mr-4 bg-white min-h-[80vh] p-6 rounded-xl">
             <ul className="space-y-4">
                 {menuItems.map((item) => (

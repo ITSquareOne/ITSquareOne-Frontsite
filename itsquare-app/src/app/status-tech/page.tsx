@@ -104,7 +104,7 @@ export default function OrderHistory() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A0C2F] text-white pb-24" style={{ backgroundImage: "url('/bg-main.png')" }}>
+    <div className="min-h-screen bg-[#1A0C2F] text-white pb-24">
 
       {/* 🏷 Filter Tabs */}
       <div className="flex justify-center pt-6 space-x-4">
