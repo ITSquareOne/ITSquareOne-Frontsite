@@ -342,7 +342,7 @@ export default function technician() {
       alert("ลบสินค้าเรียบร้อยแล้ว!");
     } catch (error) {
       console.error("❌ เกิดข้อผิดพลาด:", error);
-      alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
+      alert("เกิดข้อผิดพลาดในการลบสินค้า อาจมีสินค้าที่เกี่ยวข้องวางจำหน่ายอยู่!");
     }
   }
 
@@ -366,7 +366,7 @@ export default function technician() {
       alert("ลบแบรนด์สำเร็จ!");
     } catch (error) {
       console.error("❌ เกิดข้อผิดพลาด:", error);
-      alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
+      alert("เกิดข้อผิดพลาดในการลบแบรนด์ อาจมีสินค้าที่เกี่ยวข้องวางจำหน่ายอยู่!");
     }
   }
 
@@ -418,6 +418,18 @@ export default function technician() {
       alert("ไม่สามารถอ่านไฟล์รูปภาพได้");
     };
 };
+
+useEffect(() => {
+  console.log("Updated editParts:", editParts);
+}, [editParts])
+
+useEffect(() => {
+  console.log("Updated editItem:", editItem);
+}, [editItem])
+
+useEffect(() => {
+  console.log("Updated editBrand:", editBrand);
+}, [editBrand])
 
 useEffect(() => {
   const storedToken = localStorage.getItem("token");
@@ -680,7 +692,7 @@ useEffect(() => {
         <div className="bg-white rounded-lg shadow-xl p-6 w-2/4 text-start text-black">
             <h2 className="text-xl font-bold mb-4">แก้ไขข้อมูลของสินค้า</h2>
             <label className="block font-medium">รหัสของสินค้า</label>
-            <input className="border w-full p-2 mb-2" value={editParts?.part_code} onChange={(e) => setEditParts({...editParts!, part_code: e.target.value})} />
+            <input className="border w-full p-2 mb-2 text-gray-500" value={editParts?.part_code} readOnly />
             <label className="block font-medium">ชื่อของสินค้า</label>
             <input className="border w-full p-2 mb-2" value={editParts?.name} onChange={(e) => setEditParts({...editParts!, name: e.target.value})} />
             <label className="block font-medium">รายละเอียดของสินค้า</label>
