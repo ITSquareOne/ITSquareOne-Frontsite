@@ -148,7 +148,7 @@ function NavigationBar() {
                       หน้าสินค้า
                     </a>
                     <a href="/status-tech" className="text-lg text-white shadow-lg bg-pink-500 hover:bg-pink-600 p-2 px-6 rounded-full transition duration-300 ease-in-out">
-                      จัดการออร์เดอร์
+                      จัดการออเดอร์
                     </a>
                     <a href="/profile" className="flex text-lg text-black px-6 transition duration-300 ease-in-out items-center gap-2">
                       <div className="flex flex-col">
@@ -268,9 +268,34 @@ function NavigationBar() {
             </>
           ) : (
             <>
-              <li>
-                <a href="/profile" className="text-lg text-gray-900 hover:text-blue-700">โปรไฟล์</a>
-              </li>
+              {role === "manager" && (
+                <li>
+                  <a href="/manager-mode" className="text-lg text-gray-900 hover:text-blue-700">แผงควบคุม</a>
+                </li>
+              )}
+              {role === "technician" && (
+                <div>
+                  <li>
+                    <a href="/main-cate" className="text-lg text-gray-900 hover:text-blue-700">หน้าสินค้า</a>
+                  </li>
+                  <li>
+                    <a href="/status-tech" className="text-lg text-gray-900 hover:text-blue-700">จัดการออเดอร์</a>
+                  </li>
+                  <li>
+                    <a href="/tech-mode" className="text-lg text-gray-900 hover:text-blue-700">จัดการคลัง</a>
+                  </li>
+                </div>
+              )}
+              {role === "student" && (
+                <div>
+                  <li>
+                    <a href="/status" className="text-lg text-gray-900 hover:text-blue-700">ติดตามสถานะ</a>
+                  </li>
+                  <li>
+                    <a href="/cart" className="text-lg text-gray-900 hover:text-blue-700">รายการคำสั่งซื้อ</a>
+                  </li>
+                </div>
+              )}
 
               {/* Add cart icon for students */}
               {role === "student" && (
@@ -306,6 +331,95 @@ function NavigationBar() {
                 <button
                   onClick={() => setIsModalOpen(true)}
                   className="text-lg text-gray-900 hover:text-red-600"
+                >
+                  ออกจากระบบ
+                </button>
+              </li>
+            </>
+          )}
+        </ul>
+      </div>
+      {/* Mobile Dropdown Menu */}
+      <div className={`${
+        isOpen ? "block" : "hidden"
+      } md:hidden fixed top-[48px] left-0 w-full bg-white shadow-lg z-40 transition-all duration-300 ease-in-out`}>
+        <ul className="flex flex-col space-y-2 p-4">
+          {!isLoggedIn ? (
+            <li className="w-full">
+              <a href="/sign-in" 
+                className="block w-full p-3 text-center text-black">
+                เข้าสู่ระบบ
+              </a>
+            </li>
+          ) : (
+            <>
+              {role === "manager" && (
+                <li className="w-full">
+                  <a href="/manager-mode" 
+                    className="block w-full p-3 text-center rounded-lg bg-[#296bf8] text-white hover:bg-[#274dcc] transition-colors">
+                    แผงควบคุม
+                  </a>
+                </li>
+              )}
+              
+              {role === "technician" && (
+                <>
+                  <li className="w-full">
+                    <a href="/main-cate" 
+                      className="block w-full p-3 mt-3 text-center text-black hover:bg-gray-100 transition-colors ">
+                      หน้าสินค้า
+                    </a>
+                  </li>
+                  <li className="w-full">
+                    <a href="/status-tech" 
+                      className="block w-full p-3 text-center text-black hover:bg-gray-100 transition-colors ">
+                      จัดการออเดอร์
+                    </a>
+                  </li>
+                  <li className="w-full">
+                    <a href="/tech-mode" 
+                      className="block w-full p-3 text-center text-black hover:bg-gray-100 transition-colors">
+                      จัดการคลัง
+                    </a>
+                  </li>
+                </>
+              )}
+
+              {role === "student" && (
+                <>
+                  <li className="w-full">
+                    <a href="/status" 
+                      className="mt-3 block w-full p-3 text-center text-black hover:bg-gray-100 transition-colors">
+                      ติดตามสถานะ
+                    </a>
+                  </li>
+                  <li className="relative w-full">
+                    <div className="flex items-center justify-center gap-4 p-3 rounded-lg w-full text-center text-black hover:bg-gray-100 transition-colors">
+                      <img
+                        src="/cart.svg"
+                        alt="Cart"
+                        className="w-6 h-6"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push("/cart");
+                        }}
+                      />
+                      <span>รายการคำสั่งซื้อ</span>
+                      {cart.length > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                          {cart.length}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                </>
+              )}
+
+              {/* Logout Button */}
+              <li className="w-full">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="block w-full p-3 text-center rounded-lg bg-gray-100 text-gray-900 hover:bg-red-500 hover:text-white transition-colors"
                 >
                   ออกจากระบบ
                 </button>
