@@ -49,9 +49,7 @@ export default function OrderDetail () {
   if (canceledOrder) {     
     return (
       <div 
-        className="flex items-center justify-center h-screen bg-cover bg-center" 
-        style={{ backgroundImage: "url('/bg-main.png')" }}
-      >
+        className="flex items-center justify-center h-screen bg-cover bg-center">
         <div className="bg-white rounded-xl shadow-lg p-6 w-[80%] max-w-4xl">
         <h1 className="text-center text-xl font-bold mb-4 text-black">
         ❌ คำสั่งซื้อถูกยกเลิก

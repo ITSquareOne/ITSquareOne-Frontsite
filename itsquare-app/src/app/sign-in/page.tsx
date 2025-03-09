@@ -131,9 +131,6 @@ export default function Sign_in() {
           </div>
           {inputError.password && <p className="text-red-600 text-sm mt-1">{errorMessage.password}</p>}
 
-          {/* Forgot Password Link */}
-          <a onClick={() => setIsOpen(true)} className="cursor-pointer underline mt-2">ลืมรหัสผ่าน?</a>
-
           {/* Login Button */}
           <button className="mt-4 bg-gray-800 hover:bg-black text-white w-40 text-center mx-auto rounded-md py-2 hover:text-white transition delay-180 duration-300 ease-in-out" onClick={handleLogin}>
             เข้าสู่ระบบ
