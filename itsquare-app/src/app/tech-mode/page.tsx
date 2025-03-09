@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Dialog } from "@headlessui/react";
 import { Product, Item, Brands, types, Parts } from "../utils/api";
+import Image from "next/image";
 
 
 export default function technician() {
@@ -138,6 +139,7 @@ export default function technician() {
       });
       await fetchItems();
       setIsAddItemOpen(false);
+      alert("วางขายสินค้าสำเร็จ!");
     } catch (error) {
       console.error("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
@@ -173,6 +175,7 @@ export default function technician() {
       });
       await fetchItems();
       setIsAddProductOpen(false);
+      alert("เพิ่มสินค้าสำเร็จ!");
     } catch (error) {
       console.error("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
@@ -198,6 +201,7 @@ export default function technician() {
     );
       await fetchItems();
       setIsAddBrandOpen(false);
+      alert("เพิ่มแบรนด์สำเร็จ!");
     } catch (error) {
       console.error("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
@@ -227,6 +231,7 @@ export default function technician() {
     );
       await fetchItems();
       setIsEditItemOpen(false);
+      alert("แก้ไขสินค้าสำเร็จ!");
     } catch (error) {
       console.error("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
@@ -258,6 +263,7 @@ export default function technician() {
       );
         await fetchItems();
         setIsEditPartsOpen(false);
+        alert("แก้ไขสินค้าสำเร็จ!");
       } catch (error) {
         console.error("❌ เกิดข้อผิดพลาด:", error);
         alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
@@ -285,6 +291,7 @@ export default function technician() {
       );
         await fetchItems();
         setIsEditBrandOpen(false);
+        alert("แก้ไขแบรนด์สำเร็จ!");
       } catch (error) {
         console.error("❌ เกิดข้อผิดพลาด:", error);
         alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
@@ -308,6 +315,7 @@ export default function technician() {
       );
         await fetchItems();
         setIsDeleteItemOpen(false);
+        alert("ลบสินค้าเรียบร้อยแล้ว!");
       } catch (error) {
         console.error("❌ เกิดข้อผิดพลาด:", error);
         alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
@@ -331,6 +339,7 @@ export default function technician() {
     );
       await fetchItems();
       setIsDeletePartOpen(false);
+      alert("ลบสินค้าเรียบร้อยแล้ว!");
     } catch (error) {
       console.error("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
@@ -354,6 +363,7 @@ export default function technician() {
     );
       await fetchItems();
       setIsDeleteBrandOpen(false);
+      alert("ลบแบรนด์สำเร็จ!");
     } catch (error) {
       console.error("❌ เกิดข้อผิดพลาด:", error);
       alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
@@ -442,7 +452,7 @@ useEffect(() => {
       {selected === "จัดการแผงขายสินค้า" && 
         <>
         <h1 className="text-center font-semibold text-black mb-3 text-xl">ตารางแผงขายสินค้า</h1>
-        <table className="w-full border border-blue-500 text-black">
+        <table className="w-full border border-blue-500 text-black text-center border-collapse">
           <thead>
             <tr className="bg-gray-200">
               <th className="border border-black px-4 py-2">ID</th>
@@ -451,6 +461,7 @@ useEffect(() => {
               <th className="border border-black px-4 py-2">Category</th>
               <th className="border border-black px-4 py-2">Price</th>
               <th className="border border-black px-4 py-2">Condition</th>
+              <th className="border border-black px-4 py-2">Image</th>
               <th className="border border-black px-4 py-2">Edit</th>
               <th className="border border-black px-4 py-2">Delete</th>
             </tr>
@@ -466,7 +477,20 @@ useEffect(() => {
                   <td className="border border-black px-4 py-2">{item.price}</td>
                   <td className="border border-black px-4 py-2">
                     {conditionOptions.find(opt => opt.value === item.condition)?.label || "ไม่ทราบ"}
-                  </td>                  
+                  </td>
+                  <td className="px-4 py-2 border border-black">
+                    {item.part_image ? (
+                      <Image 
+                        src={`data:image/jpeg;base64,${item.part_image}`}
+                        width={40}
+                        height={40}
+                        alt="part image"
+                        className="mx-auto"
+                      />
+                    ) : (
+                      <span className="flex h-full mx-auto">no image</span>
+                    )}
+                  </td>             
                   <td className="border border-black px-4 py-2">
                     <button onClick={() => handleEditItem(item)} className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition">Edit</button>
                   </td>

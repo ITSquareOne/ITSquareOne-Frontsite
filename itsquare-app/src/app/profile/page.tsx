@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog } from "@headlessui/react";
 import axios from "axios";
-import { getAddress, createAddress, editAddress, deleteAddress, Address, User } from "../utils/api";
+import { getAddress, createAddress, editAddress, deleteAddress, Address, User, getProfile } from "../utils/api";
 import LogoutModal from "../components/LogoutModal";
 import Modal from "../components/Modal";
 
@@ -36,26 +36,23 @@ export default function ProfilePage() {
       if (!token) {
         router.push("/sign-in");
       } else {
-        getProfile();
+        getProfile(token);
         loadAddress();
       }
-    }, [token]); 
-
-  const getProfile = async () => {
-    try {
-      const results = await axios.get("http://localhost:3000/api/users/me", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/json"
+    }, [token]);
+    
+  useEffect(() => {
+      const fetchProfile = async () => {
+        if (!token) return;
+        const profileData = await getProfile(token);
+        if (profileData) {
+          setProfile(profileData);
         }
-      });
-      console.log(results.data);
-      setProfile(results.data);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+      };
+      fetchProfile();
+    }, [token]);
 
+  
   const loadAddress = async () => {
     if (!token) return;
     try {
@@ -190,7 +187,9 @@ const handleLogout = () => {
         <div className="w-1/4 min-h-[70vh] h-full bg-gray-100 rounded-xl p-4 border border-gray-200">
           <h2 className="text-lg font-semibold">สวัสดีคุณ {profile?.firstNameTh}!!</h2>
           <ul className="mt-4 space-y-2">
-          {menuItems.map((item) => (
+          {menuItems
+          .filter(item => !(item === "ที่อยู่จัดส่งสินค้า" && profile?.role !== "student"))
+          .map(item => (
             <li 
               key={item}
               className={`p-2 bg-gray-200 rounded-lg cursor-pointer drop-shadow-lg hover:bg-gray-400 transition hover:text-white

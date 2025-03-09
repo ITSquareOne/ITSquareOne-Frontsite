@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { fetchOneItem, Product } from "../../utils/api";
+import { fetchOneItem, Product, User, getProfile } from "../../utils/api";
 import { useCart } from "../../components/CartContext";
 import { Dialog } from "@headlessui/react";
 
@@ -12,6 +12,7 @@ export default function ProductPage() {
     const {id} = useParams();
     const [product, setProduct] = useState<Product | null>(null);
     const decodedId = typeof id === 'string' ? decodeURIComponent(id) : ''; 
+    const [Profile, setProfile] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const { cart, addToCart } = useCart(); // ดึง cart และ addToCart จาก Context
     const [IsAdding, setIsAdding] = useState(false);
@@ -37,6 +38,18 @@ export default function ProductPage() {
       console.log(error);
     }
   }
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!token) return;
+      const profileData = await getProfile(token);
+      if (profileData) {
+        setProfile(profileData);
+      }
+    };
+    fetchProfile();
+  }, [token]);
+
     useEffect(() => {
       const storedToken = localStorage.getItem("token");
         if (storedToken) {
@@ -88,9 +101,12 @@ export default function ProductPage() {
             </div>
             <h1 className="text-xl font-bold mt-4 text-black uppercase">{product.name}</h1>
             <p className="text-blue-600 text-2xl font-bold">{product.price} บาท</p>
-            <button onClick={handleAddToCart} className="mt-4 bg-pink-500 text-white px-6 py-2 rounded-lg border hover:bg-pink-600 transition">
+            {Profile?.role === "student" && (
+              <button onClick={handleAddToCart} className="mt-4 bg-pink-500 text-white px-6 py-2 rounded-lg border hover:bg-pink-600 transition">
               เพิ่มสู่ตะกร้า
             </button>
+            )}
+            
             <Dialog open={IsAdding} onClose={() => setIsAdding(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
               <div className="bg-white rounded-lg shadow-xl p-6 md:w-1/4 w-3/4 text-center text-black">
                 <div>
