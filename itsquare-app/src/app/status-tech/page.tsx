@@ -52,21 +52,20 @@ export default function OrderHistory() {
   };
 
 
-  const handleDeleteOrder = async (orderId: number) => {
-    if (!token) {
-        console.error("No token found!");
-        return;
-    }
-    try {
-        await deleteUserOrder(token, orderId);
-        alert("ลบคำสั่งซื้อสำเร็จ!");
-        setOrders((prevOrders) => prevOrders.filter(order => order.id !== orderId));
-        setIsDeletingOrder(false);
-        await fetchOrders(token);
-    } catch (error) {
-        alert("เกิดข้อผิดพลาดในการลบคำสั่งซื้อ");
+    const handleDeleteOrder = async (orderId: number) => {
+        if (!token) {
+            console.error("No token found!");
+            return;
+        }
+
+        try {
+            await handleStatusChange(orderId, "canceled_by_tech", 0); 
+            setIsDeletingOrder(false);
+        } catch (error) {
+            alert("เกิดข้อผิดพลาดในการยกเลิกคำสั่งซื้อ");
         }
     };
+
     const handleStatusChange = async (orderId: number, newStatus: string, totalPrice: number) => {
         if (!token) {
             console.error("No token found!");
@@ -82,7 +81,6 @@ export default function OrderHistory() {
                 alert("อัปเดตสถานะสำเร็จ!");
             }
     
-            // อัปเดต state
             setOrders((prevOrders) => 
                 prevOrders.map(order => 
                     order.id === orderId ? { ...order, status: newStatus } : order
@@ -205,17 +203,22 @@ export default function OrderHistory() {
                             className="border rounded-md px-2 py-1 text-sm"
                             value={order.status}
                             onChange={(e) => handleStatusChange(order.order_id, e.target.value, order.total_price)}
-                            disabled={order.status === "canceled_by_user"} 
+                            disabled={order.status === "canceled_by_user" || order.status === "canceled_by_tech"} 
                         >
-                            <option value="inspection">กำลังตรวจสอบ</option>
-                            <option value="to_pay">รอการชำระเงิน</option>
-                            <option value="building">กำลังประกอบ</option>
-                            <option value="shipping">กำลังจัดส่ง</option>
-                            <option value="delivered">จัดส่งสำเร็จ</option>
-                            <option value="canceled_by_tech">ยกเลิกคำสั่งซื้อ</option>
+                            {!["building", "shipping", "delivered"].includes(order.status) ? (
+                                <>
+                                    <option value="inspection">กำลังตรวจสอบ</option>
+                                    <option value="to_pay">รอการชำระเงิน</option>
+                                </>
+                            ) : (
+                                <>
+                                    <option value="building">กำลังประกอบ</option>
+                                    <option value="shipping">กำลังจัดส่ง</option>
+                                    <option value="delivered">จัดส่งสำเร็จ</option>
+                                </>
+                            )}
                         </select>
 
-                        {/* ถังขยะลบคำสั่งซื้อ */}
                         <button
                             onClick={() => confirmDeleteOrder(order.order_id)}
                             className="text-gray-500 hover:text-red-600 cusor-pointer"
@@ -233,13 +236,12 @@ export default function OrderHistory() {
                     <div className="flex justify-center mb-4">
                         <svg className="items-center flex " width="64" height="64" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M24 7H20.9C20.4216 4.67358 18.3751 3.003 16 3H14C11.6249 3.003 9.57843 4.67358 9.1 7H6C5.44772 7 5 7.44772 5 8C5 8.55228 5.44772 9 6 9H7V22C7.00331 24.7601 9.23995 26.9967 12 27H18C20.7601 26.9967 22.9967 24.7601 23 22V9H24C24.5523 9 25 8.55228 25 8C25 7.44772 24.5523 7 24 7ZM14 5H16C17.271 5.00155 18.4036 5.8023 18.829 7H11.171C11.5964 5.8023 12.729 5.00155 14 5ZM21 22C21 23.6569 19.6569 25 18 25H12C10.3431 25 9 23.6569 9 22V9H21V22ZM13 21C13.5523 21 14 20.5523 14 20V14C14 13.4477 13.5523 13 13 13C12.4477 13 12 13.4477 12 14V20C12 20.5523 12.4477 21 13 21ZM18 20C18 20.5523 17.5523 21 17 21C16.4477 21 16 20.5523 16 20V14C16 13.4477 16.4477 13 17 13C17.5523 13 18 13.4477 18 14V20Z" fill="rgba(227, 31, 38, 1)"></path></svg>
                     </div>
-                    <h1 className="text-2xl font-bold mb-4">คุณแน่ใจที่จะลบคำสั่งซื้อนี้ใช่หรือไม่?</h1>
+                    <h1 className="text-2xl font-bold mb-4">คุณแน่ใจที่จะยกเลิกคำสั่งซื้อนี้ใช่หรือไม่?</h1>
                     <div className="space-y-3">
                     <button
                         onClick={() => {
                             if (orderToDelete !== null) {
-                            handleDeleteOrder(orderToDelete);
-                            setIsDeletingOrder(false);
+                                handleDeleteOrder(orderToDelete); 
                             }
                         }}
                         className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg mr-4 hover:bg-red-600 transition"

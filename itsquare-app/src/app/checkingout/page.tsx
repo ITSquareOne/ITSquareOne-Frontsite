@@ -277,7 +277,7 @@ const handleEditClick = (addr: Address) => {
                 <div className="bg-white rounded-lg shadow-xl p-6 md:w-1/4 w-3/4 text-center text-black">
                   <div>
                     <h2 className="text-xl font-semibold text-green-600">ทำการสั่งซื้อสินค้าเรียบร้อย ✅</h2>
-                    <p className="text-xl mb-4 font-semibold text-gray-600">กรุณาทำการชำระเงินในลำดับถัดไป</p>
+                    <p className="text-xl mb-4 font-semibold text-gray-600">กรุณารอเจ้าหน้าที่ตรวจสอบรายการสักครู่</p>
                     <a
                       href="/status"
                       onClick={() => {
