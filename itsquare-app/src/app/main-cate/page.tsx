@@ -18,6 +18,13 @@ const categoryMap: { [key: string]: number } = {
   "Others": 9
 };
 
+const conditionOptions = [
+  { label: "คุณภาพเยี่ยม", value: 100 },
+  { label: "คุณภาพดี", value: 75 },
+  { label: "พอใช้", value: 50 },
+  { label: "ต่ำกว่ามาตรฐาน", value: 25 },
+];
+
 export default function Category() {
   const [product, setProduct] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -26,45 +33,44 @@ export default function Category() {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
   const [brandMap, setBrandMap] = useState<{ [key: number]: string }>({});
-  
+
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
     }
   }, []);
-  
+
   useEffect(() => {
     const getItems = async () => {
-      if (!token) return; 
+      if (!token) return;
       const products = await fetchItemsForCategory(token);
       setProduct(products);
-      console.log("fetched products: ", products);
+      console.log("Fetched products:", products);
     };
-    
+
     getItems();
-    const interval = setInterval(getItems, 60000); 
-    return () => clearInterval(interval); 
-  }, [token]); 
-  
+    const interval = setInterval(getItems, 60000);
+    return () => clearInterval(interval);
+  }, [token]);
+
   useEffect(() => {
     const fetchBrands = async () => {
       if (!token || product.length === 0) return;
-  
+
       try {
         const brandData: { [key: number]: string } = {};
-        
         const uniqueBrandIds = [...new Set(product.map((item) => item.brand))];
 
         const brandRequests = uniqueBrandIds.map(async (brandId) => {
-          if (brandId !== 0) { 
+          if (brandId !== 0) {
             const response = await axios.get(`http://localhost:3000/api/brands/${brandId}`, {
               headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
             });
             brandData[brandId as number] = response.data.brand_name;
           }
         });
-  
+
         await Promise.all(brandRequests);
         setBrandMap(brandData);
         console.log("Fetched brand names:", brandData);
@@ -76,14 +82,15 @@ export default function Category() {
     fetchBrands();
   }, [token, product]);
 
-  // Create dropdown brand list using brand names
+  // Creating the dropdown list using brand names
   const uniqueBrands = ["All", ...Object.values(brandMap)];
 
   const filteredProducts = product.filter((item) => {
+    const brandName = brandMap[item.brand as number]; // Convert brand_id to brand_name
     return (
       !item.order_id &&
       (selectedCategory === "All" || item.type === categoryMap[selectedCategory]) &&
-      (selectedBrand === "All" || brandMap[item.brand as number] === selectedBrand) &&
+      (selectedBrand === "All" || brandName === selectedBrand) &&
       (searchQuery === "" || item.name.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   });
@@ -91,6 +98,7 @@ export default function Category() {
   return (
     <div className="relative min-h-screen bg-cover bg-center px-8 items-center flex flex-col"
       style={{ backgroundImage: "url('/bg-main.png')", backgroundAttachment: "fixed" }}>
+
       {/* Category Filters */}
       <div className="container flex flex-row mt-4 md:mt-9 gap-4 flex-wrap justify-center">
         {Object.keys(categoryMap).map((category) => (
@@ -103,7 +111,7 @@ export default function Category() {
         ))}
       </div>
       <br /><br />
-      
+
       {/* Search Bar and Brand Filter */}
       <div className="relative w-full max-w-[600px] mb-4 flex gap-4 items-center">
         {/* Search Bar */}
@@ -130,12 +138,21 @@ export default function Category() {
                 <Image src={item.part_image ? `data:image/jpeg;base64,${item.part_image}` : "/sorry.jpg"} alt="icon"
                   width={250} height={300} className="w-full h-full object-cover"/>
               </div>
+
+              {/* Product Name */}
               <div className="text-black text-start w-full mt-3 pb-2 font-semibold text-sm md:text-m">
                 <p>{item.name}</p>
               </div>
+
+              {/* Condition Label */}
+              <div className="text-black text-start w-full mt-3 pb-2 font-semibold text-sm md:text-m">
+                <p>{conditionOptions.find(option => item.condition >= option.value)?.label || "ไม่ทราบสถานะ"}</p>
+              </div>
+
               {/* Price & Cart Button */}
               <button onClick={() => router.push(`product/${item.id}`)}
-                className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-md mt-auto text-black w-full py-2 rounded-full text-base">
+                className="bg-[#FFD83C] hover:bg-[#fdca3c] shadow-md mt-auto text-black w-full py-2 rounded-full text-base flex items-center justify-center gap-2">
+                <Image src="/Shopping cart.png" alt="icon" width={20} height={20} />
                 {item.price} บาท
               </button>
             </div>
