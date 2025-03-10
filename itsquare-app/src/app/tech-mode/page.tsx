@@ -100,6 +100,7 @@ export default function technician() {
             name: part.name,
             price: item.price,
             condition: item.condition,
+            order_id: item.order_id,
             part_code: item.part_code,
             part_image: item.part_image,
             description: part.description,
@@ -512,14 +513,17 @@ export default function technician() {
                 </thead>
                 <tbody>
                   {product
+                    .filter((item) => item.order_id == null)
                     .filter((item) => {
-                      // Filter by search term (case-insensitive)
-                      const matchesSearch = searchTerm === "" ||
+                      // ค้นหาจากชื่อสินค้า
+                      const matchesSearch =
+                        searchTerm === "" ||
                         (item.name && item.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
-                      // Filter by selected type
-                      const matchesType = selectedType === null ||
-                        (item.type && types.find(t => t.type_id === selectedType)?.type_name === item.type);
+                      // กรองตามประเภทสินค้า
+                      const matchesType =
+                        selectedType === null ||
+                        (item.type && types.find((t) => t.type_id === selectedType)?.type_name === item.type);
 
                       return matchesSearch && matchesType;
                     })
@@ -532,7 +536,7 @@ export default function technician() {
                         <td className="border border-black px-4 py-2">{item.type}</td>
                         <td className="border border-black px-4 py-2">{item.price}</td>
                         <td className="border border-black px-4 py-2">
-                          {conditionOptions.find(opt => opt.value === item.condition)?.label || "ไม่ทราบ"}
+                          {conditionOptions.find((opt) => opt.value === item.condition)?.label || "ไม่ทราบ"}
                         </td>
                         <td className="px-4 py-2 border border-black">
                           {item.part_image ? (
@@ -548,14 +552,25 @@ export default function technician() {
                           )}
                         </td>
                         <td className="border border-black px-4 py-2">
-                          <button onClick={() => handleEditItem(item)} className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition">Edit</button>
+                          <button
+                            onClick={() => handleEditItem(item)}
+                            className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition"
+                          >
+                            Edit
+                          </button>
                         </td>
                         <td className="border border-black px-4 py-2">
-                          <button onClick={() => handleDeleteItem(item)} className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition">Delete</button>
+                          <button
+                            onClick={() => handleDeleteItem(item)}
+                            className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition"
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
                 </tbody>
+
               </table>
             </div>
             <div className="text-black gap-5 flex mt-4">
