@@ -74,7 +74,7 @@ export default function Sign_in() {
       setInputError({ username: false, password: true });
       setErrorMessage({
         username: "",
-        password: "รหัสผ่านไม่ถูกต้อง ❌", // Show error message
+        password: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง ❌", // Show error message
       });
     }
   };
