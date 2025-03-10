@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
-import { User, getUsers, getOneUser, editUser, fetchSalesDaily, fetchSalesMonthly, fetchSalesYearly } from "@/app/utils/api";
+import { User, getUsers, createUser, getOneUser, editUser, fetchSalesDaily, fetchSalesMonthly, fetchSalesYearly } from "@/app/utils/api";
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
@@ -14,8 +14,20 @@ export default function manager() {
   const [token, setToken] = useState<string | null>(null);
   const [salesData, setSalesData] = useState([]);
   const [timeFrame, setTimeFrame] = useState<"daily" | "monthly" | "yearly">("daily");
+  const [isAddIDOpen, setIsAddIDOpen] = useState(false);
   const [totalOrder, setTotalOrder] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
+  const [creatingUser, setCreatingUser] = useState({
+    username: "",
+    password: "",
+    firstNameEn: "",
+    lastNameEn: "",
+    firstNameTh: "",
+    lastNameTh: "",
+    profile: null,
+    role: "student",
+  });
+
 
 
   useEffect(() => {
@@ -54,13 +66,17 @@ export default function manager() {
       }
   }, []);
 
+  const fetchUsers = async () => {
+    if (!token) return;
+    try {
+      const data = await getUsers(token);
+      setUsers(data || []);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      if (token) {
-        const data = await getUsers(token); 
-        setUsers(data || []);
-      }
-    };
     fetchUsers();
   }, [token]);
 
@@ -91,6 +107,21 @@ export default function manager() {
       setTotalOrder(formattedData.reduce((sum: any, item: { orders: any; }) => sum + item.orders, 0));
       setTotalIncome(formattedData.reduce((sum: any, item: { income: any; }) => sum + item.income, 0));
     }
+  };
+
+  const handleCreateUser = async () => {
+    if (!token || !creatingUser) return; 
+
+    try {
+      await createUser(token, creatingUser);
+      alert("สร้างบัญชีผู้ใช้สำเร็จ!");
+      setIsAddIDOpen(false); 
+      await fetchUsers(); 
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาด:", error);
+      alert("เกิดข้อผิดพลาดในการสร้างข้อมูล");
+    }
+
   };
   
   useEffect(() => {
@@ -279,6 +310,9 @@ export default function manager() {
               ))}
           </tbody>
         </table>
+        <div className="text-black gap-5 flex mt-4">
+          <button onClick={() => setIsAddIDOpen(true)} className="bg-blue-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">สร้างบัญชีผู้ใช้</button>
+        </div>
         <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg shadow-xl p-6 w-96 text-center text-black">
           <h2 className="text-xl font-bold mb-4">Edit User</h2>
@@ -333,6 +367,97 @@ export default function manager() {
           )}
           </div>
         </Dialog>
+        <Dialog open={isAddIDOpen} onClose={() => setIsAddIDOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg shadow-xl p-6 w-96 text-center text-black">
+          <h2 className="text-xl font-bold mb-4">Create User</h2>
+
+          <div className="space-y-3">
+            <div>
+              <label className="block text-left font-semibold">Username</label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-md"
+                value={creatingUser?.username}
+                onChange={(e) => setCreatingUser({ ...creatingUser, username: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-left font-semibold">Password</label>
+              <input
+                type="password"
+                className="w-full border p-2 rounded-md"
+                value={creatingUser?.password}
+                onChange={(e) => setCreatingUser({ ...creatingUser, password: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block text-left font-semibold">First Name (En)</label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-md"
+                value={creatingUser?.firstNameEn}
+                onChange={(e) => setCreatingUser({ ...creatingUser, firstNameEn: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-left font-semibold">Last Name (En)</label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-md"
+                value={creatingUser?.lastNameEn}
+                onChange={(e) => setCreatingUser({ ...creatingUser, lastNameEn: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-left font-semibold">First Name (TH)</label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-md"
+                value={creatingUser?.firstNameTh}
+                onChange={(e) => setCreatingUser({ ...creatingUser, firstNameTh: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-left font-semibold">Last Name (TH)</label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded-md"
+                value={creatingUser?.lastNameTh}
+                onChange={(e) => setCreatingUser({ ...creatingUser, lastNameTh: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-left font-semibold">Role</label>
+              <select
+                className="w-full border p-2 rounded-md"
+                value={creatingUser?.role}
+                onChange={(e) => setCreatingUser({ ...creatingUser, role: e.target.value })}
+              >
+                <option value="student">นักศึกษา</option>
+                <option value="technician">ช่างเทคนิค</option>
+              </select>
+            </div>
+
+            <button
+              onClick={handleCreateUser}
+              className="mt-4 mr-4 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+            >
+              สร้างผู้ใช้
+            </button>
+            <button
+              onClick={() => setIsAddIDOpen(false)}
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+            >
+              ปิด
+            </button>
+          </div>
+        </div>
+      </Dialog>
         
         </>
        }

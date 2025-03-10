@@ -559,7 +559,7 @@ export default function technician() {
               </table>
             </div>
             <div className="text-black gap-5 flex mt-4">
-              <button className="bg-blue-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">วางขายสินค้า</button>
+              <button onClick={() => setIsAddItemOpen(true)} className="bg-blue-500 text-white px-3 py-2 rounded-lg shadow-md hover:bg-blue-600 transition">วางขายสินค้า</button>
             </div>
             <Dialog open={isAddItemOpen} onClose={() => setIsAddItemOpen(false)} className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
               <div className="bg-white rounded-lg shadow-xl p-6 w-2/4 text-start text-black">

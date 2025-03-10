@@ -71,6 +71,7 @@ export interface Parts {
 
 export interface User {
     user_id?: number;
+    password?: string;
     username?: string;
     firstNameEn?: string;
     lastNameEn?: string;
@@ -540,5 +541,20 @@ export const fetchSalesYearly = async (token: string) => {
   }
 }
 
+export const createUser = async (token: string, userData: User) => {
+  try {
+    const response = await axios.post(`${api_url}/managers/users`, userData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("Error creating user:", err);
+    throw err;
+  }
+};
 
 

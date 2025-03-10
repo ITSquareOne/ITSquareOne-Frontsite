@@ -109,9 +109,9 @@ export default function Payment() {
             <button onClick={handleConfirmPayment} className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition">
               ยืนยัน
             </button>
-            <button className="mt-4 bg-gray-400 text-white py-2 px-6 rounded-md hover:bg-gray-500 transition">
+            <a href="/status" className="mt-4 bg-gray-400 text-white py-2 px-6 rounded-md hover:bg-gray-500 transition">
               ยกเลิก
-            </button>
+            </a>
           </div>
         </div>
       </div>
